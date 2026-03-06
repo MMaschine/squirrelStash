@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36930.0 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquirrelStash", "SquirrelStash\SquirrelStash.csproj", "{1BF1438F-8C03-4EE6-8EB0-E1851A817398}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquirrelStash.DataAccess", "SquirrelStash.DataAccess\SquirrelStash.DataAccess.csproj", "{2DC70FEC-B2A7-4E8B-BCF7-F1F5397E034D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1BF1438F-8C03-4EE6-8EB0-E1851A817398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BF1438F-8C03-4EE6-8EB0-E1851A817398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BF1438F-8C03-4EE6-8EB0-E1851A817398}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1BF1438F-8C03-4EE6-8EB0-E1851A817398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BF1438F-8C03-4EE6-8EB0-E1851A817398}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BF1438F-8C03-4EE6-8EB0-E1851A817398}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{2DC70FEC-B2A7-4E8B-BCF7-F1F5397E034D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DC70FEC-B2A7-4E8B-BCF7-F1F5397E034D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DC70FEC-B2A7-4E8B-BCF7-F1F5397E034D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DC70FEC-B2A7-4E8B-BCF7-F1F5397E034D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C5331ED6-B0D8-433C-B2E5-6255CFA26427}
+	EndGlobalSection
+EndGlobal
