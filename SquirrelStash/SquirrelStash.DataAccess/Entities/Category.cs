@@ -2,13 +2,14 @@
 {
     public class Category : BaseEntity
     {
-        public int? ParentId { get; set; }
-        public Category? Parent { get; set; }
-        
-        public string Title { get; set; }
+        #region Navigation
+
+        public List<PropertyDefinition> Properties { get; set; }
 
         public List<Item> Items { get; set; } = [];
 
-        public List<Category> Subcategories { get; set; } = [];
+        #endregion
+
+        public string Title { get; set; }
     }
 }
