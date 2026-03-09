@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SquirrelStash.DataAccess.Helpers;
+using SquirrelStash.Helpers;
 
 
 namespace SquirrelStash
@@ -22,8 +23,9 @@ namespace SquirrelStash
 #endif
 
             builder.Services.ConfigureDbContext(Path.Combine(FileSystem.AppDataDirectory, "squirrelstash.db"));
-
-            return builder.Build();
+            
+            
+            return builder.Build().EnsureMigrations();
         }
     }
 }
