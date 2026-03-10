@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SquirrelStash.Views.ItemCardView">
+    <Border
+        Padding="10"
+        StrokeThickness="1"
+        Stroke="#D8D8D8"
+        BackgroundColor="White"
+        StrokeShape="RoundRectangle 10">
+
+        <Grid
+            ColumnDefinitions="64,*,Auto"
+            ColumnSpacing="12"
+            VerticalOptions="Center">
+
+            <!-- Image area -->
+            <Border
+                Grid.Column="0"
+                WidthRequest="64"
+                HeightRequest="64"
+                StrokeThickness="1"
+                Stroke="#CFCFCF"
+                BackgroundColor="#F4F4F4"
+                StrokeShape="RoundRectangle 8"
+                HorizontalOptions="Start"
+                VerticalOptions="Center">
+
+                <!-- Placeholder for now -->
+                <Label
+                    Text="Img"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    FontSize="12" />
+            </Border>
+
+            <!-- Name -->
+            <Label
+                Grid.Column="1"
+                Text="{Binding Name}"
+                LineBreakMode="WordWrap"
+                MaxLines="3"
+                VerticalOptions="Center"
+                FontSize="14" />
+
+            <!-- Quantity controls -->
+            <HorizontalStackLayout
+                Grid.Column="2"
+                Spacing="8"
+                VerticalOptions="Center"
+                HorizontalOptions="End">
+
+                <Button
+                    Text="-"
+                    WidthRequest="36"
+                    HeightRequest="36"
+                    Padding="0"
+                    CornerRadius="18"
+                    Command="{Binding DecreaseQuantityCommand}" />
+
+                <Label
+                    Text="{Binding Quantity}"
+                    VerticalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    WidthRequest="30"
+                    FontSize="16" />
+
+                <Button
+                    Text="+"
+                    WidthRequest="36"
+                    HeightRequest="36"
+                    Padding="0"
+                    CornerRadius="18"
+                    Command="{Binding IncreaseQuantityCommand}" />
+            </HorizontalStackLayout>
+
+        </Grid>
+    </Border>
+</ContentView>

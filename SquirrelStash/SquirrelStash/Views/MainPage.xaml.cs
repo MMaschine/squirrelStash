@@ -1,4 +1,4 @@
-﻿namespace SquirrelStash
+﻿namespace SquirrelStash.Views
 {
     public partial class MainPage : ContentPage
     {

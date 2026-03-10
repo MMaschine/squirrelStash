@@ -5,11 +5,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SquirrelStash"
     Shell.FlyoutBehavior="Disabled"
+    xmlns:views="clr-namespace:SquirrelStash.Views"
     Title="SquirrelStash">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
+    <TabBar>
+        <Tab x:Name="ThresholdTab" Title="Overview">
+            <Shell.TitleView>
+                <Label Text="Overview"/>
+            </Shell.TitleView>
+            <ShellContent Route="MainPage" ContentTemplate="{DataTemplate views:MainPage}"/>
+        </Tab>
+        <Tab x:Name="TreeTab" Title="Tree">
+            <Shell.TitleView>
+                <Label Text="Categories and items"/>
+            </Shell.TitleView>
+            <ShellContent Route="MainPage" ContentTemplate="{DataTemplate views:TreePage}"/>
+        </Tab>
+    </TabBar>
 </Shell>

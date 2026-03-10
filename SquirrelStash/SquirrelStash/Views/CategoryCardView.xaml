@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:SquirrelStash.Views"
+             x:Class="SquirrelStash.Views.CategoryCardView">
+    <Border
+        Padding="12"
+        StrokeThickness="1"
+        Stroke="#D0D0D0"
+        BackgroundColor="White"
+        StrokeShape="RoundRectangle 12">
+
+        <VerticalStackLayout Spacing="12">
+
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    Grid.Column="0"
+                    Text="{Binding Title}"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    VerticalOptions="Center" />
+
+                <Button
+                    Grid.Column="1"
+                    Text="+"
+                    WidthRequest="32"
+                    HeightRequest="32"
+                    CornerRadius="16"
+                    Padding="0"
+                    FontSize="18"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start" />
+            </Grid>
+
+            <!-- Filter panel header -->
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Text="Filters"
+                    FontSize="14"
+                    VerticalOptions="Center" />
+
+                <Switch
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    IsToggled="{Binding IsFilterPanelOpen}" />
+
+                <!-- Filter body -->
+                <VerticalStackLayout
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Spacing="8"
+                    IsVisible="{Binding IsFilterPanelOpen}"
+                    Margin="0,8,0,0">
+
+                    <Picker
+                        Title="Select filter"
+                        ItemsSource="{Binding FilterOptions}"
+                        SelectedItem="{Binding SelectedFilter}" />
+
+                    <Entry
+                        Placeholder="Enter value"
+                        Text="{Binding FilterValue}" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Items -->
+            <CollectionView ItemsSource="{Binding Items}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <views:ItemCardView />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </Border>
+</ContentView>
