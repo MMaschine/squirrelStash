@@ -1,4 +1,4 @@
-﻿namespace SquirrelStash.DataAccess.Enums
+﻿namespace SquirrelStash.Enums
 {
     public enum PropertyTypes
     {

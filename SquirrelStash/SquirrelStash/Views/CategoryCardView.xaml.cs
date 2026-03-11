@@ -1,4 +1,4 @@
-using SquirrelStash.ViewModel;
+using SquirrelStash.ViewModels;
 
 namespace SquirrelStash.Views;
 
@@ -9,6 +9,6 @@ public partial class CategoryCardView : ContentView
 		InitializeComponent();
 
 		//Todo: temp 
-        BindingContext = new CategoryCardViewModel(); 
+        //BindingContext = new CategoryCardViewModel(); 
     }
 }

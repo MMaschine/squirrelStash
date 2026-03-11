@@ -1,4 +1,4 @@
-using SquirrelStash.ViewModel;
+using SquirrelStash.ViewModels;
 
 namespace SquirrelStash.Views;
 

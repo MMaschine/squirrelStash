@@ -1,9 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using SquirrelStash.Abstractions;
+using SquirrelStash.DataAccess.Entities;
 
-namespace SquirrelStash.ViewModel
+namespace SquirrelStash.ViewModels
 {
-    public partial class CategoryCardViewModel : ObservableObject
+    public partial class CategoryCardViewModel(IItemCardViewModelFactory itemFactory) : ObservableObject
     {
         [ObservableProperty]
         private string title = "T-shirt";
@@ -17,11 +19,6 @@ namespace SquirrelStash.ViewModel
         [ObservableProperty]
         private string? filterValue;
 
-        public ObservableCollection<ItemCardViewModel> Items { get; } =
-        [
-            new ItemCardViewModel(),
-            new ItemCardViewModel(),
-            new ItemCardViewModel(),
-        ];
+        public ObservableCollection<ItemCardViewModel> Items { get; } = [];
     }
 }

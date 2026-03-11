@@ -1,18 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
+using SquirrelStash.Abstractions;
 
 
-namespace SquirrelStash.ViewModel
+namespace SquirrelStash.ViewModels
 {
-    public partial class TreePageViewModel : ObservableObject
+    public partial class TreePageViewModel(IItemCardViewModelFactory factory) : ObservableObject
     {
         public ObservableCollection<CategoryCardViewModel> Categories { get; } =
         [
-            new CategoryCardViewModel()
+            new CategoryCardViewModel(factory)
             {
                 Title = "Test category 1"
             },
-            new CategoryCardViewModel()
+            new CategoryCardViewModel(factory)
             {
                 Title = "Test category 2"
             }

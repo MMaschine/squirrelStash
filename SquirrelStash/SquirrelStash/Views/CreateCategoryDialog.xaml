@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SquirrelStash.Views.CreateCategoryDialog"
+    xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels" 
+    x:DataType="viewModels:CreateCategoryDialogViewModel"
+    Title="Create Category"
+    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <Label
+                Text="Create Category"
+                FontSize="24"
+                FontAttributes="Bold" />
+
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Category title" />
+                <Entry
+                    Text="{Binding Title}"
+                    Placeholder="Enter category title" />
+            </VerticalStackLayout>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    Text="Properties"
+                    VerticalOptions="Center"
+                    FontAttributes="Bold"
+                    FontSize="18" />
+
+                <Button
+                    Grid.Column="1"
+                    Text="+"
+                    Command="{Binding AddPropertyCommand}"
+                    WidthRequest="44"
+                    HeightRequest="44" />
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding Properties}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:CategoryPropertyViewModel">
+                        <Frame
+                            Padding="12"
+                            Margin="0,0,0,10"
+                            BorderColor="{AppThemeBinding Light=#DDDDDD, Dark=#444444}"
+                            CornerRadius="10">
+
+                            <VerticalStackLayout Spacing="10">
+                                <Entry
+                                    Text="{Binding Name}"
+                                    Placeholder="Property name" />
+
+                                <Picker
+                                    Title="Select property type"
+                                    ItemsSource="{Binding AvailableTypes}"
+                                    SelectedItem="{Binding SelectedType}" />
+
+                                <Button
+                                    Text="Delete"
+                                    Command="{Binding DeleteCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,20,0,0">
+                <Button
+                    Grid.Column="0"
+                    Text="Cancel"
+                    Command="{Binding CancelCommand}" />
+
+                <Button
+                    Grid.Column="1"
+                    Text="Ok"
+                    Command="{Binding SaveCommand}" />
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
