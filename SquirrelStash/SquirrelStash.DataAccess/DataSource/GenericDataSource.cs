@@ -1,10 +1,11 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using SquirrelStash.DataAccess.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 
 namespace SquirrelStash.DataAccess.DataSource
 {
-    public class GenericDataSource<T>(StashContext context) where T : BaseEntity //: IGenericDataSource<T> 
+    public class GenericDataSource<T>(StashContext context) : IGenericDataSource<T> where T : BaseEntity //: IGenericDataSource<T> 
     {
         private readonly DbSet<T> _set = context.Set<T>();
 

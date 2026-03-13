@@ -73,7 +73,6 @@
                     CornerRadius="18"
                     Command="{Binding IncreaseQuantityCommand}" />
             </HorizontalStackLayout>
-
         </Grid>
     </Border>
 </ContentView>

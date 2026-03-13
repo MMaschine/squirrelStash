@@ -10,10 +10,10 @@ namespace SquirrelStash.ViewModels
     public partial class CategoryPropertyViewModel : ObservableObject
     {
         [ObservableProperty]
-        private string _name = string.Empty;
+        private string name = string.Empty;
 
         [ObservableProperty]
-        private PropertyTypes _selectedType = PropertyTypes.Basic;
+        private PropertyTypes selectedType = PropertyTypes.Basic;
 
         public IReadOnlyList<PropertyTypes> AvailableTypes { get; } =
             Enum.GetValues<PropertyTypes>();

@@ -9,7 +9,8 @@
         <!-- Top Button -->
         <Button
             Text="Add category"
-            HorizontalOptions="Start" />
+            HorizontalOptions="Start"
+            Command="{Binding CreateCategoryCommand}"/>
 
         <!-- Tree -->
         <CollectionView ItemsSource="{Binding Categories}">

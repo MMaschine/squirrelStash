@@ -2,7 +2,7 @@
 
 namespace SquirrelStash.Requests
 {
-    public record CreateCategoryRequest(string Title, CreatePropertyRequest[] properties)
+    public record CreateCategoryRequest(string Title, CreatePropertyRequest[]? Properties)
     {
     }
 }

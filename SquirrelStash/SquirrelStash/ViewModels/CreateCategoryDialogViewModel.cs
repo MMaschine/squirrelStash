@@ -2,6 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using SquirrelStash.Requests;
 using System.Collections.ObjectModel;
+using SquirrelStash.Helpers;
+using SquirrelStash.Models;
+
 
 namespace SquirrelStash.ViewModels
 {
@@ -12,19 +15,12 @@ namespace SquirrelStash.ViewModels
 
         public ObservableCollection<CategoryPropertyViewModel> Properties { get; } = [];
 
-        public event Action? CancelRequested;
+        public event Action<DialogResult<CreateCategoryRequest>>? RequestCompleted;
 
-        public event Action<CreateCategoryRequest>? SaveRequested;
-
-        public CreateCategoryDialogViewModel()
-        {
-        }
 
         [RelayCommand]
         private void AddProperty()
         {
-
-
             Properties.Add(new CategoryPropertyViewModel() {DeleteCommand = RemovePropertyCommand});
         }
 
@@ -42,16 +38,18 @@ namespace SquirrelStash.ViewModels
         [RelayCommand]
         private void Cancel()
         {
-            CancelRequested?.Invoke();
+            RequestCompleted?.Invoke(DialogResult<CreateCategoryRequest>.GetCanceled());
         }
 
         [RelayCommand]
-        private void Save()
+        private async Task Save()
         {
             var trimmedTitle = Title?.Trim() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(trimmedTitle))
             {
+                //TODO: to resources
+                await MessageHelper.ShowWarningAsync("Title must be set for category");
                 return;
             }
 
@@ -59,7 +57,17 @@ namespace SquirrelStash.ViewModels
                 .Where(x => !string.IsNullOrWhiteSpace(x.Name))
                 .Select(x => new CreatePropertyRequest(x.Name.Trim(), x.SelectedType)).ToArray();
 
-            SaveRequested?.Invoke(new CreateCategoryRequest(trimmedTitle, props));
+            if (!props.Any())
+            {   
+                //TODO: to resources
+                await MessageHelper.ShowWarningAsync("Set at least one property for the Category");
+                return;
+            }
+
+            var dialogResult =
+                DialogResult<CreateCategoryRequest>.GetSuccess(new CreateCategoryRequest(trimmedTitle, props));
+
+            RequestCompleted?.Invoke(dialogResult);
         }
     }
 }

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Helpers;
 
 namespace SquirrelStash.ViewModels
 {
@@ -9,14 +10,12 @@ namespace SquirrelStash.ViewModels
     {
         private readonly IItemsService _itemsService;
 
-        private readonly IMessageService _messageService;
 
         private readonly int _itemId;
 
-        public ItemCardViewModel(Item item, IItemsService itemService, IMessageService messageService)
+        public ItemCardViewModel(Item item, IItemsService itemService)
         {
             _itemsService = itemService;
-            _messageService = messageService;
             _itemId = item.Id;
 
             Quantity = item.Quantity;
@@ -41,7 +40,7 @@ namespace SquirrelStash.ViewModels
             if (newQuantityResult.IsFailed)
             {
                 //TODO: add details logging/messaging
-                await _messageService.ShowErrorAsync("Error in quantity changing! Contact developer");
+                await MessageHelper.ShowErrorAsync("Error in quantity changing! Contact developer");
             }
             else
             {
@@ -59,7 +58,7 @@ namespace SquirrelStash.ViewModels
                 if (newQuantityResult.IsFailed)
                 {
                     //TODO: add details logging/messaging
-                    await _messageService.ShowErrorAsync("Error in quantity changing! Contact developer");
+                    await MessageHelper.ShowErrorAsync("Error in quantity changing! Contact developer");
                 }
                 else
                 {
