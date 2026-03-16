@@ -30,9 +30,6 @@ namespace SquirrelStash.ViewModels
         private string title = string.Empty;
 
         [ObservableProperty]
-        private bool isFilterPanelOpen;
-
-        [ObservableProperty]
         private PropertyDefinition? selectedFilter;
 
         [ObservableProperty]
@@ -52,17 +49,10 @@ namespace SquirrelStash.ViewModels
 
         public bool IsManualValueFilter => !IsAllowedValuesFilter;
 
-        public string FilterToggleIcon => IsFilterPanelOpen ? "v" : ">";
-
         [RelayCommand]
-        private void ToggleFilterPanel()
+        public async Task AddItem()
         {
-            IsFilterPanelOpen = !IsFilterPanelOpen;
-        }
 
-        partial void OnIsFilterPanelOpenChanged(bool value)
-        {
-            OnPropertyChanged(nameof(FilterToggleIcon));
         }
 
         partial void OnSelectedFilterChanged(PropertyDefinition? value)

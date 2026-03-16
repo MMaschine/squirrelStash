@@ -79,6 +79,7 @@ namespace SquirrelStash.ViewModels
 
         private async Task<bool> ValidateCategory(string title, CategoryPropertyViewModel[]? properties)
         {
+            //Title is mandatory
             if (string.IsNullOrWhiteSpace(title))
             {
                 //TODO: to resources
@@ -86,6 +87,7 @@ namespace SquirrelStash.ViewModels
                 return false;
             }
 
+            //Must be at least one property
             if (properties == null || !properties.Any())
             {
                 //TODO: to resources
@@ -106,6 +108,7 @@ namespace SquirrelStash.ViewModels
                 return false;
             }
 
+            return true;
         }
 
         private string? NormalizeAllowedValues(string? allowedValues)
