@@ -13,11 +13,21 @@ namespace SquirrelStash.ViewModels
         private string name = string.Empty;
 
         [ObservableProperty]
+        private string allowedValues = string.Empty;
+
+        [ObservableProperty]
         private PropertyTypes selectedType = PropertyTypes.Basic;
 
         public IReadOnlyList<PropertyTypes> AvailableTypes { get; } =
             Enum.GetValues<PropertyTypes>();
 
+        public bool IsAllowedValuesType => SelectedType == PropertyTypes.AllowedValues;
+
         public IRelayCommand<CategoryPropertyViewModel>? DeleteCommand { get; set; }
+
+        partial void OnSelectedTypeChanged(PropertyTypes value)
+        {
+            OnPropertyChanged(nameof(IsAllowedValuesType));
+        }
     }
 }

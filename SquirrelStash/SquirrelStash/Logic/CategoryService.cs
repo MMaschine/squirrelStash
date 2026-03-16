@@ -1,4 +1,5 @@
-﻿using FluentResults;
+using FluentResults;
+using Microsoft.EntityFrameworkCore;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Abstractions;
 using SquirrelStash.DataAccess.Entities;
@@ -12,8 +13,13 @@ namespace SquirrelStash.Logic
         {
             try
             {
-                var data = await dataSource.GetAllAsync();
-                return Result.Ok(data);
+                var data = await dataSource.GetQueryableItems()
+                    .Include(x => x.Properties)
+                    .Include(x => x.Items)
+                        .ThenInclude(x => x.PropertyEntries)
+                            .ThenInclude(x => x.Definition).ToListAsync() ?? [];
+
+                return data.AsReadOnly();
             }
             catch (Exception e)
             {
@@ -26,7 +32,7 @@ namespace SquirrelStash.Logic
         {
             ArgumentNullException.ThrowIfNull(request);
             ArgumentNullException.ThrowIfNull(request.Properties);
-            
+
             if (string.IsNullOrEmpty(request.Title))
                 throw new ArgumentException(nameof(request.Title));
 
@@ -40,7 +46,8 @@ namespace SquirrelStash.Logic
                 categoryToAdd.Properties.AddRange(request.Properties.Select(x => new PropertyDefinition()
                 {
                     TypeCode = (int)x.Type,
-                    Name = x.Name
+                    Name = x.Name,
+                    AllowedValues = x.AllowedValues
                 }));
 
                 await dataSource.AddAsync(categoryToAdd);

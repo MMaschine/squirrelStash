@@ -1,15 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SquirrelStash.Enums;
 using SquirrelStash.Requests;
 using System.Collections.ObjectModel;
 using SquirrelStash.Helpers;
 using SquirrelStash.Models;
+using System.Text.RegularExpressions;
 
 
 namespace SquirrelStash.ViewModels
 {
     public partial class CreateCategoryDialogViewModel : ObservableObject
     {
+        private static readonly Regex AllowedValuesPattern =
+            new(@"^\s*$|^\s*[^,\s]+(?:\s*,\s*[^,\s]+)*\s*$", RegexOptions.Compiled);
+
         [ObservableProperty]
         private string _title = string.Empty;
 
@@ -46,28 +51,73 @@ namespace SquirrelStash.ViewModels
         {
             var trimmedTitle = Title?.Trim() ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(trimmedTitle))
-            {
-                //TODO: to resources
-                await MessageHelper.ShowWarningAsync("Title must be set for category");
-                return;
-            }
-
-            var props = Properties
+            var filledProperties = Properties
                 .Where(x => !string.IsNullOrWhiteSpace(x.Name))
-                .Select(x => new CreatePropertyRequest(x.Name.Trim(), x.SelectedType)).ToArray();
+                .ToArray();
 
-            if (!props.Any())
-            {   
-                //TODO: to resources
-                await MessageHelper.ShowWarningAsync("Set at least one property for the Category");
+            var isValid = await ValidateCategory(trimmedTitle, filledProperties);
+
+            if (!isValid)
+            {
                 return;
             }
+
+            var props = filledProperties
+                .Select(x => new CreatePropertyRequest(
+                    x.Name.Trim(),
+                    x.SelectedType,
+                    x.SelectedType == PropertyTypes.AllowedValues
+                        ? NormalizeAllowedValues(x.AllowedValues)
+                        : null))
+                .ToArray();
 
             var dialogResult =
                 DialogResult<CreateCategoryRequest>.GetSuccess(new CreateCategoryRequest(trimmedTitle, props));
 
             RequestCompleted?.Invoke(dialogResult);
+        }
+
+        private async Task<bool> ValidateCategory(string title, CategoryPropertyViewModel[]? properties)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                //TODO: to resources
+                await MessageHelper.ShowWarningAsync("Title must be set for category");
+                return false;
+            }
+
+            if (properties == null || !properties.Any())
+            {
+                //TODO: to resources
+                await MessageHelper.ShowWarningAsync("Set at least one property for the Category");
+                return false;
+            }
+
+            //We need to check that the format of the allowed values is correct 
+            var invalidProperty = properties.FirstOrDefault(x =>
+                x.SelectedType == PropertyTypes.AllowedValues &&
+                !AllowedValuesPattern.IsMatch(x.AllowedValues ?? string.Empty));
+
+
+            if (invalidProperty is not null)
+            {
+                await MessageHelper.ShowWarningAsync(
+                    $"Allowed values for '{invalidProperty.Name.Trim()}' must be comma-separated.");
+                return false;
+            }
+
+        }
+
+        private string? NormalizeAllowedValues(string? allowedValues)
+        {
+            if (string.IsNullOrWhiteSpace(allowedValues))
+            {
+                return null;
+            }
+
+            return string.Join(",",
+                allowedValues
+                    .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
         }
     }
 }

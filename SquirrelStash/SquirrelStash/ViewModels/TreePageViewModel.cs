@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using SquirrelStash.Abstractions;
@@ -10,7 +10,9 @@ using SquirrelStash.Views;
 
 namespace SquirrelStash.ViewModels
 {
-    public partial class TreePageViewModel(ICategoryService categoryService) : ObservableObject
+    public partial class TreePageViewModel(
+        ICategoryService categoryService,
+        IItemCardViewModelFactory itemCardViewModelFactory) : ObservableObject
     {
         public ObservableCollection<CategoryCardViewModel> Categories { get; } = [];
 
@@ -54,10 +56,10 @@ namespace SquirrelStash.ViewModels
             }
 
             Categories.Clear();
-            
+
             foreach (var category in result.Value)
             {
-                Categories.Add(new CategoryCardViewModel(category));
+                Categories.Add(new CategoryCardViewModel(category, itemCardViewModelFactory));
             }
         }
 

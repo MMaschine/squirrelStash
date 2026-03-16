@@ -46,21 +46,37 @@
                             BorderColor="{AppThemeBinding Light=#DDDDDD, Dark=#444444}"
                             CornerRadius="10">
 
-                            <VerticalStackLayout Spacing="10">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                                <Button
+                                    Grid.Row="0"
+                                    Text="X"
+                                    FontAttributes="Bold"
+                                    WidthRequest="30"
+                                    HeightRequest="30"
+                                    Padding="0"
+                                    CornerRadius="6"
+                                    VerticalOptions="Start"
+                                    HorizontalOptions="End"
+                                    Command="{Binding DeleteCommand}"
+                                    CommandParameter="{Binding .}" />
+
                                 <Entry
+                                    Grid.Row="1"
                                     Text="{Binding Name}"
                                     Placeholder="Property name" />
 
                                 <Picker
+                                    Grid.Row="2"
                                     Title="Select property type"
                                     ItemsSource="{Binding AvailableTypes}"
                                     SelectedItem="{Binding SelectedType}" />
 
-                                <Button
-                                    Text="Delete"
-                                    Command="{Binding DeleteCommand}"
-                                    CommandParameter="{Binding .}" />
-                            </VerticalStackLayout>
+                                <Entry
+                                    Grid.Row="3"
+                                    Text="{Binding AllowedValues}"
+                                    Placeholder="Allowed values (comma-separated)"
+                                    IsVisible="{Binding IsAllowedValuesType}" />
+                            </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
