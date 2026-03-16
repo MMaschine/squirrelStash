@@ -11,8 +11,7 @@ using SquirrelStash.Views;
 namespace SquirrelStash.ViewModels
 {
     public partial class TreePageViewModel(
-        ICategoryService categoryService,
-        IItemCardViewModelFactory itemCardViewModelFactory) : ObservableObject
+        ICategoryService categoryService, IItemsService itemsService) : ObservableObject
     {
         public ObservableCollection<CategoryCardViewModel> Categories { get; } = [];
 
@@ -36,10 +35,12 @@ namespace SquirrelStash.ViewModels
             if (result.IsFailed)
             {
                 //TODO: to resources
+                //TODO: add logging
                 await MessageHelper.ShowErrorAsync("Failed to add new category!");
             }
             else
             {
+                //TODO: to resources
                 await MessageHelper.ShowInfoAsync($"Category {dialogResult.Data.Title} added");
             }
         }
@@ -59,10 +60,9 @@ namespace SquirrelStash.ViewModels
 
             foreach (var category in result.Value)
             {
-                Categories.Add(new CategoryCardViewModel(category, itemCardViewModelFactory));
+                Categories.Add(new CategoryCardViewModel(category, itemsService));
             }
         }
-
 
         private async Task<DialogResult<CreateCategoryRequest>> ShowDialogAsync()
         {

@@ -5,7 +5,6 @@ using SquirrelStash.DataAccess.DataSource;
 using SquirrelStash.DataAccess.Helpers;
 using SquirrelStash.Helpers;
 using SquirrelStash.Logic;
-using SquirrelStash.Logic.Factories;
 using SquirrelStash.ViewModels;
 using SquirrelStash.Views;
 
@@ -35,7 +34,6 @@ namespace SquirrelStash
 
             builder.Services.AddScoped<IItemsService, ItemsService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
-            builder.Services.AddScoped<IItemCardViewModelFactory, ItemCardViewModelFactory>();
 
             builder.Services.AddViewWithViewModel<TreePage, TreePageViewModel>();
             

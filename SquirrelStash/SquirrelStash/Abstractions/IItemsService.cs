@@ -1,11 +1,14 @@
 ﻿using FluentResults;
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Requests;
 
 namespace SquirrelStash.Abstractions;
 
 public interface IItemsService
 {
-    Task AddItemAsync(Item item);
+    Task<Result<IReadOnlyList<Item>>> GetCategoryItemsAsync(int categoryId);
+
+    Task<Result<Item>> AddItemAsync(int categoryId, CreateItemRequest createItemRequest);
 
     Task UpdateItemAsync(Item item);
     

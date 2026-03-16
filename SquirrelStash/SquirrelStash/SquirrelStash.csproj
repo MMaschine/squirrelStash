@@ -75,6 +75,9 @@
 	  <MauiXaml Update="Views\CreateCategoryDialog.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\CreateItemDialog.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ItemCardView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -85,6 +88,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Components\" />
+	  <Folder Include="Logic\Factories\" />
 	</ItemGroup>
 
 </Project>

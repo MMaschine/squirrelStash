@@ -4,26 +4,37 @@ using CommunityToolkit.Mvvm.Input;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Enums;
+using SquirrelStash.Helpers;
+using SquirrelStash.Models;
+using SquirrelStash.Requests;
+using SquirrelStash.Views;
 
 namespace SquirrelStash.ViewModels
 {
     public partial class CategoryCardViewModel : ObservableObject
     {
-        private readonly List<(Item Item, ItemCardViewModel ViewModel)> _allItems;
+        // private readonly List<(Item Item, ItemCardViewModel ViewModel)> _allItems;
 
-        public CategoryCardViewModel(Category category, IItemCardViewModelFactory itemCardViewModelFactory)
+        private readonly Category _currentCategory; 
+
+        private readonly IItemsService _itemsService;
+
+        public CategoryCardViewModel(Category category, IItemsService itemService)
         {
+            _itemsService = itemService;
+            _currentCategory = category;
+
             Title = category.Title;
 
             FilterOptions = new ObservableCollection<PropertyDefinition>(
                 (category.Properties ?? [])
                     .OrderBy(x => x.Id));
             SelectedFilterAllowedValues = [];
-            Items = [];
-
-            _allItems = (category.Items ?? [])
-                .Select(item => (item, itemCardViewModelFactory.Create(item)))
-                .ToList();
+            
+            foreach (var item in category.Items)
+            {
+                Items.Add(new ItemCardViewModel(item, itemService));
+            }
         }
 
         [ObservableProperty]
@@ -42,7 +53,7 @@ namespace SquirrelStash.ViewModels
 
         public ObservableCollection<string> SelectedFilterAllowedValues { get; }
 
-        public ObservableCollection<ItemCardViewModel> Items { get; }
+        public ObservableCollection<ItemCardViewModel> Items { get; } = [];
 
         public bool IsAllowedValuesFilter =>
             SelectedFilter?.TypeCode == (int)PropertyTypes.AllowedValues;
@@ -52,7 +63,32 @@ namespace SquirrelStash.ViewModels
         [RelayCommand]
         public async Task AddItem()
         {
+            var dialogResult = await ShowDialogAsync();
 
+            if (!dialogResult.IsSuccess || dialogResult.Data == null)
+            {
+                if (!string.IsNullOrEmpty(dialogResult.ErrorMessage))
+                {
+                    //TODO: add logging
+                }
+
+                return;
+            }
+
+            var result = await _itemsService.AddItemAsync(_currentCategory.Id, dialogResult.Data);
+
+            if (result.IsFailed)
+            {
+                //TODO: to resources
+                //TODO: add logging
+                await MessageHelper.ShowErrorAsync("Failed to add item!");
+            }
+            else
+            {
+                //TODO: to resources
+                await MessageHelper.ShowInfoAsync($"New item added to the category {_currentCategory.Title}");
+                Items.Add(new ItemCardViewModel(result.Value, _itemsService));
+            }
         }
 
         partial void OnSelectedFilterChanged(PropertyDefinition? value)
@@ -72,12 +108,12 @@ namespace SquirrelStash.ViewModels
 
             OnPropertyChanged(nameof(IsAllowedValuesFilter));
             OnPropertyChanged(nameof(IsManualValueFilter));
-            ApplyFilter();
+           // ApplyFilter();
         }
 
         partial void OnFilterValueChanged(string? value)
         {
-            ApplyFilter();
+          //  ApplyFilter();
         }
 
         partial void OnSelectedAllowedValueChanged(string? value)
@@ -88,15 +124,6 @@ namespace SquirrelStash.ViewModels
             }
         }
 
-        private void ApplyFilter()
-        {
-            Items.Clear();
-
-            foreach (var item in _allItems.Where(MatchesFilter).Select(x => x.ViewModel))
-            {
-                Items.Add(item);
-            }
-        }
 
         private bool MatchesFilter((Item Item, ItemCardViewModel ViewModel) entry)
         {
@@ -122,6 +149,15 @@ namespace SquirrelStash.ViewModels
 
             return allowedValues
                 .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private async Task<DialogResult<CreateItemRequest>> ShowDialogAsync()
+        {
+            var dialog = new CreateItemDialog(_currentCategory);
+
+            await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
+
+            return await dialog.ResultTask;
         }
     }
 }
