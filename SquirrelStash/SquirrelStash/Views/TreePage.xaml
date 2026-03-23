@@ -4,22 +4,22 @@
              xmlns:views="clr-namespace:SquirrelStash.Views"
              x:Class="SquirrelStash.Views.TreePage"
              Title="TreePage">
-    <VerticalStackLayout Padding="12" Spacing="12">
+    <Grid Padding="12"
+          RowDefinitions="Auto,*"
+          RowSpacing="12">
 
-        <!-- Top Button -->
-        <Button
-            Text="Add category"
-            HorizontalOptions="Start"
-            Command="{Binding CreateCategoryCommand}"/>
+        <Button Grid.Row="0"
+                Text="Add category"
+                HorizontalOptions="Start"
+                Command="{Binding CreateCategoryCommand}" />
 
-        <!-- Tree -->
-        <CollectionView ItemsSource="{Binding Categories}">
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Categories}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <views:CategoryCardView />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

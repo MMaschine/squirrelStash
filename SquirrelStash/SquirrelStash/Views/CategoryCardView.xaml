@@ -93,14 +93,30 @@
                 </VerticalStackLayout>
             </Border>
 
-            <CollectionView ItemsSource="{Binding Items}">
-                <CollectionView.ItemTemplate>
+            <Grid ColumnDefinitions="*,Auto"
+                  Padding="0,6">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnItemLayoutTapped"  />
+                </Grid.GestureRecognizers>
+
+                <Label Text="Items"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center" />
+
+                <Label x:Name="ItemsArrow"  Grid.Column="1"
+                       VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Expandable content -->
+            <VerticalStackLayout x:Name="ItemsLayout"
+                                 BindableLayout.ItemsSource="{Binding Items}"
+                                 Spacing="6">
+                <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="viewModels:ItemCardViewModel">
                         <views:ItemCardView />
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
         </VerticalStackLayout>
     </Border>
 </ContentView>
