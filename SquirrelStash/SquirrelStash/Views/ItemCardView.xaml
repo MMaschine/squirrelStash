@@ -26,12 +26,11 @@
                 HorizontalOptions="Start"
                 VerticalOptions="Center">
 
-                <!-- Placeholder for now -->
-                <Label
-                    Text="Img"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    FontSize="12" />
+                <Image
+                    Source="{Binding ImagePath}"
+                    HeightRequest="185"
+                    Aspect="AspectFit"
+                   />
             </Border>
 
             <!-- Name -->

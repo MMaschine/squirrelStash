@@ -13,7 +13,32 @@ namespace SquirrelStash.ViewModels
     public partial class TreePageViewModel(
         ICategoryService categoryService, IItemsService itemsService) : ObservableObject
     {
+        private bool _isInitialized;
+        private bool _isLoading;
+
         public ObservableCollection<CategoryCardViewModel> Categories { get; } = [];
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                if (_isLoading == value)
+                    return;
+
+                _isLoading = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public async Task InitializeAsync()
+        {
+            if (_isInitialized || IsLoading)
+                return;
+
+            _isInitialized = true;
+            await LoadCategoriesAsync();
+        }
 
         [RelayCommand]
         public async Task CreateCategory()
@@ -45,9 +70,15 @@ namespace SquirrelStash.ViewModels
             }
         }
 
-        public async Task LoadCategoriesAsync()
+        private async Task LoadCategoriesAsync()
         {
+            IsLoading = true;
+            //TODO: delete
+            await Task.Delay(10000);
+
             var result = await categoryService.GetCategoriesAsync();
+
+            IsLoading = false;
 
             if (!result.IsSuccess)
             {

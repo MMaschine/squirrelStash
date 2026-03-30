@@ -1,4 +1,5 @@
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Enums;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.ViewModels;
@@ -9,7 +10,11 @@ public partial class CreateItemDialog : ContentPage
 {
     private readonly TaskCompletionSource<DialogResult<CreateItemRequest>> _resultSource = new();
 
+    private readonly CreateItemDialogViewModel _viewModel;
+
     public Task<DialogResult<CreateItemRequest>> ResultTask => _resultSource.Task;
+
+
 
     public CreateItemDialog(Category category)
     {
@@ -18,12 +23,35 @@ public partial class CreateItemDialog : ContentPage
         var viewModel = new CreateItemDialogViewModel(category);
         viewModel.RequestCompleted += OnSaveRequested;
 
-        BindingContext = viewModel;
+        _viewModel = viewModel;
+        BindingContext = _viewModel;
     }
 
     private async void OnSaveRequested(DialogResult<CreateItemRequest> request)
     {
         _resultSource.TrySetResult(request);
         await Navigation.PopModalAsync();
+    }
+
+    private async void OnImageTapped(object? sender, TappedEventArgs e)
+    {
+        if (BindingContext is not CreateItemDialogViewModel viewModel)
+            return;
+
+        var action = await DisplayActionSheet(
+            "Choose Photo From",
+            "Cancel",
+            null,
+            "Camera",
+            "Gallery");
+
+        if (action == "Camera")
+        {
+            await _viewModel.UpdateImageAsync(ItemImageSource.Camera);
+        }
+        else if (action == "Gallery")
+        {
+            await _viewModel.UpdateImageAsync(ItemImageSource.Gallery);
+        }
     }
 }

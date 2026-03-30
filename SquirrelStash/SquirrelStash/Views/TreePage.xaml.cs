@@ -13,10 +13,10 @@ public partial class TreePage : ContentPage
 		BindingContext = _viewModel;
 	}
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
 
-        await _viewModel.LoadCategoriesAsync();
+        _ = _viewModel.InitializeAsync();
     }
 }

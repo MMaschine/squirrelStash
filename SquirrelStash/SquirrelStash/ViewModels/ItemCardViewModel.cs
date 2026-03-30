@@ -24,6 +24,8 @@ namespace SquirrelStash.ViewModels
                 item.PropertyEntries
                     .Select(p => p.Value)
                     .Where(v => !string.IsNullOrWhiteSpace(v)));
+
+            ImagePath = string.IsNullOrEmpty(item.ImageSource) ? ImageHelper.ItemImagePlaceholder : item.ImageSource;
         }
 
         [ObservableProperty] 
@@ -31,6 +33,9 @@ namespace SquirrelStash.ViewModels
 
         [ObservableProperty]
         private int quantity;
+
+        [ObservableProperty]
+        private string imagePath;
 
         [RelayCommand]
         private async Task IncreaseQuantity()

@@ -46,9 +46,28 @@
                             BorderColor="{AppThemeBinding Light=#DDDDDD, Dark=#444444}"
                             CornerRadius="10">
 
-                            <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                            <Grid
+                                ColumnDefinitions="*,*,Auto"
+                                RowDefinitions="Auto,Auto"
+                                ColumnSpacing="10"
+                                RowSpacing="10">
+
+                                <Entry
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Text="{Binding Name}"
+                                    Placeholder="Property name" />
+
+                                <Picker
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Title="Select property type"
+                                    ItemsSource="{Binding AvailableTypes}"
+                                    SelectedItem="{Binding SelectedType}" />
+
                                 <Button
                                     Grid.Row="0"
+                                    Grid.Column="2"
                                     Text="X"
                                     FontAttributes="Bold"
                                     WidthRequest="30"
@@ -62,17 +81,8 @@
 
                                 <Entry
                                     Grid.Row="1"
-                                    Text="{Binding Name}"
-                                    Placeholder="Property name" />
-
-                                <Picker
-                                    Grid.Row="2"
-                                    Title="Select property type"
-                                    ItemsSource="{Binding AvailableTypes}"
-                                    SelectedItem="{Binding SelectedType}" />
-
-                                <Entry
-                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
                                     Text="{Binding AllowedValues}"
                                     Placeholder="Allowed values (comma-separated)"
                                     IsVisible="{Binding IsAllowedValuesType}" />

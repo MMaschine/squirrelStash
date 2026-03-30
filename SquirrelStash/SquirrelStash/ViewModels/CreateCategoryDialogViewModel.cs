@@ -97,8 +97,9 @@ namespace SquirrelStash.ViewModels
 
             //We need to check that the format of the allowed values is correct 
             var invalidProperty = properties.FirstOrDefault(x =>
-                x.SelectedType == PropertyTypes.AllowedValues &&
-                !AllowedValuesPattern.IsMatch(x.AllowedValues ?? string.Empty));
+                x.SelectedType == PropertyTypes.AllowedValues && 
+                (string.IsNullOrWhiteSpace(x.AllowedValues) ||
+                !AllowedValuesPattern.IsMatch(x.AllowedValues)));
 
 
             if (invalidProperty is not null)

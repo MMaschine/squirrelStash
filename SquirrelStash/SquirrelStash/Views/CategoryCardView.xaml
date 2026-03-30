@@ -35,7 +35,7 @@
                     Command="{Binding AddItemCommand}"/>
             </Grid>
 
-            <Border
+            <!--<Border
                 Padding="10"
                 StrokeThickness="1"
                 Stroke="#D8D8D8"
@@ -65,7 +65,7 @@
                             Clicked="OpenFilterOnClicked" />
                     </Grid>
 
-                    <VerticalStackLayout
+                     <VerticalStackLayout
                         x:Name="FilterPanel"
                         Spacing="8">
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
@@ -91,7 +91,7 @@
                         </Grid>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
-            </Border>
+            </Border>-->
 
             <Grid ColumnDefinitions="*,Auto"
                   Padding="0,6">

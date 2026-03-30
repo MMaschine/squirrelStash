@@ -5,6 +5,8 @@ using SquirrelStash.Helpers;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using System.Collections.ObjectModel;
+using SquirrelStash.Enums;
+
 
 namespace SquirrelStash.ViewModels
 {
@@ -25,34 +27,25 @@ namespace SquirrelStash.ViewModels
         }
 
         [ObservableProperty]
-        private string? imageSource;
+        private string? imagePath;
 
         public ObservableCollection<CreateItemPropertyEntryViewModel> PropertyEntries { get; }
 
         public event Action<DialogResult<CreateItemRequest>>? RequestCompleted;
 
-        [RelayCommand]
-        private async Task PickImage()
+
+        public async Task UpdateImageAsync(ItemImageSource source)
         {
-            //Add image logic 
+            var result = await ImageHelper.PickAndStoreImageAsync(source);
 
-            //try
-            //{
-            //    var result = await FilePicker.Default.PickAsync(new PickOptions
-            //    {
-            //        PickerTitle = "Select product image",
-            //        FileTypes = FilePickerFileType.Images
-            //    });
-
-            //    if (result is not null)
-            //    {
-            //        ImageSource = result.FullPath;
-            //    }
-            //}
-            //catch (Exception)
-            //{
-            //    await MessageHelper.ShowWarningAsync("Unable to select image.");
-            //}
+            if (result.IsSuccess)
+            {
+                ImagePath = result.Value;
+            }
+            else
+            {
+               await MessageHelper.ShowWarningAsync("Failed to get the image");
+            }
         }
 
         [RelayCommand]
@@ -70,7 +63,7 @@ namespace SquirrelStash.ViewModels
             {
                 var request = new CreateItemRequest(
                     _categoryId,
-                    ImageSource,
+                    ImagePath,
                     PropertyEntries
                         .Select(x => new CreatePropertyEntryRequest(x.DefinitionId, x.Value.Trim()))
                         .ToArray());
@@ -81,7 +74,10 @@ namespace SquirrelStash.ViewModels
 
         private async Task<bool> ValidateItemAsync()
         {
-            var invalidEntry = PropertyEntries.FirstOrDefault(x => string.IsNullOrWhiteSpace(x.Value));
+            var invalidEntry = PropertyEntries.FirstOrDefault(x =>
+                string.IsNullOrWhiteSpace(x.Value) ||
+                (x.Type == PropertyTypes.AllowedValues) && !x.AllowedValues.Any());
+
 
             if (invalidEntry is not null)
             {

@@ -1,23 +1,28 @@
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using SquirrelStash.Abstractions;
-using SquirrelStash.DataAccess.Abstractions;
+using SquirrelStash.DataAccess;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Requests;
 
 namespace SquirrelStash.Logic
 {
-    internal class CategoryService(IGenericDataSource<Category> dataSource) : ICategoryService
+    internal class CategoryService(StashContext context) : ICategoryService
     {
+
+        private readonly DbSet<Category> _categoriesSet = context.Set<Category>();
+
         public async Task<Result<IReadOnlyList<Category>>> GetCategoriesAsync()
         {
             try
             {
-                var data = await dataSource.GetQueryableItems()
+                var data = await _categoriesSet.AsQueryable()
                     .Include(x => x.Properties)
                     .Include(x => x.Items)
                         .ThenInclude(x => x.PropertyEntries)
-                            .ThenInclude(x => x.Definition).ToListAsync() ?? [];
+                            .ThenInclude(x => x.Definition)
+                    .AsNoTracking().ToListAsync() ?? [];
+
 
                 return data.AsReadOnly();
             }
@@ -50,7 +55,8 @@ namespace SquirrelStash.Logic
                     AllowedValues = x.AllowedValues
                 }));
 
-                await dataSource.AddAsync(categoryToAdd);
+                await _categoriesSet.AddAsync(categoryToAdd);
+                await context.SaveChangesAsync();
 
                 return Result.Ok();
             }

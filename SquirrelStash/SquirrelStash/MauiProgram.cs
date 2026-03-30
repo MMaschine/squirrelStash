@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
-using SquirrelStash.DataAccess.Abstractions;
-using SquirrelStash.DataAccess.DataSource;
 using SquirrelStash.DataAccess.Helpers;
 using SquirrelStash.Helpers;
 using SquirrelStash.Logic;
@@ -29,8 +27,6 @@ namespace SquirrelStash
 #endif
 
             builder.Services.ConfigureDbContext(Path.Combine(FileSystem.AppDataDirectory, "squirrelstash.db"));
-
-            builder.Services.AddScoped(typeof(IGenericDataSource<>), typeof(GenericDataSource<>));
 
             builder.Services.AddScoped<IItemsService, ItemsService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
