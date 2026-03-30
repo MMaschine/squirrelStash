@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SquirrelStash.Views.CreateItemDialog"
+    xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels" 
+    xmlns:converters="clr-namespace:SquirrelStash.Converters"
+    x:DataType="viewModels:CreateItemDialogViewModel"
+    Title="Create Item"
+    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:NullOrEmptyStringToBoolConverter x:Key="NullOrEmptyStringToBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <Label
+                Text="Create Item"
+                FontSize="24"
+                FontAttributes="Bold" />
+
+            <VerticalStackLayout
+                HorizontalOptions="Start"
+                Spacing="8">
+                <Border
+                    WidthRequest="150"
+                    HeightRequest="150"
+                    BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#2A2A2A}"
+                    Stroke="{AppThemeBinding Light=#D5D5D5, Dark=#555555}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnImageTapped" />
+                    </Border.GestureRecognizers>
+
+                    <Grid>
+                        <Image
+                            Source="{Binding ImagePath}"
+                            Aspect="AspectFill" />
+
+                        <Label
+                            Text="Tap to add image"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            IsVisible="{Binding ImagePath, Converter={StaticResource NullOrEmptyStringToBoolConverter}}" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <Label
+                Text="Properties"
+                FontSize="18"
+                FontAttributes="Bold" />
+
+            <CollectionView ItemsSource="{Binding PropertyEntries}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:CreateItemPropertyEntryViewModel">
+                        <Frame
+                            Padding="12"
+                            Margin="0,0,0,10"
+                            BorderColor="{AppThemeBinding Light=#DDDDDD, Dark=#444444}"
+                            CornerRadius="10">
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <Label
+                                    Grid.Column="0"
+                                    Text="{Binding Name}"
+                                    VerticalOptions="Center"
+                                    FontAttributes="Bold" />
+
+                                <Entry
+                                    Grid.Column="1"
+                                    Text="{Binding Value}"
+                                    Placeholder="Enter value"
+                                    IsVisible="{Binding IsManualValueType}" />
+
+                                <Picker
+                                    Grid.Column="1"
+                                    Title="Select value"
+                                    ItemsSource="{Binding AllowedValues}"
+                                    SelectedItem="{Binding SelectedAllowedValue}"
+                                    IsVisible="{Binding IsAllowedValuesType}" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,20,0,0">
+                <Button
+                    Grid.Column="0"
+                    Text="Cancel"
+                    Command="{Binding CancelCommand}" />
+
+                <Button
+                    Grid.Column="1"
+                    Text="Ok"
+                    Command="{Binding SaveCommand}" />
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

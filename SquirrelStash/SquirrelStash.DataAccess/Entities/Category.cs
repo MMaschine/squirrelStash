@@ -4,7 +4,7 @@
     {
         #region Navigation
 
-        public List<PropertyDefinition> Properties { get; set; }
+        public List<PropertyDefinition> Properties { get; set; } = [];
 
         public List<Item> Items { get; set; } = [];
 

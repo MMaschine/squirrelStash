@@ -5,9 +5,10 @@
         #region Navigation
 
         public int CategoryId { get; set; }
+
         public Category Category { get; set; }
 
-        public List<PropertyEntry> PropertyEntries { get; set; }
+        public List<PropertyEntry> PropertyEntries { get; set; } = [];
 
         #endregion
 

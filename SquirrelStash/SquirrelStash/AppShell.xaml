@@ -16,9 +16,6 @@
             <ShellContent Route="MainPage" ContentTemplate="{DataTemplate views:MainPage}"/>
         </Tab>
         <Tab x:Name="TreeTab" Title="Tree">
-            <Shell.TitleView>
-                <Label Text="Categories and items"/>
-            </Shell.TitleView>
             <ShellContent Route="MainPage" ContentTemplate="{DataTemplate views:TreePage}"/>
         </Tab>
     </TabBar>

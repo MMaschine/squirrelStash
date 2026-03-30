@@ -1,0 +1,14 @@
+App plans: 
+
+Major
+- Filters are not necessary, remove them after complition of the tree
+- Masks for int property
+- Group pannel, hide filters for now, several group params should be allowed  
+- Logging
+- Ref: dialog helpers! 
+- Add thresholds for the items
+
+
+Minor: 
+- Soering and filtering should include several items, formed as separate components 
+- Validation logic to the separate validator class 
