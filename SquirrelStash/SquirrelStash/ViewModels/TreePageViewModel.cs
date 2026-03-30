@@ -15,8 +15,24 @@ namespace SquirrelStash.ViewModels
     {
         private bool _isInitialized;
         private bool _isLoading;
+        private string _searchText;
+
+        private List<CategoryCardViewModel> _allCategories { get; } = []; 
 
         public ObservableCollection<CategoryCardViewModel> Categories { get; } = [];
+
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (SetProperty(ref _searchText, value))
+                {
+                    ApplyFilter(value);
+                }
+            }
+        }
 
         public bool IsLoading
         {
@@ -73,8 +89,6 @@ namespace SquirrelStash.ViewModels
         private async Task LoadCategoriesAsync()
         {
             IsLoading = true;
-            //TODO: delete
-            await Task.Delay(10000);
 
             var result = await categoryService.GetCategoriesAsync();
 
@@ -87,13 +101,27 @@ namespace SquirrelStash.ViewModels
                 return;
             }
 
+            _allCategories.AddRange(result.Value.Select(x=> new CategoryCardViewModel(x,itemsService)));
+
+            ApplyFilter(string.Empty);
+        }
+
+        private void ApplyFilter(string filter)
+        {
             Categories.Clear();
 
-            foreach (var category in result.Value)
+            var filtered = string.IsNullOrWhiteSpace(filter)
+                ? _allCategories
+                : _allCategories.Where(x =>
+                    !string.IsNullOrWhiteSpace(x.Title) &&
+                    x.Title.Contains(filter, StringComparison.OrdinalIgnoreCase));
+
+            foreach (var category in filtered)
             {
-                Categories.Add(new CategoryCardViewModel(category, itemsService));
+                Categories.Add(category);
             }
         }
+
 
         private async Task<DialogResult<CreateCategoryRequest>> ShowDialogAsync()
         {
