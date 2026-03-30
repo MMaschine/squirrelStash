@@ -33,7 +33,7 @@ namespace SquirrelStash.Logic
             }
         }
 
-        public async Task<Result> CreateCategoryAsync(CreateCategoryRequest request)
+        public async Task<Result<Category>> CreateCategoryAsync(CreateCategoryRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
             ArgumentNullException.ThrowIfNull(request.Properties);
@@ -58,7 +58,7 @@ namespace SquirrelStash.Logic
                 await _categoriesSet.AddAsync(categoryToAdd);
                 await context.SaveChangesAsync();
 
-                return Result.Ok();
+                return Result.Ok(categoryToAdd);
             }
             catch (Exception e)
             {

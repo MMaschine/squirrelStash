@@ -8,5 +8,5 @@ public interface ICategoryService
 {
     Task<Result<IReadOnlyList<Category>>> GetCategoriesAsync();
 
-    Task<Result> CreateCategoryAsync(CreateCategoryRequest request);
+    Task<Result<Category>> CreateCategoryAsync(CreateCategoryRequest request);
 }

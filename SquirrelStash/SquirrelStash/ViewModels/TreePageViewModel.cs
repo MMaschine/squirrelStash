@@ -81,6 +81,10 @@ namespace SquirrelStash.ViewModels
             }
             else
             {
+                _allCategories.Add(new CategoryCardViewModel(result.Value, itemsService));
+                SearchText = string.Empty;
+                ApplyFilter(SearchText);
+
                 //TODO: to resources
                 await MessageHelper.ShowInfoAsync($"Category {dialogResult.Data.Title} added");
             }

@@ -14,7 +14,7 @@
 
             <Entry Grid.Column="0"
                    Placeholder="Search category"
-                   Text="{Binding SearchText}" />
+                   Text="{Binding SearchText, Mode=TwoWay}" />
 
             <ImageButton Grid.Column="1"
                          Source="add_category.png"
