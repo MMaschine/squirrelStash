@@ -99,9 +99,9 @@
                     <TapGestureRecognizer Tapped="OnItemLayoutTapped"  />
                 </Grid.GestureRecognizers>
 
-                <Label Text="Items"
-                       FontAttributes="Bold"
-                       VerticalOptions="Center" />
+                <Label  Text="{Binding ItemsCount, StringFormat='Items ({0})'}"
+                        FontAttributes="Bold"
+                        VerticalOptions="Center" />
 
                 <Label x:Name="ItemsArrow"  Grid.Column="1"
                        VerticalOptions="Center" />

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SquirrelStash.Abstractions;
@@ -30,7 +31,9 @@ namespace SquirrelStash.ViewModels
                 (category.Properties ?? [])
                     .OrderBy(x => x.Id));
             SelectedFilterAllowedValues = [];
-            
+
+            Items.CollectionChanged += OnItemsCollectionChanged;
+
             foreach (var item in category.Items)
             {
                 Items.Add(new ItemCardViewModel(item, itemService));
@@ -48,6 +51,9 @@ namespace SquirrelStash.ViewModels
 
         [ObservableProperty]
         private string? selectedAllowedValue;
+
+        [ObservableProperty]
+        private int itemsCount;
 
         public ObservableCollection<PropertyDefinition> FilterOptions { get; }
 
@@ -149,6 +155,11 @@ namespace SquirrelStash.ViewModels
 
             return allowedValues
                 .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private void OnItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            ItemsCount = Items.Count;
         }
 
         private async Task<DialogResult<CreateItemRequest>> ShowDialogAsync()
