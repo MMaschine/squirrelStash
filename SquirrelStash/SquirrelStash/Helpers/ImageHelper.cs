@@ -17,7 +17,7 @@ namespace SquirrelStash.Helpers
                 var fileResult = source switch
                 {
                     ItemImageSource.Camera => await MediaPicker.Default.CapturePhotoAsync(),
-                    ItemImageSource.Gallery => await MediaPicker.Default.PickPhotoAsync(),
+                    ItemImageSource.Gallery => await PickPhotoAsync(),
                     _ => null
                 };
 
@@ -46,6 +46,24 @@ namespace SquirrelStash.Helpers
                 //TODO: add log 
                 return Result.Fail("Failed to get the image");
             }
+        }
+
+        private static async Task<FileResult?> PickPhotoAsync()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+
+            if (status != PermissionStatus.Granted)
+            {
+                status = await Permissions.RequestAsync<Permissions.Camera>();
+            }
+
+            if (status != PermissionStatus.Granted)
+            {
+                await MessageHelper.ShowInfoAsync("Provide access to the camera for the app");
+                return null;
+            }
+
+            return await MediaPicker.Default.CapturePhotoAsync();
         }
     }
 }
