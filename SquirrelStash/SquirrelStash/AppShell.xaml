@@ -9,13 +9,14 @@
     Title="SquirrelStash">
 
     <TabBar>
-        <Tab x:Name="ThresholdTab" Title="Overview">
-            <Shell.TitleView>
-                <Label Text="Overview"/>
-            </Shell.TitleView>
+        <Tab x:Name="ThresholdTab"
+             Title=""
+             Icon="overview.png">
             <ShellContent Route="MainPage" ContentTemplate="{DataTemplate views:MainPage}"/>
         </Tab>
-        <Tab x:Name="TreeTab" Title="Tree">
+        <Tab x:Name="TreeTab"
+             Title=""
+             Icon="tree_structure.png">
             <ShellContent Route="MainPage" ContentTemplate="{DataTemplate views:TreePage}"/>
         </Tab>
     </TabBar>
