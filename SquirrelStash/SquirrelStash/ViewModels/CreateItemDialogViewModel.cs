@@ -12,6 +12,10 @@ namespace SquirrelStash.ViewModels
 {
     public partial class CreateItemDialogViewModel : ObservableObject
     {
+        private const int WarningThresholdDef = 5;
+
+        private const int CriticalThresholdDef = 1;
+
         private readonly int _categoryId;
 
         public CreateItemDialogViewModel(Category category)
@@ -28,6 +32,12 @@ namespace SquirrelStash.ViewModels
 
         [ObservableProperty]
         private string? imagePath;
+
+        [ObservableProperty]
+        private string warningThreshold = WarningThresholdDef.ToString();
+
+        [ObservableProperty]
+        private string criticalThreshold = CriticalThresholdDef.ToString();
 
         public ObservableCollection<CreateItemPropertyEntryViewModel> PropertyEntries { get; }
 
@@ -66,7 +76,9 @@ namespace SquirrelStash.ViewModels
                     ImagePath,
                     PropertyEntries
                         .Select(x => new CreatePropertyEntryRequest(x.DefinitionId, x.Value.Trim()))
-                        .ToArray());
+                        .ToArray(),
+                    ParseThreshold(WarningThreshold, WarningThresholdDef),
+                    ParseThreshold(CriticalThreshold, CriticalThresholdDef));
 
                 RequestCompleted?.Invoke(DialogResult<CreateItemRequest>.GetSuccess(request));
             }
@@ -87,6 +99,16 @@ namespace SquirrelStash.ViewModels
             }
 
             return true;
+        }
+
+        private int ParseThreshold(string value, int fallback)
+        {
+            if (!int.TryParse(value, out var parsedValue))
+            {
+                return fallback;
+            }
+
+            return parsedValue;
         }
     }
 }

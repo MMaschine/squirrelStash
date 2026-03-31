@@ -14,8 +14,6 @@ public partial class CreateItemDialog : ContentPage
 
     public Task<DialogResult<CreateItemRequest>> ResultTask => _resultSource.Task;
 
-
-
     public CreateItemDialog(Category category)
     {
         InitializeComponent();
@@ -52,6 +50,19 @@ public partial class CreateItemDialog : ContentPage
         else if (action == "Gallery")
         {
             await _viewModel.UpdateImageAsync(ItemImageSource.Gallery);
+        }
+    }
+
+    private void OnThresholdTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        if (sender is not Entry entry)
+            return;
+
+        var text = e.NewTextValue ?? string.Empty;
+
+        if (text.Contains('-'))
+        {
+            entry.Text = text.Replace("-", string.Empty);
         }
     }
 }

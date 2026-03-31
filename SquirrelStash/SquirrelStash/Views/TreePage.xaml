@@ -4,7 +4,7 @@
              xmlns:views="clr-namespace:SquirrelStash.Views"
              x:Class="SquirrelStash.Views.TreePage">
 
-    <Grid Padding="12"
+    <Grid Padding="16"
           RowDefinitions="Auto,*"
           RowSpacing="12">
 
@@ -12,15 +12,16 @@
               ColumnDefinitions="*,Auto"
               ColumnSpacing="10">
 
-            <Entry Grid.Column="0"
-                   Placeholder="Search category"
-                   Text="{Binding SearchText, Mode=TwoWay}" />
+            <Border Grid.Column="0"
+                    Style="{StaticResource InputContainerStyle}"
+                    Padding="12,6">
+                <Entry Placeholder="Search category"
+                       Text="{Binding SearchText, Mode=TwoWay}" />
+            </Border>
 
             <ImageButton Grid.Column="1"
                          Source="add_category.png"
-                         WidthRequest="44"
-                         HeightRequest="44"
-                         CornerRadius="10"
+                         Style="{StaticResource CategoryAddButtonStyle}"
                          Command="{Binding CreateCategoryCommand}" />
         </Grid>
 
@@ -35,7 +36,7 @@
             </CollectionView>
 
             <Grid IsVisible="{Binding IsLoading}"
-                  BackgroundColor="#40FFFFFF"
+                  BackgroundColor="{StaticResource Color.Overlay}"
                   InputTransparent="False">
 
                 <VerticalStackLayout HorizontalOptions="Center"
@@ -44,6 +45,7 @@
                     <ActivityIndicator IsRunning="{Binding IsLoading}"
                                        IsVisible="{Binding IsLoading}" />
                     <Label Text="Loading categories..."
+                           Style="{StaticResource BodySecondaryLabelStyle}"
                            HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
             </Grid>

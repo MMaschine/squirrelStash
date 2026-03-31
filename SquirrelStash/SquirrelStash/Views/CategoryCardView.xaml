@@ -5,12 +5,7 @@
              xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
              x:Class="SquirrelStash.Views.CategoryCardView"
              x:DataType="viewModels:CategoryCardViewModel">
-    <Border
-        Padding="12"
-        StrokeThickness="1"
-        Stroke="#D0D0D0"
-        BackgroundColor="White"
-        StrokeShape="RoundRectangle 12">
+    <Border Style="{StaticResource CardBorderStyle}">
 
         <VerticalStackLayout Spacing="12">
 
@@ -18,18 +13,13 @@
                 <Label
                     Grid.Column="0"
                     Text="{Binding Title}"
-                    FontSize="18"
-                    FontAttributes="Bold"
+                    Style="{StaticResource H2LabelStyle}"
                     VerticalOptions="Center" />
 
                 <Button
                     Grid.Column="1"
                     Text="+"
-                    WidthRequest="32"
-                    HeightRequest="32"
-                    CornerRadius="16"
-                    Padding="0"
-                    FontSize="18"
+                    Style="{StaticResource RoundIconButtonStyle}"
                     HorizontalOptions="End"
                     VerticalOptions="Start" 
                     Command="{Binding AddItemCommand}"/>
@@ -100,10 +90,11 @@
                 </Grid.GestureRecognizers>
 
                 <Label  Text="{Binding ItemsCount, StringFormat='Items ({0})'}"
-                        FontAttributes="Bold"
+                        Style="{StaticResource BodyStrongLabelStyle}"
                         VerticalOptions="Center" />
 
                 <Label x:Name="ItemsArrow"  Grid.Column="1"
+                       Style="{StaticResource BodySecondaryLabelStyle}"
                        VerticalOptions="Center" />
             </Grid>
 

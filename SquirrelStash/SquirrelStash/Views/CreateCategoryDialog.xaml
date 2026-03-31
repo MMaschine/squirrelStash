@@ -4,47 +4,42 @@
     x:Class="SquirrelStash.Views.CreateCategoryDialog"
     xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels" 
     x:DataType="viewModels:CreateCategoryDialogViewModel"
-    Title="Create Category"
-    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+    Title="Create Category">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="16">
 
             <Label
                 Text="Create Category"
-                FontSize="24"
-                FontAttributes="Bold" />
+                Style="{StaticResource H1LabelStyle}" />
 
-            <VerticalStackLayout Spacing="8">
-                <Label Text="Category title" />
+            <Border Style="{StaticResource InputContainerStyle}"
+                    Padding="12,6">
                 <Entry
                     Text="{Binding Title}"
                     Placeholder="Enter category title" />
-            </VerticalStackLayout>
+            </Border>
 
             <Grid ColumnDefinitions="*,Auto">
                 <Label
                     Text="Properties"
                     VerticalOptions="Center"
-                    FontAttributes="Bold"
-                    FontSize="18" />
+                    Style="{StaticResource H3LabelStyle}" />
 
                 <Button
                     Grid.Column="1"
                     Text="+"
                     Command="{Binding AddPropertyCommand}"
-                    WidthRequest="44"
-                    HeightRequest="44" />
+                    Style="{StaticResource RoundIconButtonStyle}" />
             </Grid>
 
             <CollectionView ItemsSource="{Binding Properties}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="viewModels:CategoryPropertyViewModel">
                         <Frame
-                            Padding="12"
+                            Style="{StaticResource CardFrameStyle}"
                             Margin="0,0,0,10"
-                            BorderColor="{AppThemeBinding Light=#DDDDDD, Dark=#444444}"
-                            CornerRadius="10">
+                            Padding="12">
 
                             <Grid
                                 ColumnDefinitions="*,*,Auto"
@@ -52,57 +47,64 @@
                                 ColumnSpacing="10"
                                 RowSpacing="10">
 
-                                <Entry
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    Text="{Binding Name}"
-                                    Placeholder="Property name" />
+                                <Border Grid.Row="0"
+                                        Grid.Column="0"
+                                        Style="{StaticResource InputContainerStyle}"
+                                        Padding="12,6">
+                                    <Entry
+                                        Text="{Binding Name}"
+                                        Placeholder="Property name" />
+                                </Border>
 
-                                <Picker
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Title="Select property type"
-                                    ItemsSource="{Binding AvailableTypes}"
-                                    SelectedItem="{Binding SelectedType}" />
+                                <Border Grid.Row="0"
+                                        Grid.Column="1"
+                                        Style="{StaticResource InputContainerStyle}"
+                                        Padding="12,6">
+                                    <Picker
+                                        Title="Select property type"
+                                        ItemsSource="{Binding AvailableTypes}"
+                                        SelectedItem="{Binding SelectedType}" />
+                                </Border>
 
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="2"
-                                    Text="X"
-                                    FontAttributes="Bold"
-                                    WidthRequest="30"
-                                    HeightRequest="30"
-                                    Padding="0"
-                                    CornerRadius="6"
+                                    Text="×"
+                                    Style="{StaticResource RoundIconButtonStyle}"
                                     VerticalOptions="Start"
                                     HorizontalOptions="End"
                                     Command="{Binding DeleteCommand}"
                                     CommandParameter="{Binding .}" />
 
-                                <Entry
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    Text="{Binding AllowedValues}"
-                                    Placeholder="Allowed values (comma-separated)"
-                                    IsVisible="{Binding IsAllowedValuesType}" />
+                                <Border Grid.Row="1"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2"
+                                        Style="{StaticResource InputContainerStyle}"
+                                        Padding="12,6"
+                                        IsVisible="{Binding IsAllowedValuesType}">
+                                    <Entry
+                                        Text="{Binding AllowedValues}"
+                                        Placeholder="Allowed values (comma-separated)" />
+                                </Border>
                             </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,20,0,0">
-                <Button
-                    Grid.Column="0"
-                    Text="Cancel"
+            <HorizontalStackLayout HorizontalOptions="End"
+                                   Spacing="10"
+                                   Margin="0,20,0,0">
+                <ImageButton
+                    Source="cross.png"
+                    Style="{StaticResource FormActionButtonStyle}"
                     Command="{Binding CancelCommand}" />
 
-                <Button
-                    Grid.Column="1"
-                    Text="Ok"
+                <ImageButton
+                    Source="apply.png"
+                    Style="{StaticResource FormActionButtonStyle}"
                     Command="{Binding SaveCommand}" />
-            </Grid>
+            </HorizontalStackLayout>
 
         </VerticalStackLayout>
     </ScrollView>

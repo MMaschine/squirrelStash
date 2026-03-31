@@ -3,11 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SquirrelStash.Views.ItemCardView">
     <Border
-        Padding="10"
-        StrokeThickness="1"
-        Stroke="#D8D8D8"
-        BackgroundColor="White"
-        StrokeShape="RoundRectangle 10">
+        Style="{StaticResource CardBorderStyle}"
+        Padding="10">
 
         <Grid
             ColumnDefinitions="64,*,Auto"
@@ -19,16 +16,16 @@
                 Grid.Column="0"
                 WidthRequest="64"
                 HeightRequest="64"
+                Style="{StaticResource SurfaceBorderStyle}"
+                Padding="0"
                 StrokeThickness="1"
-                Stroke="#CFCFCF"
-                BackgroundColor="#F4F4F4"
+                BackgroundColor="{StaticResource Color.ImagePlaceholder}"
                 StrokeShape="RoundRectangle 8"
                 HorizontalOptions="Start"
                 VerticalOptions="Center">
 
                 <Image
                     Source="{Binding ImagePath}"
-                    HeightRequest="185"
                     Aspect="AspectFit"
                    />
             </Border>
@@ -40,7 +37,7 @@
                 LineBreakMode="WordWrap"
                 MaxLines="3"
                 VerticalOptions="Center"
-                FontSize="14" />
+                Style="{StaticResource BodyLabelStyle}" />
 
             <!-- Quantity controls -->
             <HorizontalStackLayout
@@ -51,10 +48,7 @@
 
                 <Button
                     Text="-"
-                    WidthRequest="36"
-                    HeightRequest="36"
-                    Padding="0"
-                    CornerRadius="18"
+                    Style="{StaticResource RoundIconButtonStyle}"
                     Command="{Binding DecreaseQuantityCommand}" />
 
                 <Label
@@ -62,14 +56,11 @@
                     VerticalOptions="Center"
                     HorizontalTextAlignment="Center"
                     WidthRequest="30"
-                    FontSize="16" />
+                    Style="{StaticResource H3LabelStyle}" />
 
                 <Button
                     Text="+"
-                    WidthRequest="36"
-                    HeightRequest="36"
-                    Padding="0"
-                    CornerRadius="18"
+                    Style="{StaticResource RoundIconButtonStyle}"
                     Command="{Binding IncreaseQuantityCommand}" />
             </HorizontalStackLayout>
         </Grid>
