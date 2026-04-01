@@ -16,8 +16,8 @@ namespace SquirrelStash.Helpers
             {
                 var fileResult = source switch
                 {
-                    ItemImageSource.Camera => await MediaPicker.Default.CapturePhotoAsync(),
-                    ItemImageSource.Gallery => await PickPhotoAsync(),
+                    ItemImageSource.Camera => await CapturePhotoAsync(),
+                    ItemImageSource.Gallery => await MediaPicker.Default.PickPhotoAsync(),
                     _ => null
                 };
 
@@ -48,7 +48,7 @@ namespace SquirrelStash.Helpers
             }
         }
 
-        private static async Task<FileResult?> PickPhotoAsync()
+        private static async Task<FileResult?> CapturePhotoAsync()
         {
             var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
 
@@ -65,5 +65,6 @@ namespace SquirrelStash.Helpers
 
             return await MediaPicker.Default.CapturePhotoAsync();
         }
+   
     }
 }

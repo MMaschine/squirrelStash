@@ -47,6 +47,7 @@ namespace SquirrelStash.Logic
                 }));
 
                 var resultItem = await _itemSet.AddAsync(newItem);
+                await context.SaveChangesAsync();
 
                 return Result.Ok(resultItem.Entity);
             }
