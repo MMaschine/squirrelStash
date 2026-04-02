@@ -3,11 +3,14 @@ using SquirrelStash.Abstractions;
 using SquirrelStash.Helpers;
 using System.Collections.ObjectModel;
 using SquirrelStash.Models;
+using Microsoft.Maui.ApplicationModel;
 
 namespace SquirrelStash.ViewModels;
 
 public partial class OverviewPageViewModel(IOverviewService overviewService) : ObservableObject
 {
+    public string VersionText { get; } = FormatVersion(AppInfo.Current.VersionString);
+
     public ObservableCollection<OverviewCategoryNodeViewModel> ThresholdCategories { get; } = [];
 
     [ObservableProperty]
@@ -86,4 +89,8 @@ public partial class OverviewPageViewModel(IOverviewService overviewService) : O
 
     }
 
+    private static string FormatVersion(string version) =>
+        version.Equals("0.1-alpha.1", StringComparison.OrdinalIgnoreCase)
+            ? "Version 0.1 Alpha 1"
+            : $"Version {version}";
 }

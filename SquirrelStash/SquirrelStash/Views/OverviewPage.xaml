@@ -67,6 +67,11 @@
                                 </VerticalStackLayout>
                             </Border>
                         </Grid>
+
+                        <Label Text="{Binding VersionText}"
+                               Style="{StaticResource BodySecondaryLabelStyle}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center" />
                     </VerticalStackLayout>
                 </Border>
 
