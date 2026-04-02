@@ -14,8 +14,6 @@ namespace SquirrelStash.ViewModels
 {
     public partial class CategoryCardViewModel : ObservableObject
     {
-        // private readonly List<(Item Item, ItemCardViewModel ViewModel)> _allItems;
-
         private readonly Category _currentCategory; 
 
         private readonly IItemsService _itemsService;
@@ -114,12 +112,10 @@ namespace SquirrelStash.ViewModels
 
             OnPropertyChanged(nameof(IsAllowedValuesFilter));
             OnPropertyChanged(nameof(IsManualValueFilter));
-           // ApplyFilter();
         }
 
         partial void OnFilterValueChanged(string? value)
         {
-          //  ApplyFilter();
         }
 
         partial void OnSelectedAllowedValueChanged(string? value)
@@ -128,22 +124,6 @@ namespace SquirrelStash.ViewModels
             {
                 FilterValue = value;
             }
-        }
-
-
-        private bool MatchesFilter((Item Item, ItemCardViewModel ViewModel) entry)
-        {
-            if (SelectedFilter is null || string.IsNullOrWhiteSpace(FilterValue))
-            {
-                return true;
-            }
-
-            var expectedValue = FilterValue.Trim();
-
-            return (entry.Item.PropertyEntries ?? [])
-                .Any(property =>
-                property.PropertyDefinitionId == SelectedFilter.Id &&
-                string.Equals(property.Value?.Trim(), expectedValue, StringComparison.OrdinalIgnoreCase));
         }
 
         private static IEnumerable<string> ParseAllowedValues(string? allowedValues)
