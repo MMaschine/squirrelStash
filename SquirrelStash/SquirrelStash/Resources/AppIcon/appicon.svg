@@ -1,4 +1,137 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="456" height="456" viewBox="0 0 456 456" version="1.1" xmlns="http://www.w3.org/2000/svg">
-    <rect x="0" y="0" width="456" height="456" fill="#512BD4" />
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>SquirrelStash app icon</title>
+  <desc>Stylized blue outline squirrel hiding a nut in grass, surrounded by an acorn silhouette, transparent background.</desc>
+
+  <defs>
+    <style>
+      .line {
+        fill: none;
+        stroke: #2D6CDF;
+        stroke-width: 28;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        vector-effect: non-scaling-stroke;
+      }
+      .thin {
+        fill: none;
+        stroke: #2D6CDF;
+        stroke-width: 20;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        vector-effect: non-scaling-stroke;
+      }
+    </style>
+  </defs>
+
+  <!-- Acorn silhouette -->
+  <path class="line" d="
+    M512 110
+    C535 110 552 132 552 160
+    L552 224
+    C638 225 735 240 812 284
+    C860 311 889 354 889 409
+    C889 455 867 496 836 529
+    L797 820
+    C793 850 777 879 750 896
+    C673 944 594 972 512 972
+    C430 972 351 944 274 896
+    C247 879 231 850 227 820
+    L188 529
+    C157 496 135 455 135 409
+    C135 354 164 311 212 284
+    C289 240 386 225 472 224
+    L472 160
+    C472 132 489 110 512 110 Z" />
+
+  <!-- Grass base -->
+  <path class="thin" d="
+    M254 776
+    C286 744 304 713 322 675
+    C338 721 358 748 385 781
+    C396 736 416 705 439 672
+    C454 719 476 750 503 784
+    C520 736 540 706 566 673
+    C580 720 603 750 635 786
+    C648 742 668 714 694 683
+    C711 724 735 756 770 790" />
+
+  <path class="thin" d="
+    M292 820
+    C320 792 344 768 361 734
+    M372 810
+    C389 782 404 754 421 723
+    M445 819
+    C464 790 480 760 496 729
+    M532 820
+    C548 788 562 759 579 726
+    M611 815
+    C629 784 646 754 664 724
+    M696 812
+    C715 782 734 756 755 732" />
+
+  <!-- Squirrel -->
+  <path class="line" d="
+    M691 377
+    C639 326 552 319 490 350
+    C430 379 394 439 386 498
+    C382 532 389 559 405 584" />
+
+  <!-- Tail -->
+  <path class="line" d="
+    M726 379
+    C783 412 817 473 808 541
+    C800 603 759 651 701 667
+    C645 683 588 664 542 627
+    C603 628 656 607 691 566
+    C719 532 730 489 724 447
+    C719 417 708 394 691 377" />
+
+  <!-- Back and body -->
+  <path class="line" d="
+    M405 584
+    C431 620 473 649 525 656
+    C569 663 608 651 639 628" />
+
+  <!-- Head -->
+  <path class="line" d="
+    M386 498
+    C361 491 333 494 310 510
+    C277 533 266 577 281 614
+    C295 648 327 672 364 674
+    C405 677 437 647 448 611" />
+
+  <!-- Snout -->
+  <path class="thin" d="
+    M300 570
+    C319 560 343 559 362 569" />
+
+  <!-- Ear 1 -->
+  <path class="thin" d="
+    M380 455
+    C364 416 357 389 365 353
+    C393 377 406 410 408 444" />
+
+  <!-- Ear 2 -->
+  <path class="thin" d="
+    M436 443
+    C434 399 446 360 475 330
+    C485 374 474 412 455 446" />
+
+  <!-- Front paws and nut -->
+  <path class="line" d="
+    M424 628
+    C397 655 374 686 360 723" />
+  <path class="line" d="
+    M485 641
+    C455 663 430 691 412 726" />
+  <ellipse class="thin" cx="354" cy="744" rx="20" ry="28" transform="rotate(-12 354 744)" />
+
+  <!-- Belly / hind leg -->
+  <path class="line" d="
+    M529 655
+    C516 709 514 750 530 802" />
+
+  <!-- Eye -->
+  <circle cx="344" cy="550" r="11" fill="#2D6CDF" />
 </svg>
