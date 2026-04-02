@@ -23,6 +23,11 @@ public partial class CategoryCardView : ContentView
         SetItemLayoutVisibility(!ItemsLayout.IsVisible);
     }
 
+    private void OnItemLayoutButtonClicked(object? sender, EventArgs e)
+    {
+        SetItemLayoutVisibility(!ItemsLayout.IsVisible);
+    }
+
     //private void SetFilterVisibility(bool state)
     //{
     //    FilterPanel.IsVisible = state;
@@ -32,6 +37,6 @@ public partial class CategoryCardView : ContentView
     private void SetItemLayoutVisibility(bool state)
     {
         ItemsLayout.IsVisible = state;
-        ItemsArrow.Text = ItemsLayout.IsVisible ? "v" : ">";
+        ItemsToggleButton.Text = ItemsLayout.IsVisible ? "v" : ">";
     }
 }

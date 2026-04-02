@@ -12,12 +12,12 @@
         <Tab x:Name="ThresholdTab"
              Title=""
              Icon="overview.png">
-            <ShellContent Route="MainPage" ContentTemplate="{DataTemplate views:MainPage}"/>
+            <ShellContent Route="OverviewPage" ContentTemplate="{DataTemplate views:OverviewPage}"/>
         </Tab>
         <Tab x:Name="TreeTab"
              Title=""
              Icon="tree_structure.png">
-            <ShellContent Route="MainPage" ContentTemplate="{DataTemplate views:TreePage}"/>
+            <ShellContent Route="TreePage" ContentTemplate="{DataTemplate views:TreePage}"/>
         </Tab>
     </TabBar>
 </Shell>

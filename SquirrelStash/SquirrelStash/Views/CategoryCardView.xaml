@@ -93,9 +93,13 @@
                         Style="{StaticResource BodyStrongLabelStyle}"
                         VerticalOptions="Center" />
 
-                <Label x:Name="ItemsArrow"  Grid.Column="1"
-                       Style="{StaticResource BodySecondaryLabelStyle}"
-                       VerticalOptions="Center" />
+                <Button x:Name="ItemsToggleButton"
+                        Grid.Column="1"
+                        Text=">"
+                        Style="{StaticResource SmallRoundToggleButtonStyle}"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"
+                        Clicked="OnItemLayoutButtonClicked" />
             </Grid>
 
             <!-- Expandable content -->

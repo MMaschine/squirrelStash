@@ -30,9 +30,12 @@ namespace SquirrelStash
 
             builder.Services.AddScoped<IItemsService, ItemsService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IOverviewService, OverviewService>();
 
+            builder.Services.AddViewWithViewModel<OverviewPage, OverviewPageViewModel>();
             builder.Services.AddViewWithViewModel<TreePage, TreePageViewModel>();
             
+
             return builder.Build().EnsureMigrations();
         }
     }

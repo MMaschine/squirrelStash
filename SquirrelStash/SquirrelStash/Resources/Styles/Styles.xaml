@@ -230,6 +230,21 @@
         <Setter Property="FontSize" Value="18" />
     </Style>
 
+    <Style x:Key="SmallRoundToggleButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Color.InputBackground}" />
+        <Setter Property="TextColor" Value="{StaticResource Color.PrimaryBlue}" />
+        <Setter Property="BorderColor" Value="{StaticResource Color.PrimaryBlueBorder}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="WidthRequest" Value="28" />
+        <Setter Property="HeightRequest" Value="28" />
+        <Setter Property="MinimumWidthRequest" Value="28" />
+        <Setter Property="MinimumHeightRequest" Value="28" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
     <Style x:Key="PrimaryButtonStyle" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource Color.PrimaryBlue}" />
         <Setter Property="TextColor" Value="{StaticResource Color.White}" />
