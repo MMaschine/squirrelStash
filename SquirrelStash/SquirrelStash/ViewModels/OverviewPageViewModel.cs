@@ -1,9 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Graphics;
 using SquirrelStash.Abstractions;
 using SquirrelStash.Helpers;
-using System.Collections.ObjectModel;
 using SquirrelStash.Models;
-using Microsoft.Maui.ApplicationModel;
+using SquirrelStash.Resources;
+using System.Collections.ObjectModel;
 
 namespace SquirrelStash.ViewModels;
 
@@ -12,6 +14,22 @@ public partial class OverviewPageViewModel(IOverviewService overviewService) : O
     public string VersionText { get; } = FormatVersion(AppInfo.Current.VersionString);
 
     public ObservableCollection<OverviewCategoryNodeViewModel> ThresholdCategories { get; } = [];
+
+    public Color WarningThresholdCardColor => WarningThresholdsReachedCount == 0
+        ? GetColorResource("Color.SuccessSoft")
+        : GetColorResource("Color.WarningSoft");
+
+    public Color WarningThresholdTextColor => WarningThresholdsReachedCount == 0
+        ? GetColorResource("Color.SuccessGreen")
+        : GetColorResource("Color.WarningOrange");
+
+    public Color CriticalThresholdCardColor => CriticalThresholdsReachedCount == 0
+        ? GetColorResource("Color.SuccessSoft")
+        : GetColorResource("Color.CriticalSoft");
+
+    public Color CriticalThresholdTextColor => CriticalThresholdsReachedCount == 0
+        ? GetColorResource("Color.SuccessGreen")
+        : GetColorResource("Color.CriticalRed");
 
     [ObservableProperty]
     private bool isLoading;
@@ -56,7 +74,7 @@ public partial class OverviewPageViewModel(IOverviewService overviewService) : O
 
         if (loadResult.IsFailed)
         {
-            await MessageHelper.ShowErrorAsync("Failed to build overview");
+            await MessageHelper.ShowErrorAsync(AppText.FailedToBuildOverview);
         }
         else
         {
@@ -75,22 +93,34 @@ public partial class OverviewPageViewModel(IOverviewService overviewService) : O
             }
         }
 
-        HasReachedThresholds = ThresholdCategories.Any(); 
+        HasReachedThresholds = ThresholdCategories.Any();
 
         IsLoading = false;
     }
 
     private OverviewCategoryNodeViewModel[] GetThresholdNodes(ICollection<OverviewItem> items)
     {
-        var groupedItems = items.GroupBy(x => x.Category, 
+        var groupedItems = items.GroupBy(x => x.Category,
             (key, g) => new { Category = key, Items = g.ToList() });
 
-       return groupedItems.Select(x => new OverviewCategoryNodeViewModel(x.Category, x.Items)).ToArray();
-
+        return groupedItems.Select(x => new OverviewCategoryNodeViewModel(x.Category, x.Items)).ToArray();
     }
 
     private static string FormatVersion(string version) =>
-        version.Equals("0.1-alpha.1", StringComparison.OrdinalIgnoreCase)
-            ? "Version 0.1 Alpha 1"
-            : $"Version {version}";
+        AppText.FormatVersion(version);
+
+    partial void OnWarningThresholdsReachedCountChanged(int value)
+    {
+        OnPropertyChanged(nameof(WarningThresholdCardColor));
+        OnPropertyChanged(nameof(WarningThresholdTextColor));
+    }
+
+    partial void OnCriticalThresholdsReachedCountChanged(int value)
+    {
+        OnPropertyChanged(nameof(CriticalThresholdCardColor));
+        OnPropertyChanged(nameof(CriticalThresholdTextColor));
+    }
+
+    private static Color GetColorResource(string key) =>
+        (Color)Application.Current!.Resources[key];
 }

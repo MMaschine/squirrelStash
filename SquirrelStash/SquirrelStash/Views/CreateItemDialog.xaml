@@ -2,11 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="SquirrelStash.Views.CreateItemDialog"
-    xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels" 
+    xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
     xmlns:converters="clr-namespace:SquirrelStash.Converters"
+    xmlns:resources="clr-namespace:SquirrelStash.Resources"
     x:DataType="viewModels:CreateItemDialogViewModel"
-    Title="Create Item">
-
+    Title="{x:Static resources:AppText.CreateItemPageTitle}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -18,7 +18,7 @@
         <VerticalStackLayout Padding="20" Spacing="16">
 
             <Label
-                Text="Create Item"
+                Text="{x:Static resources:AppText.CreateItemHeader}"
                 Style="{StaticResource H1LabelStyle}" />
 
             <VerticalStackLayout
@@ -42,7 +42,7 @@
                             Aspect="AspectFill" />
 
                         <Label
-                            Text="Tap to add image"
+                            Text="{x:Static resources:AppText.TapToAddImage}"
                             Style="{StaticResource BodySecondaryLabelStyle}"
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
@@ -53,14 +53,14 @@
 
             <Border Style="{StaticResource ThresholdCardStyle}">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="Thresholds"
+                    <Label Text="{x:Static resources:AppText.ThresholdsLabel}"
                            Style="{StaticResource H3LabelStyle}" />
 
                     <Grid ColumnDefinitions="*,*"
                           ColumnSpacing="12">
                         <VerticalStackLayout Grid.Column="0"
                                              Spacing="6">
-                            <Label Text="Warning threshold"
+                            <Label Text="{x:Static resources:AppText.WarningThresholdLabel}"
                                    TextColor="{StaticResource Color.WarningOrange}"
                                    Style="{StaticResource BodyStrongLabelStyle}" />
                             <Border Style="{StaticResource ThresholdInputStyle}"
@@ -74,7 +74,7 @@
 
                         <VerticalStackLayout Grid.Column="1"
                                              Spacing="6">
-                            <Label Text="Critical threshold"
+                            <Label Text="{x:Static resources:AppText.CriticalThresholdLabel}"
                                    TextColor="{StaticResource Color.CriticalRed}"
                                    Style="{StaticResource BodyStrongLabelStyle}" />
                             <Border Style="{StaticResource ThresholdInputStyle}"
@@ -90,7 +90,7 @@
             </Border>
 
             <Label
-                Text="Properties"
+                Text="{x:Static resources:AppText.PropertiesLabel}"
                 Style="{StaticResource H3LabelStyle}" />
 
             <CollectionView ItemsSource="{Binding PropertyEntries}">
@@ -113,7 +113,7 @@
                                         IsVisible="{Binding IsManualValueType}">
                                     <Entry
                                         Text="{Binding Value}"
-                                        Placeholder="Enter value" />
+                                        Placeholder="{x:Static resources:AppText.EnterValuePlaceholder}" />
                                 </Border>
 
                                 <Border Grid.Column="1"
@@ -121,7 +121,7 @@
                                         Padding="12,6"
                                         IsVisible="{Binding IsAllowedValuesType}">
                                     <Picker
-                                        Title="Select value"
+                                        Title="{x:Static resources:AppText.SelectValueTitle}"
                                         ItemsSource="{Binding AllowedValues}"
                                         SelectedItem="{Binding SelectedAllowedValue}" />
                                 </Border>

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:SquirrelStash.Views"
              xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
+             xmlns:resources="clr-namespace:SquirrelStash.Resources"
              x:Class="SquirrelStash.Views.CategoryCardView"
              x:DataType="viewModels:CategoryCardViewModel">
     <Border Style="{StaticResource CardBorderStyle}">
@@ -21,8 +22,8 @@
                     Text="+"
                     Style="{StaticResource RoundIconButtonStyle}"
                     HorizontalOptions="End"
-                    VerticalOptions="Start" 
-                    Command="{Binding AddItemCommand}"/>
+                    VerticalOptions="Start"
+                    Command="{Binding AddItemCommand}" />
             </Grid>
 
             <!--<Border
@@ -61,21 +62,21 @@
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                             <Picker
                                 Grid.Column="0"
-                                Title="Select filter"
+                                Title="{x:Static resources:AppText.SelectFilterTitle}"
                                 ItemsSource="{Binding FilterOptions}"
                                 SelectedItem="{Binding SelectedFilter}"
                                 ItemDisplayBinding="{Binding Name}" />
 
                             <Picker
                                 Grid.Column="1"
-                                Title="Enter value"
+                                Title="{x:Static resources:AppText.EnterValuePlaceholder}"
                                 ItemsSource="{Binding SelectedFilterAllowedValues}"
                                 SelectedItem="{Binding SelectedAllowedValue}"
                                 IsVisible="{Binding IsAllowedValuesFilter}" />
 
                             <Entry
                                 Grid.Column="1"
-                                Placeholder="Enter value"
+                                Placeholder="{x:Static resources:AppText.EnterValuePlaceholder}"
                                 Text="{Binding FilterValue}"
                                 IsVisible="{Binding IsManualValueFilter}" />
                         </Grid>
@@ -86,24 +87,22 @@
             <Grid ColumnDefinitions="*,Auto"
                   Padding="0,6">
                 <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnItemLayoutTapped"  />
+                    <TapGestureRecognizer Command="{Binding ToggleItemsVisibilityCommand}" />
                 </Grid.GestureRecognizers>
 
-                <Label  Text="{Binding ItemsCount, StringFormat='Items ({0})'}"
-                        Style="{StaticResource BodyStrongLabelStyle}"
-                        VerticalOptions="Center" />
+                <Label Text="{Binding ItemsHeaderText}"
+                       Style="{StaticResource BodyStrongLabelStyle}"
+                       VerticalOptions="Center" />
 
-                <Button x:Name="ItemsToggleButton"
-                        Grid.Column="1"
-                        Text=">"
+                <Button Grid.Column="1"
+                        Text="{Binding ItemsToggleText}"
                         Style="{StaticResource SmallRoundToggleButtonStyle}"
                         HorizontalOptions="End"
                         VerticalOptions="Center"
-                        Clicked="OnItemLayoutButtonClicked" />
+                        Command="{Binding ToggleItemsVisibilityCommand}" />
             </Grid>
 
-            <!-- Expandable content -->
-            <VerticalStackLayout x:Name="ItemsLayout"
+            <VerticalStackLayout IsVisible="{Binding IsItemsVisible}"
                                  BindableLayout.ItemsSource="{Binding Items}"
                                  Spacing="6">
                 <BindableLayout.ItemTemplate>

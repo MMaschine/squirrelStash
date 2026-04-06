@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
+             xmlns:resources="clr-namespace:SquirrelStash.Resources"
              x:Class="SquirrelStash.Views.OverviewPage"
              x:DataType="viewModels:OverviewPageViewModel">
 
@@ -10,7 +11,7 @@
             <VerticalStackLayout Spacing="16">
                 <Border Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="14">
-                        <Label Text="Overview"
+                        <Label Text="{x:Static resources:AppText.OverviewTitle}"
                                Style="{StaticResource H2LabelStyle}" />
 
                         <Grid ColumnDefinitions="*,*"
@@ -21,7 +22,7 @@
                                     Grid.Column="0"
                                     Style="{StaticResource SurfaceBorderStyle}">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Categories"
+                                    <Label Text="{x:Static resources:AppText.CategoriesLabel}"
                                            Style="{StaticResource BodySecondaryLabelStyle}" />
                                     <Label Text="{Binding TotalCategoriesCount}"
                                            Style="{StaticResource H2LabelStyle}" />
@@ -32,7 +33,7 @@
                                     Grid.Column="1"
                                     Style="{StaticResource SurfaceBorderStyle}">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Items"
+                                    <Label Text="{x:Static resources:AppText.ItemsLabel}"
                                            Style="{StaticResource BodySecondaryLabelStyle}" />
                                     <Label Text="{Binding TotalItemsCount}"
                                            Style="{StaticResource H2LabelStyle}" />
@@ -42,28 +43,28 @@
                             <Border Grid.Row="1"
                                     Grid.Column="0"
                                     Style="{StaticResource SurfaceBorderStyle}"
-                                    BackgroundColor="{StaticResource Color.WarningSoft}">
+                                    BackgroundColor="{Binding WarningThresholdCardColor}">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Warnings reached"
+                                    <Label Text="{x:Static resources:AppText.WarningsReachedLabel}"
                                            Style="{StaticResource BodySecondaryLabelStyle}"
-                                           TextColor="{StaticResource Color.WarningOrange}" />
+                                           TextColor="{Binding WarningThresholdTextColor}" />
                                     <Label Text="{Binding WarningThresholdsReachedCount}"
                                            Style="{StaticResource H2LabelStyle}"
-                                           TextColor="{StaticResource Color.WarningOrange}" />
+                                           TextColor="{Binding WarningThresholdTextColor}" />
                                 </VerticalStackLayout>
                             </Border>
 
                             <Border Grid.Row="1"
                                     Grid.Column="1"
                                     Style="{StaticResource SurfaceBorderStyle}"
-                                    BackgroundColor="{StaticResource Color.CriticalSoft}">
+                                    BackgroundColor="{Binding CriticalThresholdCardColor}">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Critical reached"
+                                    <Label Text="{x:Static resources:AppText.CriticalReachedLabel}"
                                            Style="{StaticResource BodySecondaryLabelStyle}"
-                                           TextColor="{StaticResource Color.CriticalRed}" />
+                                           TextColor="{Binding CriticalThresholdTextColor}" />
                                     <Label Text="{Binding CriticalThresholdsReachedCount}"
                                            Style="{StaticResource H2LabelStyle}"
-                                           TextColor="{StaticResource Color.CriticalRed}" />
+                                           TextColor="{Binding CriticalThresholdTextColor}" />
                                 </VerticalStackLayout>
                             </Border>
                         </Grid>
@@ -79,7 +80,7 @@
                         IsVisible="{Binding ShowLogo}">
                     <VerticalStackLayout Spacing="14"
                                          HorizontalOptions="Center">
-                        <Label Text="Everything looks calm"
+                        <Label Text="{x:Static resources:AppText.EverythingLooksCalm}"
                                Style="{StaticResource H3LabelStyle}"
                                HorizontalTextAlignment="Center" />
                         <Image Source="squirrel.png"
@@ -138,7 +139,7 @@
                                  Spacing="10">
                 <ActivityIndicator IsRunning="{Binding IsLoading}"
                                    IsVisible="{Binding IsLoading}" />
-                <Label Text="Loading overview..."
+                <Label Text="{x:Static resources:AppText.LoadingOverview}"
                        Style="{StaticResource BodySecondaryLabelStyle}"
                        HorizontalTextAlignment="Center" />
             </VerticalStackLayout>

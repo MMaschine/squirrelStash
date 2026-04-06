@@ -1,16 +1,15 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Helpers;
+using SquirrelStash.Resources;
 
 namespace SquirrelStash.ViewModels
 {
     public partial class ItemCardViewModel : ObservableObject
     {
         private readonly IItemsService _itemsService;
-
-
         private readonly int _itemId;
 
         public ItemCardViewModel(Item item, IItemsService itemService)
@@ -28,7 +27,7 @@ namespace SquirrelStash.ViewModels
             ImagePath = string.IsNullOrEmpty(item.ImageSource) ? ImageHelper.ItemImagePlaceholder : item.ImageSource;
         }
 
-        [ObservableProperty] 
+        [ObservableProperty]
         private string name;
 
         [ObservableProperty]
@@ -45,7 +44,7 @@ namespace SquirrelStash.ViewModels
             if (newQuantityResult.IsFailed)
             {
                 //TODO: add details logging/messaging
-                await MessageHelper.ShowErrorAsync("Error in quantity changing! Contact developer");
+                await MessageHelper.ShowErrorAsync(AppText.QuantityChangeError);
             }
             else
             {
@@ -63,7 +62,7 @@ namespace SquirrelStash.ViewModels
                 if (newQuantityResult.IsFailed)
                 {
                     //TODO: add details logging/messaging
-                    await MessageHelper.ShowErrorAsync("Error in quantity changing! Contact developer");
+                    await MessageHelper.ShowErrorAsync(AppText.QuantityChangeError);
                 }
                 else
                 {

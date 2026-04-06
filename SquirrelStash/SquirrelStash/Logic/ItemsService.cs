@@ -1,9 +1,10 @@
-﻿using FluentResults;
+using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Requests;
+using SquirrelStash.Resources;
 
 namespace SquirrelStash.Logic
 {
@@ -23,7 +24,7 @@ namespace SquirrelStash.Logic
             catch (Exception e)
             {
                 //TODO: add log
-                return Result.Fail("Can't get categories");
+                return Result.Fail(AppText.CannotGetCategories);
             }
         }
 
@@ -54,25 +55,23 @@ namespace SquirrelStash.Logic
             catch (Exception e)
             {
                 //TODO: add logging
-                return Result.Fail("Failed to create item");
+                return Result.Fail(AppText.FailedToCreateItem);
             }
         }
 
         public async Task UpdateItemAsync(Item item)
         {
-
         }
 
         public async Task RemoveItemAsync(int id)
         {
-
         }
 
         public async Task<Result<int>> IncreaseQuantityAsync(int id, int increment = 1)
         {
             if (increment <= 0)
             {
-                return Result.Fail("Wrong increment");
+                return Result.Fail(AppText.WrongIncrement);
             }
 
             try
@@ -88,13 +87,13 @@ namespace SquirrelStash.Logic
                 else
                 {
                     //TODO: add log
-                    return Result.Fail("Item not found");
+                    return Result.Fail(AppText.ItemNotFound);
                 }
             }
             catch (Exception e)
             {
                 //TODO: add log
-                return Result.Fail("Failed to update item");
+                return Result.Fail(AppText.FailedToUpdateItem);
             }
         }
 
@@ -115,15 +114,14 @@ namespace SquirrelStash.Logic
                 else
                 {
                     //TODO: add log
-                    return Result.Fail("Item not found");
+                    return Result.Fail(AppText.ItemNotFound);
                 }
             }
             catch (Exception e)
             {
                 //TODO: add log
-                return Result.Fail("Failed to update item");
+                return Result.Fail(AppText.FailedToUpdateItem);
             }
         }
-
     }
 }

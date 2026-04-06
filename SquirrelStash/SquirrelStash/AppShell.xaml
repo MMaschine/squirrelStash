@@ -4,9 +4,10 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SquirrelStash"
+    xmlns:resources="clr-namespace:SquirrelStash.Resources"
     Shell.FlyoutBehavior="Disabled"
     xmlns:views="clr-namespace:SquirrelStash.Views"
-    Title="SquirrelStash">
+    Title="{x:Static resources:AppText.AppTitle}">
 
     <TabBar>
         <Tab x:Name="ThresholdTab"
