@@ -4,6 +4,7 @@ using Microsoft.Maui.Graphics;
 using SquirrelStash.Abstractions;
 using SquirrelStash.Helpers;
 using SquirrelStash.Models;
+using SquirrelStash.Resources;
 using System.Collections.ObjectModel;
 
 namespace SquirrelStash.ViewModels;
@@ -73,7 +74,7 @@ public partial class OverviewPageViewModel(IOverviewService overviewService) : O
 
         if (loadResult.IsFailed)
         {
-            await MessageHelper.ShowErrorAsync("Failed to build overview");
+            await MessageHelper.ShowErrorAsync(AppText.FailedToBuildOverview);
         }
         else
         {
@@ -92,24 +93,21 @@ public partial class OverviewPageViewModel(IOverviewService overviewService) : O
             }
         }
 
-        HasReachedThresholds = ThresholdCategories.Any(); 
+        HasReachedThresholds = ThresholdCategories.Any();
 
         IsLoading = false;
     }
 
     private OverviewCategoryNodeViewModel[] GetThresholdNodes(ICollection<OverviewItem> items)
     {
-        var groupedItems = items.GroupBy(x => x.Category, 
+        var groupedItems = items.GroupBy(x => x.Category,
             (key, g) => new { Category = key, Items = g.ToList() });
 
-       return groupedItems.Select(x => new OverviewCategoryNodeViewModel(x.Category, x.Items)).ToArray();
-
+        return groupedItems.Select(x => new OverviewCategoryNodeViewModel(x.Category, x.Items)).ToArray();
     }
 
     private static string FormatVersion(string version) =>
-        version.Equals("0.1-alpha.1", StringComparison.OrdinalIgnoreCase)
-            ? "Version 0.1 Alpha 1"
-            : $"Version {version}";
+        AppText.FormatVersion(version);
 
     partial void OnWarningThresholdsReachedCountChanged(int value)
     {

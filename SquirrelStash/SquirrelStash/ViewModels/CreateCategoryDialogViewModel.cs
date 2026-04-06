@@ -1,12 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SquirrelStash.Enums;
 using SquirrelStash.Requests;
 using System.Collections.ObjectModel;
 using SquirrelStash.Helpers;
 using SquirrelStash.Models;
+using SquirrelStash.Resources;
 using System.Text.RegularExpressions;
-
 
 namespace SquirrelStash.ViewModels
 {
@@ -22,11 +22,10 @@ namespace SquirrelStash.ViewModels
 
         public event Action<DialogResult<CreateCategoryRequest>>? RequestCompleted;
 
-
         [RelayCommand]
         private void AddProperty()
         {
-            Properties.Add(new CategoryPropertyViewModel() {DeleteCommand = RemovePropertyCommand});
+            Properties.Add(new CategoryPropertyViewModel() { DeleteCommand = RemovePropertyCommand });
         }
 
         [RelayCommand]
@@ -79,33 +78,27 @@ namespace SquirrelStash.ViewModels
 
         private async Task<bool> ValidateCategory(string title, CategoryPropertyViewModel[]? properties)
         {
-            //Title is mandatory
             if (string.IsNullOrWhiteSpace(title))
             {
-                //TODO: to resources
-                await MessageHelper.ShowWarningAsync("Title must be set for category");
+                await MessageHelper.ShowWarningAsync(AppText.CategoryTitleRequired);
                 return false;
             }
 
-            //Must be at least one property
             if (properties == null || !properties.Any())
             {
-                //TODO: to resources
-                await MessageHelper.ShowWarningAsync("Set at least one property for the Category");
+                await MessageHelper.ShowWarningAsync(AppText.CategoryPropertyRequired);
                 return false;
             }
 
-            //We need to check that the format of the allowed values is correct 
             var invalidProperty = properties.FirstOrDefault(x =>
-                x.SelectedType == PropertyTypes.AllowedValues && 
+                x.SelectedType == PropertyTypes.AllowedValues &&
                 (string.IsNullOrWhiteSpace(x.AllowedValues) ||
                 !AllowedValuesPattern.IsMatch(x.AllowedValues)));
-
 
             if (invalidProperty is not null)
             {
                 await MessageHelper.ShowWarningAsync(
-                    $"Allowed values for '{invalidProperty.Name.Trim()}' must be comma-separated.");
+                    string.Format(AppText.AllowedValuesInvalidFormat, invalidProperty.Name.Trim()));
                 return false;
             }
 

@@ -2,27 +2,28 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="SquirrelStash.Views.CreateCategoryDialog"
-    xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels" 
+    xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
+    xmlns:resources="clr-namespace:SquirrelStash.Resources"
     x:DataType="viewModels:CreateCategoryDialogViewModel"
-    Title="Create Category">
+    Title="{x:Static resources:AppText.CreateCategoryPageTitle}">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="16">
 
             <Label
-                Text="Create Category"
+                Text="{x:Static resources:AppText.CreateCategoryHeader}"
                 Style="{StaticResource H1LabelStyle}" />
 
             <Border Style="{StaticResource InputContainerStyle}"
                     Padding="12,6">
                 <Entry
                     Text="{Binding Title}"
-                    Placeholder="Enter category title" />
+                    Placeholder="{x:Static resources:AppText.EnterCategoryTitlePlaceholder}" />
             </Border>
 
             <Grid ColumnDefinitions="*,Auto">
                 <Label
-                    Text="Properties"
+                    Text="{x:Static resources:AppText.PropertiesLabel}"
                     VerticalOptions="Center"
                     Style="{StaticResource H3LabelStyle}" />
 
@@ -53,7 +54,7 @@
                                         Padding="12,6">
                                     <Entry
                                         Text="{Binding Name}"
-                                        Placeholder="Property name" />
+                                        Placeholder="{x:Static resources:AppText.PropertyNamePlaceholder}" />
                                 </Border>
 
                                 <Border Grid.Row="0"
@@ -61,7 +62,7 @@
                                         Style="{StaticResource InputContainerStyle}"
                                         Padding="12,6">
                                     <Picker
-                                        Title="Select property type"
+                                        Title="{x:Static resources:AppText.SelectPropertyTypeTitle}"
                                         ItemsSource="{Binding AvailableTypes}"
                                         SelectedItem="{Binding SelectedType}" />
                                 </Border>
@@ -69,7 +70,7 @@
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="2"
-                                    Text="×"
+                                    Text="Ã—"
                                     Style="{StaticResource RoundIconButtonStyle}"
                                     VerticalOptions="Start"
                                     HorizontalOptions="End"
@@ -84,7 +85,7 @@
                                         IsVisible="{Binding IsAllowedValuesType}">
                                     <Entry
                                         Text="{Binding AllowedValues}"
-                                        Placeholder="Allowed values (comma-separated)" />
+                                        Placeholder="{x:Static resources:AppText.AllowedValuesPlaceholder}" />
                                 </Border>
                             </Grid>
                         </Frame>

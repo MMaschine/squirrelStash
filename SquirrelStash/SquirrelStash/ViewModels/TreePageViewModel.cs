@@ -1,12 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using SquirrelStash.Abstractions;
 using SquirrelStash.Helpers;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
+using SquirrelStash.Resources;
 using SquirrelStash.Views;
-
+using System.Collections.ObjectModel;
 
 namespace SquirrelStash.ViewModels
 {
@@ -17,10 +17,9 @@ namespace SquirrelStash.ViewModels
         private bool _isLoading;
         private string _searchText;
 
-        private List<CategoryCardViewModel> _allCategories { get; } = []; 
+        private List<CategoryCardViewModel> _allCategories { get; } = [];
 
         public ObservableCollection<CategoryCardViewModel> Categories { get; } = [];
-
 
         public string SearchText
         {
@@ -40,7 +39,9 @@ namespace SquirrelStash.ViewModels
             set
             {
                 if (_isLoading == value)
+                {
                     return;
+                }
 
                 _isLoading = value;
                 OnPropertyChanged();
@@ -50,7 +51,9 @@ namespace SquirrelStash.ViewModels
         public async Task InitializeAsync()
         {
             if (_isInitialized || IsLoading)
+            {
                 return;
+            }
 
             _isInitialized = true;
             await LoadCategoriesAsync();
@@ -75,9 +78,8 @@ namespace SquirrelStash.ViewModels
 
             if (result.IsFailed)
             {
-                //TODO: to resources
                 //TODO: add logging
-                await MessageHelper.ShowErrorAsync("Failed to add new category!");
+                await MessageHelper.ShowErrorAsync(AppText.FailedToAddNewCategory);
             }
             else
             {
@@ -85,8 +87,7 @@ namespace SquirrelStash.ViewModels
                 SearchText = string.Empty;
                 ApplyFilter(SearchText);
 
-                //TODO: to resources
-                await MessageHelper.ShowInfoAsync($"Category {dialogResult.Data.Title} added");
+                await MessageHelper.ShowInfoAsync(AppText.FormatCategoryAdded(dialogResult.Data.Title));
             }
         }
 
@@ -100,12 +101,11 @@ namespace SquirrelStash.ViewModels
 
             if (!result.IsSuccess)
             {
-                //TODO: to resources
-                await MessageHelper.ShowErrorAsync("Failed to upload categories");
+                await MessageHelper.ShowErrorAsync(AppText.FailedToUploadCategories);
                 return;
             }
 
-            _allCategories.AddRange(result.Value.Select(x=> new CategoryCardViewModel(x,itemsService)));
+            _allCategories.AddRange(result.Value.Select(x => new CategoryCardViewModel(x, itemsService)));
 
             ApplyFilter(string.Empty);
         }
@@ -125,7 +125,6 @@ namespace SquirrelStash.ViewModels
                 Categories.Add(category);
             }
         }
-
 
         private async Task<DialogResult<CreateCategoryRequest>> ShowDialogAsync()
         {

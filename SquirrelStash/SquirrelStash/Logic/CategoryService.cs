@@ -4,12 +4,12 @@ using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Requests;
+using SquirrelStash.Resources;
 
 namespace SquirrelStash.Logic
 {
     internal class CategoryService(StashContext context) : ICategoryService
     {
-
         private readonly DbSet<Category> _categoriesSet = context.Set<Category>();
 
         public async Task<Result<IReadOnlyList<Category>>> GetCategoriesAsync()
@@ -23,13 +23,12 @@ namespace SquirrelStash.Logic
                             .ThenInclude(x => x.Definition)
                     .AsNoTracking().ToListAsync() ?? [];
 
-
                 return data.AsReadOnly();
             }
             catch (Exception e)
             {
                 //TODO: add log
-                return Result.Fail("Can't get categories");
+                return Result.Fail(AppText.CannotGetCategories);
             }
         }
 
@@ -39,7 +38,9 @@ namespace SquirrelStash.Logic
             ArgumentNullException.ThrowIfNull(request.Properties);
 
             if (string.IsNullOrEmpty(request.Title))
+            {
                 throw new ArgumentException(nameof(request.Title));
+            }
 
             try
             {
@@ -63,7 +64,7 @@ namespace SquirrelStash.Logic
             catch (Exception e)
             {
                 //TODO: log it
-                return Result.Fail("Can't add Category because of exception");
+                return Result.Fail(AppText.FailedToCreateCategory);
             }
         }
     }

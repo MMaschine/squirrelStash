@@ -6,14 +6,13 @@ using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using System.Collections.ObjectModel;
 using SquirrelStash.Enums;
-
+using SquirrelStash.Resources;
 
 namespace SquirrelStash.ViewModels
 {
     public partial class CreateItemDialogViewModel : ObservableObject
     {
         private const int WarningThresholdDef = 5;
-
         private const int CriticalThresholdDef = 1;
 
         private readonly int _categoryId;
@@ -43,7 +42,6 @@ namespace SquirrelStash.ViewModels
 
         public event Action<DialogResult<CreateItemRequest>>? RequestCompleted;
 
-
         public async Task UpdateImageAsync(ItemImageSource source)
         {
             var result = await ImageHelper.PickAndStoreImageAsync(source);
@@ -54,7 +52,7 @@ namespace SquirrelStash.ViewModels
             }
             else
             {
-               await MessageHelper.ShowWarningAsync("Failed to get the image");
+                await MessageHelper.ShowWarningAsync(AppText.FailedToGetImage);
             }
         }
 
@@ -90,11 +88,10 @@ namespace SquirrelStash.ViewModels
                 string.IsNullOrWhiteSpace(x.Value) ||
                 (x.Type == PropertyTypes.AllowedValues) && !x.AllowedValues.Any());
 
-
             if (invalidEntry is not null)
             {
                 await MessageHelper.ShowWarningAsync(
-                    $"Set a value for property '{invalidEntry.Name}'.");
+                    string.Format(AppText.ItemValueRequiredFormat, invalidEntry.Name));
                 return false;
             }
 

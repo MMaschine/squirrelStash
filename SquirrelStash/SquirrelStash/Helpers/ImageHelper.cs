@@ -1,6 +1,6 @@
-﻿using FluentResults;
+using FluentResults;
 using SquirrelStash.Enums;
-
+using SquirrelStash.Resources;
 
 namespace SquirrelStash.Helpers
 {
@@ -22,14 +22,18 @@ namespace SquirrelStash.Helpers
                 };
 
                 if (fileResult is null)
-                    return Result.Fail("Can't get image");
+                {
+                    return Result.Fail(AppText.CannotGetImage);
+                }
 
                 var imagesFolder = Path.Combine(FileSystem.AppDataDirectory, "items-images");
                 Directory.CreateDirectory(imagesFolder);
 
                 var extension = Path.GetExtension(fileResult.FileName);
                 if (string.IsNullOrWhiteSpace(extension))
+                {
                     extension = ".jpg";
+                }
 
                 var fileName = $"{Guid.NewGuid():N}{extension}";
                 var destinationPath = Path.Combine(imagesFolder, fileName);
@@ -44,7 +48,7 @@ namespace SquirrelStash.Helpers
             catch (Exception e)
             {
                 //TODO: add log 
-                return Result.Fail("Failed to get the image");
+                return Result.Fail(AppText.FailedToGetImageResult);
             }
         }
 
@@ -59,12 +63,11 @@ namespace SquirrelStash.Helpers
 
             if (status != PermissionStatus.Granted)
             {
-                await MessageHelper.ShowInfoAsync("Provide access to the camera for the app");
+                await MessageHelper.ShowInfoAsync(AppText.CameraAccessInfo);
                 return null;
             }
 
             return await MediaPicker.Default.CapturePhotoAsync();
         }
-   
     }
 }

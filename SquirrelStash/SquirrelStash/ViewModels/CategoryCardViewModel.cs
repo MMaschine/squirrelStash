@@ -8,14 +8,14 @@ using SquirrelStash.Enums;
 using SquirrelStash.Helpers;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
+using SquirrelStash.Resources;
 using SquirrelStash.Views;
 
 namespace SquirrelStash.ViewModels
 {
     public partial class CategoryCardViewModel : ObservableObject
     {
-        private readonly Category _currentCategory; 
-
+        private readonly Category _currentCategory;
         private readonly IItemsService _itemsService;
 
         public CategoryCardViewModel(Category category, IItemsService itemService)
@@ -65,6 +65,8 @@ namespace SquirrelStash.ViewModels
 
         public ObservableCollection<ItemCardViewModel> Items { get; } = [];
 
+        public string ItemsHeaderText => AppText.FormatItemsHeader(ItemsCount);
+
         public bool IsAllowedValuesFilter =>
             SelectedFilter?.TypeCode == (int)PropertyTypes.AllowedValues;
 
@@ -95,14 +97,12 @@ namespace SquirrelStash.ViewModels
 
             if (result.IsFailed)
             {
-                //TODO: to resources
                 //TODO: add logging
-                await MessageHelper.ShowErrorAsync("Failed to add item!");
+                await MessageHelper.ShowErrorAsync(AppText.FailedToAddItem);
             }
             else
             {
-                //TODO: to resources
-                await MessageHelper.ShowInfoAsync($"New item added to the category {_currentCategory.Title}");
+                await MessageHelper.ShowInfoAsync(AppText.FormatItemAdded(_currentCategory.Title));
                 Items.Add(new ItemCardViewModel(result.Value, _itemsService));
                 IsItemsVisible = true;
             }
@@ -158,6 +158,7 @@ namespace SquirrelStash.ViewModels
         private void OnItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             ItemsCount = Items.Count;
+            OnPropertyChanged(nameof(ItemsHeaderText));
         }
 
         private async Task<DialogResult<CreateItemRequest>> ShowDialogAsync()
