@@ -1,4 +1,3 @@
-using SquirrelStash.ViewModels;
 
 namespace SquirrelStash.Views;
 

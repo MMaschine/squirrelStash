@@ -7,7 +7,7 @@ public static class AppText
     public const string AlertInformationTitle = "Information";
     public const string AlertWarningTitle = "Warning";
 
-    public const string AppTitle = "SquirrelStash";
+    public const string AppTitle = "Squirrel Stash";
 
     public const string CreateCategoryPageTitle = "Create Category";
     public const string CreateCategoryHeader = "Create Category";
