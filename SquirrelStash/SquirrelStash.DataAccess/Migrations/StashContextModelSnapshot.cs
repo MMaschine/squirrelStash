@@ -22,16 +22,11 @@ namespace SquirrelStash.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
 
                     b.ToTable("Categories");
                 });
@@ -51,10 +46,6 @@ namespace SquirrelStash.DataAccess.Migrations
                     b.Property<string>("ImageSource")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Note")
                         .HasColumnType("TEXT");
 
@@ -71,13 +62,55 @@ namespace SquirrelStash.DataAccess.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("SquirrelStash.DataAccess.Entities.Category", b =>
+            modelBuilder.Entity("SquirrelStash.DataAccess.Entities.PropertyDefinition", b =>
                 {
-                    b.HasOne("SquirrelStash.DataAccess.Entities.Category", "Parent")
-                        .WithMany("Subcategories")
-                        .HasForeignKey("ParentId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
-                    b.Navigation("Parent");
+                    b.Property<string>("AllowedValues")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TypeCode")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("PropertyTypes");
+                });
+
+            modelBuilder.Entity("SquirrelStash.DataAccess.Entities.PropertyEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PropertyDefinitionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("PropertyDefinitionId");
+
+                    b.ToTable("PropertyEntry");
                 });
 
             modelBuilder.Entity("SquirrelStash.DataAccess.Entities.Item", b =>
@@ -91,11 +124,46 @@ namespace SquirrelStash.DataAccess.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("SquirrelStash.DataAccess.Entities.PropertyDefinition", b =>
+                {
+                    b.HasOne("SquirrelStash.DataAccess.Entities.Category", "Category")
+                        .WithMany("Properties")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("SquirrelStash.DataAccess.Entities.PropertyEntry", b =>
+                {
+                    b.HasOne("SquirrelStash.DataAccess.Entities.Item", "Item")
+                        .WithMany("PropertyEntries")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SquirrelStash.DataAccess.Entities.PropertyDefinition", "Definition")
+                        .WithMany()
+                        .HasForeignKey("PropertyDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Definition");
+
+                    b.Navigation("Item");
+                });
+
             modelBuilder.Entity("SquirrelStash.DataAccess.Entities.Category", b =>
                 {
                     b.Navigation("Items");
 
-                    b.Navigation("Subcategories");
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("SquirrelStash.DataAccess.Entities.Item", b =>
+                {
+                    b.Navigation("PropertyEntries");
                 });
 #pragma warning restore 612, 618
         }

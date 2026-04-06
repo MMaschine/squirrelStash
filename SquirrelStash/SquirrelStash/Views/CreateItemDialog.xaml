@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SquirrelStash.Views.CreateItemDialog"
+    xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
+    xmlns:converters="clr-namespace:SquirrelStash.Converters"
+    xmlns:resources="clr-namespace:SquirrelStash.Resources"
+    x:DataType="viewModels:CreateItemDialogViewModel"
+    Title="{x:Static resources:AppText.CreateItemPageTitle}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:NullOrEmptyStringToBoolConverter x:Key="NullOrEmptyStringToBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <Label
+                Text="{x:Static resources:AppText.CreateItemHeader}"
+                Style="{StaticResource H1LabelStyle}" />
+
+            <VerticalStackLayout
+                HorizontalOptions="Start"
+                Spacing="8">
+                <Border
+                    WidthRequest="150"
+                    HeightRequest="150"
+                    BackgroundColor="{StaticResource Color.ImageSelectorBackground}"
+                    Stroke="{StaticResource Color.PrimaryBlueBorder}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnImageTapped" />
+                    </Border.GestureRecognizers>
+
+                    <Grid>
+                        <Image
+                            Source="{Binding ImagePath}"
+                            Aspect="AspectFill" />
+
+                        <Label
+                            Text="{x:Static resources:AppText.TapToAddImage}"
+                            Style="{StaticResource BodySecondaryLabelStyle}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            IsVisible="{Binding ImagePath, Converter={StaticResource NullOrEmptyStringToBoolConverter}}" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <Border Style="{StaticResource ThresholdCardStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{x:Static resources:AppText.ThresholdsLabel}"
+                           Style="{StaticResource H3LabelStyle}" />
+
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0"
+                                             Spacing="6">
+                            <Label Text="{x:Static resources:AppText.WarningThresholdLabel}"
+                                   TextColor="{StaticResource Color.WarningOrange}"
+                                   Style="{StaticResource BodyStrongLabelStyle}" />
+                            <Border Style="{StaticResource ThresholdInputStyle}"
+                                    Stroke="{StaticResource Color.WarningOrange}"
+                                    BackgroundColor="{StaticResource Color.WarningSoft}">
+                                <Entry Text="{Binding WarningThreshold}"
+                                       TextChanged="OnThresholdTextChanged"
+                                       Keyboard="Numeric" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1"
+                                             Spacing="6">
+                            <Label Text="{x:Static resources:AppText.CriticalThresholdLabel}"
+                                   TextColor="{StaticResource Color.CriticalRed}"
+                                   Style="{StaticResource BodyStrongLabelStyle}" />
+                            <Border Style="{StaticResource ThresholdInputStyle}"
+                                    Stroke="{StaticResource Color.CriticalRed}"
+                                    BackgroundColor="{StaticResource Color.CriticalSoft}">
+                                <Entry Text="{Binding CriticalThreshold}"
+                                       TextChanged="OnThresholdTextChanged"
+                                       Keyboard="Numeric" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                Text="{x:Static resources:AppText.PropertiesLabel}"
+                Style="{StaticResource H3LabelStyle}" />
+
+            <CollectionView ItemsSource="{Binding PropertyEntries}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:CreateItemPropertyEntryViewModel">
+                        <Frame
+                            Style="{StaticResource CardFrameStyle}"
+                            Margin="0,0,0,10"
+                            Padding="12">
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <Label
+                                    Grid.Column="0"
+                                    Text="{Binding Name}"
+                                    VerticalOptions="Center"
+                                    Style="{StaticResource BodyStrongLabelStyle}" />
+
+                                <Border Grid.Column="1"
+                                        Style="{StaticResource InputContainerStyle}"
+                                        Padding="12,6"
+                                        IsVisible="{Binding IsManualValueType}">
+                                    <Entry
+                                        Text="{Binding Value}"
+                                        Placeholder="{x:Static resources:AppText.EnterValuePlaceholder}" />
+                                </Border>
+
+                                <Border Grid.Column="1"
+                                        Style="{StaticResource InputContainerStyle}"
+                                        Padding="12,6"
+                                        IsVisible="{Binding IsAllowedValuesType}">
+                                    <Picker
+                                        Title="{x:Static resources:AppText.SelectValueTitle}"
+                                        ItemsSource="{Binding AllowedValues}"
+                                        SelectedItem="{Binding SelectedAllowedValue}" />
+                                </Border>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <HorizontalStackLayout HorizontalOptions="End"
+                                   Spacing="10"
+                                   Margin="0,20,0,0">
+                <ImageButton
+                    Source="cross.png"
+                    Style="{StaticResource FormActionButtonStyle}"
+                    Command="{Binding CancelCommand}" />
+
+                <ImageButton
+                    Source="apply.png"
+                    Style="{StaticResource FormActionButtonStyle}"
+                    Command="{Binding SaveCommand}" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

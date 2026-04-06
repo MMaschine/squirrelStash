@@ -1,5 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
+using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Helpers;
+using SquirrelStash.Helpers;
+using SquirrelStash.Logic;
+using SquirrelStash.ViewModels;
+using SquirrelStash.Views;
 
 
 namespace SquirrelStash
@@ -23,7 +28,15 @@ namespace SquirrelStash
 
             builder.Services.ConfigureDbContext(Path.Combine(FileSystem.AppDataDirectory, "squirrelstash.db"));
 
-            return builder.Build();
+            builder.Services.AddScoped<IItemsService, ItemsService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IOverviewService, OverviewService>();
+
+            builder.Services.AddViewWithViewModel<OverviewPage, OverviewPageViewModel>();
+            builder.Services.AddViewWithViewModel<TreePage, TreePageViewModel>();
+            
+
+            return builder.Build().EnsureMigrations();
         }
     }
 }

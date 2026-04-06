@@ -2,10 +2,15 @@
 {
     public class Item : BaseEntity
     {
+        #region Navigation
+
         public int CategoryId { get; set; }
+
         public Category Category { get; set; }
 
-        public string Name { get; set; }
+        public List<PropertyEntry> PropertyEntries { get; set; } = [];
+
+        #endregion
 
         public string? ImageSource { get; set; }
 

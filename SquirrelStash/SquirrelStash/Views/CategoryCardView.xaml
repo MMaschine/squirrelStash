@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:SquirrelStash.Views"
+             xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
+             xmlns:resources="clr-namespace:SquirrelStash.Resources"
+             x:Class="SquirrelStash.Views.CategoryCardView"
+             x:DataType="viewModels:CategoryCardViewModel">
+    <Border Style="{StaticResource CardBorderStyle}">
+
+        <VerticalStackLayout Spacing="12">
+
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    Grid.Column="0"
+                    Text="{Binding Title}"
+                    Style="{StaticResource H2LabelStyle}"
+                    VerticalOptions="Center" />
+
+                <Button
+                    Grid.Column="1"
+                    Text="+"
+                    Style="{StaticResource RoundIconButtonStyle}"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+                    Command="{Binding AddItemCommand}" />
+            </Grid>
+
+            <!--<Border
+                Padding="10"
+                StrokeThickness="1"
+                Stroke="#D8D8D8"
+                BackgroundColor="#FAFAFA"
+                StrokeShape="RoundRectangle 10">
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label
+                            Grid.Column="0"
+                            Text="Select Filters"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            VerticalOptions="Center" />
+
+                        <Button
+                            x:Name="OpenFilterBtn"
+                            Grid.Column="1"
+                            WidthRequest="22"
+                            HeightRequest="22"
+                            Padding="0"
+                            CornerRadius="11"
+                            BackgroundColor="Transparent"
+                            BorderWidth="1"
+                            BorderColor="#B8B8B8"
+                            FontSize="12"
+                            TextColor="#4A4A4A"
+                            Clicked="OpenFilterOnClicked" />
+                    </Grid>
+
+                     <VerticalStackLayout
+                        x:Name="FilterPanel"
+                        Spacing="8">
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Picker
+                                Grid.Column="0"
+                                Title="{x:Static resources:AppText.SelectFilterTitle}"
+                                ItemsSource="{Binding FilterOptions}"
+                                SelectedItem="{Binding SelectedFilter}"
+                                ItemDisplayBinding="{Binding Name}" />
+
+                            <Picker
+                                Grid.Column="1"
+                                Title="{x:Static resources:AppText.EnterValuePlaceholder}"
+                                ItemsSource="{Binding SelectedFilterAllowedValues}"
+                                SelectedItem="{Binding SelectedAllowedValue}"
+                                IsVisible="{Binding IsAllowedValuesFilter}" />
+
+                            <Entry
+                                Grid.Column="1"
+                                Placeholder="{x:Static resources:AppText.EnterValuePlaceholder}"
+                                Text="{Binding FilterValue}"
+                                IsVisible="{Binding IsManualValueFilter}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>-->
+
+            <Grid ColumnDefinitions="*,Auto"
+                  Padding="0,6">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ToggleItemsVisibilityCommand}" />
+                </Grid.GestureRecognizers>
+
+                <Label Text="{Binding ItemsHeaderText}"
+                       Style="{StaticResource BodyStrongLabelStyle}"
+                       VerticalOptions="Center" />
+
+                <Button Grid.Column="1"
+                        Text="{Binding ItemsToggleText}"
+                        Style="{StaticResource SmallRoundToggleButtonStyle}"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"
+                        Command="{Binding ToggleItemsVisibilityCommand}" />
+            </Grid>
+
+            <VerticalStackLayout IsVisible="{Binding IsItemsVisible}"
+                                 BindableLayout.ItemsSource="{Binding Items}"
+                                 Spacing="6">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:ItemCardViewModel">
+                        <views:ItemCardView />
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

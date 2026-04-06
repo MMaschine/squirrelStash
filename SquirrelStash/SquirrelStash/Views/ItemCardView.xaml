@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SquirrelStash.Views.ItemCardView">
+    <Border
+        Style="{StaticResource CardBorderStyle}"
+        Padding="10">
+
+        <Grid
+            ColumnDefinitions="64,*,Auto"
+            ColumnSpacing="12"
+            VerticalOptions="Center">
+
+            <!-- Image area -->
+            <Border
+                Grid.Column="0"
+                WidthRequest="64"
+                HeightRequest="64"
+                Style="{StaticResource SurfaceBorderStyle}"
+                Padding="0"
+                StrokeThickness="1"
+                BackgroundColor="{StaticResource Color.ImagePlaceholder}"
+                StrokeShape="RoundRectangle 8"
+                HorizontalOptions="Start"
+                VerticalOptions="Center">
+
+                <Image
+                    Source="{Binding ImagePath}"
+                    Aspect="AspectFit"
+                   />
+            </Border>
+
+            <!-- Name -->
+            <Label
+                Grid.Column="1"
+                Text="{Binding Name}"
+                LineBreakMode="WordWrap"
+                MaxLines="3"
+                VerticalOptions="Center"
+                Style="{StaticResource BodyLabelStyle}" />
+
+            <!-- Quantity controls -->
+            <HorizontalStackLayout
+                Grid.Column="2"
+                Spacing="8"
+                VerticalOptions="Center"
+                HorizontalOptions="End">
+
+                <Button
+                    Text="-"
+                    Style="{StaticResource RoundIconButtonStyle}"
+                    Command="{Binding DecreaseQuantityCommand}" />
+
+                <Label
+                    Text="{Binding Quantity}"
+                    VerticalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    WidthRequest="30"
+                    Style="{StaticResource H3LabelStyle}" />
+
+                <Button
+                    Text="+"
+                    Style="{StaticResource RoundIconButtonStyle}"
+                    Command="{Binding IncreaseQuantityCommand}" />
+            </HorizontalStackLayout>
+        </Grid>
+    </Border>
+</ContentView>

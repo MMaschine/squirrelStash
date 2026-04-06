@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
+             xmlns:resources="clr-namespace:SquirrelStash.Resources"
+             x:Class="SquirrelStash.Views.OverviewPage"
+             x:DataType="viewModels:OverviewPageViewModel">
+
+    <Grid Padding="16">
+        <ScrollView>
+            <VerticalStackLayout Spacing="16">
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="14">
+                        <Label Text="{x:Static resources:AppText.OverviewTitle}"
+                               Style="{StaticResource H2LabelStyle}" />
+
+                        <Grid ColumnDefinitions="*,*"
+                              RowDefinitions="Auto,Auto"
+                              ColumnSpacing="12"
+                              RowSpacing="12">
+                            <Border Grid.Row="0"
+                                    Grid.Column="0"
+                                    Style="{StaticResource SurfaceBorderStyle}">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{x:Static resources:AppText.CategoriesLabel}"
+                                           Style="{StaticResource BodySecondaryLabelStyle}" />
+                                    <Label Text="{Binding TotalCategoriesCount}"
+                                           Style="{StaticResource H2LabelStyle}" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Border Grid.Row="0"
+                                    Grid.Column="1"
+                                    Style="{StaticResource SurfaceBorderStyle}">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{x:Static resources:AppText.ItemsLabel}"
+                                           Style="{StaticResource BodySecondaryLabelStyle}" />
+                                    <Label Text="{Binding TotalItemsCount}"
+                                           Style="{StaticResource H2LabelStyle}" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Border Grid.Row="1"
+                                    Grid.Column="0"
+                                    Style="{StaticResource SurfaceBorderStyle}"
+                                    BackgroundColor="{Binding WarningThresholdCardColor}">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{x:Static resources:AppText.WarningsReachedLabel}"
+                                           Style="{StaticResource BodySecondaryLabelStyle}"
+                                           TextColor="{Binding WarningThresholdTextColor}" />
+                                    <Label Text="{Binding WarningThresholdsReachedCount}"
+                                           Style="{StaticResource H2LabelStyle}"
+                                           TextColor="{Binding WarningThresholdTextColor}" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Border Grid.Row="1"
+                                    Grid.Column="1"
+                                    Style="{StaticResource SurfaceBorderStyle}"
+                                    BackgroundColor="{Binding CriticalThresholdCardColor}">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{x:Static resources:AppText.CriticalReachedLabel}"
+                                           Style="{StaticResource BodySecondaryLabelStyle}"
+                                           TextColor="{Binding CriticalThresholdTextColor}" />
+                                    <Label Text="{Binding CriticalThresholdsReachedCount}"
+                                           Style="{StaticResource H2LabelStyle}"
+                                           TextColor="{Binding CriticalThresholdTextColor}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+
+                        <Label Text="{Binding VersionText}"
+                               Style="{StaticResource BodySecondaryLabelStyle}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource CardBorderStyle}"
+                        IsVisible="{Binding ShowLogo}">
+                    <VerticalStackLayout Spacing="14"
+                                         HorizontalOptions="Center">
+                        <Label Text="{x:Static resources:AppText.EverythingLooksCalm}"
+                               Style="{StaticResource H3LabelStyle}"
+                               HorizontalTextAlignment="Center" />
+                        <Image Source="squirrel.png"
+                               HeightRequest="220"
+                               Aspect="AspectFit" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <VerticalStackLayout Spacing="12"
+                                     IsVisible="{Binding HasReachedThresholds}"
+                                     BindableLayout.ItemsSource="{Binding ThresholdCategories}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:OverviewCategoryNodeViewModel">
+                            <Border Style="{StaticResource CardBorderStyle}">
+                                <VerticalStackLayout Spacing="10">
+                                    <Label Text="{Binding Title}"
+                                           Style="{StaticResource H3LabelStyle}" />
+
+                                    <VerticalStackLayout Spacing="8"
+                                                         BindableLayout.ItemsSource="{Binding Items}">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="viewModels:OverviewThresholdItemViewModel">
+                                                <Grid ColumnDefinitions="16,Auto,*"
+                                                      ColumnSpacing="10">
+                                                    <BoxView Grid.Column="0"
+                                                             WidthRequest="2"
+                                                             HorizontalOptions="Center"
+                                                             VerticalOptions="Fill" />
+                                                    <BoxView Grid.Column="1"
+                                                             WidthRequest="10"
+                                                             HeightRequest="10"
+                                                             CornerRadius="1"
+                                                             Color="{Binding MarkerColor}"
+                                                             VerticalOptions="Center" />
+                                                    <Label Grid.Column="2"
+                                                           Text="{Binding DisplayText}"
+                                                           Style="{StaticResource BodyLabelStyle}"
+                                                           VerticalOptions="Center" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid IsVisible="{Binding IsLoading}"
+              BackgroundColor="{StaticResource Color.Overlay}"
+              InputTransparent="False">
+            <VerticalStackLayout HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="10">
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}" />
+                <Label Text="{x:Static resources:AppText.LoadingOverview}"
+                       Style="{StaticResource BodySecondaryLabelStyle}"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+
+</ContentPage>
