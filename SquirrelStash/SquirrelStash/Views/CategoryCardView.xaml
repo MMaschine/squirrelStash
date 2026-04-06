@@ -86,24 +86,23 @@
             <Grid ColumnDefinitions="*,Auto"
                   Padding="0,6">
                 <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnItemLayoutTapped"  />
+                    <TapGestureRecognizer Command="{Binding ToggleItemsVisibilityCommand}" />
                 </Grid.GestureRecognizers>
 
                 <Label  Text="{Binding ItemsCount, StringFormat='Items ({0})'}"
                         Style="{StaticResource BodyStrongLabelStyle}"
                         VerticalOptions="Center" />
 
-                <Button x:Name="ItemsToggleButton"
+                <Button
                         Grid.Column="1"
-                        Text=">"
+                        Text="{Binding ItemsToggleText}"
                         Style="{StaticResource SmallRoundToggleButtonStyle}"
                         HorizontalOptions="End"
                         VerticalOptions="Center"
-                        Clicked="OnItemLayoutButtonClicked" />
+                        Command="{Binding ToggleItemsVisibilityCommand}" />
             </Grid>
 
-            <!-- Expandable content -->
-            <VerticalStackLayout x:Name="ItemsLayout"
+            <VerticalStackLayout IsVisible="{Binding IsItemsVisible}"
                                  BindableLayout.ItemsSource="{Binding Items}"
                                  Spacing="6">
                 <BindableLayout.ItemTemplate>

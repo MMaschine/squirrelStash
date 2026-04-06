@@ -53,6 +53,12 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private int itemsCount;
 
+        [ObservableProperty]
+        private bool isItemsVisible;
+
+        [ObservableProperty]
+        private string itemsToggleText = ">";
+
         public ObservableCollection<PropertyDefinition> FilterOptions { get; }
 
         public ObservableCollection<string> SelectedFilterAllowedValues { get; }
@@ -63,6 +69,12 @@ namespace SquirrelStash.ViewModels
             SelectedFilter?.TypeCode == (int)PropertyTypes.AllowedValues;
 
         public bool IsManualValueFilter => !IsAllowedValuesFilter;
+
+        [RelayCommand]
+        private void ToggleItemsVisibility()
+        {
+            IsItemsVisible = !IsItemsVisible;
+        }
 
         [RelayCommand]
         public async Task AddItem()
@@ -92,6 +104,7 @@ namespace SquirrelStash.ViewModels
                 //TODO: to resources
                 await MessageHelper.ShowInfoAsync($"New item added to the category {_currentCategory.Title}");
                 Items.Add(new ItemCardViewModel(result.Value, _itemsService));
+                IsItemsVisible = true;
             }
         }
 
@@ -124,6 +137,11 @@ namespace SquirrelStash.ViewModels
             {
                 FilterValue = value;
             }
+        }
+
+        partial void OnIsItemsVisibleChanged(bool value)
+        {
+            ItemsToggleText = value ? "v" : ">";
         }
 
         private static IEnumerable<string> ParseAllowedValues(string? allowedValues)
