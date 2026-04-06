@@ -15,6 +15,8 @@
 
     <Color x:Key="Color.GoldAccent">#C5962F</Color>
     <Color x:Key="Color.GoldSoft">#F2E2B7</Color>
+    <Color x:Key="Color.SuccessGreen">#3E8B5B</Color>
+    <Color x:Key="Color.SuccessSoft">#D9ECDC</Color>
     <Color x:Key="Color.WarningOrange">#D1862D</Color>
     <Color x:Key="Color.WarningSoft">#F6E2C8</Color>
     <Color x:Key="Color.CriticalRed">#C45454</Color>
@@ -37,6 +39,8 @@
     <SolidColorBrush x:Key="Brush.PrimaryBlueBorder" Color="{StaticResource Color.PrimaryBlueBorder}" />
     <SolidColorBrush x:Key="Brush.GoldAccent" Color="{StaticResource Color.GoldAccent}" />
     <SolidColorBrush x:Key="Brush.GoldSoft" Color="{StaticResource Color.GoldSoft}" />
+    <SolidColorBrush x:Key="Brush.SuccessGreen" Color="{StaticResource Color.SuccessGreen}" />
+    <SolidColorBrush x:Key="Brush.SuccessSoft" Color="{StaticResource Color.SuccessSoft}" />
     <SolidColorBrush x:Key="Brush.WarningOrange" Color="{StaticResource Color.WarningOrange}" />
     <SolidColorBrush x:Key="Brush.WarningSoft" Color="{StaticResource Color.WarningSoft}" />
     <SolidColorBrush x:Key="Brush.CriticalRed" Color="{StaticResource Color.CriticalRed}" />

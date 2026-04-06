@@ -42,28 +42,28 @@
                             <Border Grid.Row="1"
                                     Grid.Column="0"
                                     Style="{StaticResource SurfaceBorderStyle}"
-                                    BackgroundColor="{StaticResource Color.WarningSoft}">
+                                    BackgroundColor="{Binding WarningThresholdCardColor}">
                                 <VerticalStackLayout Spacing="4">
                                     <Label Text="Warnings reached"
                                            Style="{StaticResource BodySecondaryLabelStyle}"
-                                           TextColor="{StaticResource Color.WarningOrange}" />
+                                           TextColor="{Binding WarningThresholdTextColor}" />
                                     <Label Text="{Binding WarningThresholdsReachedCount}"
                                            Style="{StaticResource H2LabelStyle}"
-                                           TextColor="{StaticResource Color.WarningOrange}" />
+                                           TextColor="{Binding WarningThresholdTextColor}" />
                                 </VerticalStackLayout>
                             </Border>
 
                             <Border Grid.Row="1"
                                     Grid.Column="1"
                                     Style="{StaticResource SurfaceBorderStyle}"
-                                    BackgroundColor="{StaticResource Color.CriticalSoft}">
+                                    BackgroundColor="{Binding CriticalThresholdCardColor}">
                                 <VerticalStackLayout Spacing="4">
                                     <Label Text="Critical reached"
                                            Style="{StaticResource BodySecondaryLabelStyle}"
-                                           TextColor="{StaticResource Color.CriticalRed}" />
+                                           TextColor="{Binding CriticalThresholdTextColor}" />
                                     <Label Text="{Binding CriticalThresholdsReachedCount}"
                                            Style="{StaticResource H2LabelStyle}"
-                                           TextColor="{StaticResource Color.CriticalRed}" />
+                                           TextColor="{Binding CriticalThresholdTextColor}" />
                                 </VerticalStackLayout>
                             </Border>
                         </Grid>
