@@ -23,6 +23,11 @@ namespace SquirrelStash.ViewModels
 
         public PropertyTypes Type { get; }
 
+        public Keyboard ValueKeyboard =>
+            Type == PropertyTypes.Numeric
+                ? Keyboard.Numeric
+                : Keyboard.Default;
+
         public IReadOnlyList<string> AllowedValues { get; }
 
         public bool IsAllowedValuesType => Type == PropertyTypes.AllowedValues;

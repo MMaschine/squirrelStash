@@ -135,7 +135,8 @@
                                         IsVisible="{Binding IsManualValueType}">
                                     <Entry
                                         Text="{Binding Value}"
-                                        Placeholder="{x:Static resources:AppText.EnterValuePlaceholder}" />
+                                        Placeholder="{x:Static resources:AppText.EnterValuePlaceholder}" 
+                                        Keyboard="{Binding ValueKeyboard}"/>
                                 </Border>
 
                                 <Border Grid.Column="1"

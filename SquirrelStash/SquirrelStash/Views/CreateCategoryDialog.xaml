@@ -70,7 +70,7 @@
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="2"
-                                    Text="Ã—"
+                                    ImageSource="delete.png"
                                     Style="{StaticResource RoundIconButtonStyle}"
                                     VerticalOptions="Start"
                                     HorizontalOptions="End"
