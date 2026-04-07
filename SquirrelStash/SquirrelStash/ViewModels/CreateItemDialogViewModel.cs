@@ -38,6 +38,9 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string criticalThreshold = CriticalThresholdDef.ToString();
 
+        [ObservableProperty]
+        private int defaultQuantity = 0;
+
         public ObservableCollection<CreateItemPropertyEntryViewModel> PropertyEntries { get; }
 
         public event Action<DialogResult<CreateItemRequest>>? RequestCompleted;
@@ -76,7 +79,8 @@ namespace SquirrelStash.ViewModels
                         .Select(x => new CreatePropertyEntryRequest(x.DefinitionId, x.Value.Trim()))
                         .ToArray(),
                     ParseThreshold(WarningThreshold, WarningThresholdDef),
-                    ParseThreshold(CriticalThreshold, CriticalThresholdDef));
+                    ParseThreshold(CriticalThreshold, CriticalThresholdDef),
+                    DefaultQuantity >= 0 ? DefaultQuantity : 0);
 
                 RequestCompleted?.Invoke(DialogResult<CreateItemRequest>.GetSuccess(request));
             }

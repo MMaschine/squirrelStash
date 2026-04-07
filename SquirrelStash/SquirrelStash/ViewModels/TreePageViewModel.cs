@@ -128,7 +128,7 @@ namespace SquirrelStash.ViewModels
 
         private async Task<DialogResult<CreateCategoryRequest>> ShowDialogAsync()
         {
-            var dialog = new CreateCategoryDialog();
+            var dialog = new CreateCategoryDialog(_allCategories.Select(x=>x.Title).ToArray());
 
             await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
 

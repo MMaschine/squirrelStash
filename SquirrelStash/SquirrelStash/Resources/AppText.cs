@@ -60,8 +60,13 @@ public static class AppText
     public const string ItemNotFound = "Item not found";
     public const string CannotGetImage = "Can't get image";
 
+    public const string DefaultQuantity = "Default quantity";
+
     public static string FormatCategoryAdded(string categoryTitle) =>
         $"Category {categoryTitle} added";
+
+    public static string FormatCategoryExists(string categoryTitle) =>
+        $"Category {categoryTitle} already exists";
 
     public static string FormatItemAdded(string categoryTitle) =>
         $"New item added to the category {categoryTitle}";
