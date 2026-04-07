@@ -65,6 +65,9 @@ public static class AppText
     public static string FormatCategoryAdded(string categoryTitle) =>
         $"Category {categoryTitle} added";
 
+    public static string FormatCategoryExists(string categoryTitle) =>
+        $"Category {categoryTitle} already exists";
+
     public static string FormatItemAdded(string categoryTitle) =>
         $"New item added to the category {categoryTitle}";
 
