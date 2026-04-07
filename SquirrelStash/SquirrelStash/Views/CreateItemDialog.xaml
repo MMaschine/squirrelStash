@@ -89,6 +89,28 @@
                 </VerticalStackLayout>
             </Border>
 
+            <Frame
+                Style="{StaticResource CardFrameStyle}"
+                Margin="0,0,0,10"
+                Padding="12">
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <Label
+                        Grid.Column="0"
+                        Text="{x:Static resources:AppText.DefaultQuantity}"
+                        VerticalOptions="Center"
+                        Style="{StaticResource BodyStrongLabelStyle}" />
+
+                    <Border Grid.Column="1"
+                            Style="{StaticResource InputContainerStyle}"
+                            Padding="12,6">
+                        <Entry
+                            Text="{Binding DefaultQuantity}"
+                            Keyboard="Numeric" />
+                    </Border>
+
+                </Grid>
+            </Frame>
+
             <Label
                 Text="{x:Static resources:AppText.PropertiesLabel}"
                 Style="{StaticResource H3LabelStyle}" />

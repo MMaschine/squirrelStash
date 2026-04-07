@@ -38,6 +38,7 @@ namespace SquirrelStash.Logic
                     CriticalThreshold = createItemRequest.CriticalThreshold,
                     WarningThreshold = createItemRequest.WarningThreshold,
                     ImageSource = createItemRequest.ImageSource,
+                    Quantity = createItemRequest.DefaultQuantity,
                     Note = createItemRequest.Note
                 };
 
