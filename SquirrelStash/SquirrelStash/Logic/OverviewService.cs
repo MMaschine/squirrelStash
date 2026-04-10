@@ -1,5 +1,6 @@
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess;
 using SquirrelStash.DataAccess.Entities;
@@ -8,7 +9,7 @@ using SquirrelStash.Resources;
 
 namespace SquirrelStash.Logic
 {
-    internal class OverviewService(StashContext context) : IOverviewService
+    internal class OverviewService(StashContext context, ILogger<OverviewService> logger) : IOverviewService
     {
         private readonly DbSet<Item> _itemSet = context.Items;
         private readonly DbSet<Category> _categorySet = context.Categories;
@@ -39,7 +40,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception ex)
             {
-                //TODO: add log
+                logger.LogError(ex, "Failed to build overview.");
                 return Result.Fail(AppText.FailedToBuildOverview);
             }
         }

@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Serilog.Core;
 using SquirrelStash.Abstractions;
 using SquirrelStash.Helpers;
 using SquirrelStash.Models;
@@ -70,7 +69,7 @@ namespace SquirrelStash.ViewModels
             {
                 if (!string.IsNullOrEmpty(dialogResult.ErrorMessage))
                 {
-                    //TODO: add logging
+                    logger.LogWarning("Create category dialog failed: {ErrorMessage}", dialogResult.ErrorMessage);
                 }
 
                 return;
@@ -80,7 +79,9 @@ namespace SquirrelStash.ViewModels
 
             if (result.IsFailed)
             {
-                //TODO: add logging
+                logger.LogError("Create category failed for {CategoryTitle}. Errors: {Errors}",
+                    dialogResult.Data.Title,
+                    string.Join("; ", result.Errors.Select(x => x.Message)));
                 await MessageHelper.ShowErrorAsync(AppText.FailedToAddNewCategory);
             }
             else
@@ -97,7 +98,7 @@ namespace SquirrelStash.ViewModels
         {
             IsLoading = true;
 
-            logger.LogInformation("Loading categories...");
+            logger.LogInformation("Loading categories.");
 
             var result = await categoryService.GetCategoriesAsync();
 
@@ -105,11 +106,14 @@ namespace SquirrelStash.ViewModels
 
             if (!result.IsSuccess)
             {
+                logger.LogError("Loading categories failed. Errors: {Errors}",
+                    string.Join("; ", result.Errors.Select(x => x.Message)));
                 await MessageHelper.ShowErrorAsync(AppText.FailedToUploadCategories);
                 return;
             }
 
             _allCategories.AddRange(result.Value.Select(x => new CategoryCardViewModel(x, itemsService)));
+            logger.LogInformation("Loaded {CategoryCount} categories.", result.Value.Count);
 
             ApplyFilter(string.Empty);
         }

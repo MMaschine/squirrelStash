@@ -1,5 +1,6 @@
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess;
 using SquirrelStash.DataAccess.Entities;
@@ -8,7 +9,7 @@ using SquirrelStash.Resources;
 
 namespace SquirrelStash.Logic
 {
-    internal class CategoryService(StashContext context) : ICategoryService
+    internal class CategoryService(StashContext context, ILogger<CategoryService> logger) : ICategoryService
     {
         private readonly DbSet<Category> _categoriesSet = context.Set<Category>();
 
@@ -27,7 +28,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception e)
             {
-                //TODO: add log
+                logger.LogError(e, "Failed to load categories.");
                 return Result.Fail(AppText.CannotGetCategories);
             }
         }
@@ -63,7 +64,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception e)
             {
-                //TODO: log it
+                logger.LogError(e, "Failed to create category with title {CategoryTitle}.", request.Title);
                 return Result.Fail(AppText.FailedToCreateCategory);
             }
         }
