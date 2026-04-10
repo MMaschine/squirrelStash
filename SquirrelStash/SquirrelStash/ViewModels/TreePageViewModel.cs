@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
+using Serilog.Core;
 using SquirrelStash.Abstractions;
 using SquirrelStash.Helpers;
 using SquirrelStash.Models;
@@ -11,7 +13,7 @@ using System.Collections.ObjectModel;
 namespace SquirrelStash.ViewModels
 {
     public partial class TreePageViewModel(
-        ICategoryService categoryService, IItemsService itemsService) : ObservableObject
+        ICategoryService categoryService, IItemsService itemsService, ILogger<TreePageViewModel> logger) : ObservableObject
     {
         private bool _isInitialized;
         private bool _isLoading;
@@ -94,6 +96,8 @@ namespace SquirrelStash.ViewModels
         private async Task LoadCategoriesAsync()
         {
             IsLoading = true;
+
+            logger.LogInformation("Loading categories...");
 
             var result = await categoryService.GetCategoriesAsync();
 

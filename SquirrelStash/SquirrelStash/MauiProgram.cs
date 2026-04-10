@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Serilog;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Helpers;
 using SquirrelStash.Helpers;
@@ -22,9 +23,15 @@ namespace SquirrelStash
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            //Serilog configuration 
+            builder.Services.AddSerilog(new LoggerConfiguration()
+                .WriteTo.Debug()
+                .WriteTo.File(Path.Combine(FileSystem.Current.AppDataDirectory, "log.txt"), rollingInterval: RollingInterval.Day)
+                .CreateLogger());
 
             builder.Services.ConfigureDbContext(Path.Combine(FileSystem.AppDataDirectory, "squirrelstash.db"));
 
