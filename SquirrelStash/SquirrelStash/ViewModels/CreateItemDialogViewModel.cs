@@ -6,7 +6,6 @@ using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using System.Collections.ObjectModel;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using SquirrelStash.Enums;
 using SquirrelStash.Resources;
 
@@ -21,10 +20,8 @@ namespace SquirrelStash.ViewModels
 
         private readonly ILogger _logger;
 
-        public CreateItemDialogViewModel(Category category, ILogger<CreateItemDialogViewModel> logger)
+        public CreateItemDialogViewModel(Category category)
         {
-            _logger = logger;
-
             ArgumentNullException.ThrowIfNull(category);
 
             _categoryId = category.Id;
@@ -61,7 +58,6 @@ namespace SquirrelStash.ViewModels
             }
             else
             {
-                _logger.LogWarning($"Failed to get the image. Exception message: {result.Errors.FirstOrDefault()?.Message}");
                 await MessageHelper.ShowWarningAsync(AppText.FailedToGetImage);
             }
         }
