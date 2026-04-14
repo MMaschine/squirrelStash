@@ -23,7 +23,7 @@ namespace SquirrelStash.Helpers
 
                 if (fileResult is null)
                 {
-                    return Result.Fail(AppText.CannotGetImage);
+                    return Result.Fail($"Image selection failed for source {source}: no file was returned.");
                 }
 
                 var imagesFolder = Path.Combine(FileSystem.AppDataDirectory, "items-images");
@@ -47,8 +47,7 @@ namespace SquirrelStash.Helpers
             }
             catch (Exception e)
             {
-                //TODO: add log 
-                return Result.Fail(AppText.FailedToGetImageResult);
+                return Result.Fail(e.Message);
             }
         }
 

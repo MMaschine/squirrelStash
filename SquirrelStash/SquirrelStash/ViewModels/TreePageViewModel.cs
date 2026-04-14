@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.Helpers;
+using SquirrelStash.Logic.Factories;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.Resources;
@@ -12,13 +13,13 @@ using System.Collections.ObjectModel;
 namespace SquirrelStash.ViewModels
 {
     public partial class TreePageViewModel(
-        ICategoryService categoryService, IItemsService itemsService, ILogger<TreePageViewModel> logger) : ObservableObject
+        ICategoryService categoryService, ICategoryCardViewModelFactory cardViewModelFactory, ILogger<TreePageViewModel> logger) : ObservableObject
     {
         private bool _isInitialized;
         private bool _isLoading;
-        private string _searchText;
+        private string _searchText = null!;
 
-        private List<CategoryCardViewModel> _allCategories { get; } = [];
+        private readonly List<CategoryCardViewModel> _allCategories = [];
 
         public ObservableCollection<CategoryCardViewModel> Categories { get; } = [];
 
@@ -86,7 +87,7 @@ namespace SquirrelStash.ViewModels
             }
             else
             {
-                _allCategories.Add(new CategoryCardViewModel(result.Value, itemsService));
+                _allCategories.Add(cardViewModelFactory.GetViewModel(result.Value));
                 SearchText = string.Empty;
                 ApplyFilter(SearchText);
 
@@ -112,7 +113,7 @@ namespace SquirrelStash.ViewModels
                 return;
             }
 
-            _allCategories.AddRange(result.Value.Select(x => new CategoryCardViewModel(x, itemsService)));
+            _allCategories.AddRange(result.Value.Select(cardViewModelFactory.GetViewModel));
             logger.LogInformation("Loaded {CategoryCount} categories.", result.Value.Count);
 
             ApplyFilter(string.Empty);

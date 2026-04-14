@@ -1,15 +1,18 @@
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Enums;
 using SquirrelStash.Helpers;
+using SquirrelStash.Logic.Factories;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.Resources;
 using SquirrelStash.Views;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SquirrelStash.ViewModels
 {
@@ -17,11 +20,19 @@ namespace SquirrelStash.ViewModels
     {
         private readonly Category _currentCategory;
         private readonly IItemsService _itemsService;
+        private readonly ILogger _logger;
+        private readonly IItemCardViewModelFactory _itemCardViewModelFactory;
 
-        public CategoryCardViewModel(Category category, IItemsService itemService)
+        public CategoryCardViewModel(
+            Category category,
+            IItemsService itemService,
+            IItemCardViewModelFactory itemCardViewModelFactory,
+            ILogger<CategoryCardViewModel> logger)
         {
             _itemsService = itemService;
             _currentCategory = category;
+            _itemCardViewModelFactory = itemCardViewModelFactory;
+            _logger = logger;
 
             Title = category.Title;
 
@@ -34,7 +45,7 @@ namespace SquirrelStash.ViewModels
 
             foreach (var item in category.Items)
             {
-                Items.Add(new ItemCardViewModel(item, itemService));
+                Items.Add(_itemCardViewModelFactory.GetViewModel(item));
             }
         }
 
@@ -87,7 +98,9 @@ namespace SquirrelStash.ViewModels
             {
                 if (!string.IsNullOrEmpty(dialogResult.ErrorMessage))
                 {
-                    //TODO: add logging
+                    _logger.LogWarning($"Create item dialog failed for category {Title}: {dialogResult.ErrorMessage}",
+                        _currentCategory.Title,
+                        dialogResult.ErrorMessage);
                 }
 
                 return;
@@ -96,14 +109,14 @@ namespace SquirrelStash.ViewModels
             var result = await _itemsService.AddItemAsync(_currentCategory.Id, dialogResult.Data);
 
             if (result.IsFailed)
-            {
-                //TODO: add logging
+            {  
+                _logger.LogError($"Add item failed for category {_currentCategory.Title}. Errors: {string.Join("; ", result.Errors.Select(x => x.Message))}");
                 await MessageHelper.ShowErrorAsync(AppText.FailedToAddItem);
             }
             else
             {
                 await MessageHelper.ShowInfoAsync(AppText.FormatItemAdded(_currentCategory.Title));
-                Items.Add(new ItemCardViewModel(result.Value, _itemsService));
+                Items.Add(_itemCardViewModelFactory.GetViewModel(result.Value));
                 IsItemsVisible = true;
             }
         }
