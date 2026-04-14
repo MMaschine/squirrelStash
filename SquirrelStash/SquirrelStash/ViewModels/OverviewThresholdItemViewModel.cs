@@ -1,11 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
 using SquirrelStash.Models;
 
 namespace SquirrelStash.ViewModels;
 
 public partial class OverviewThresholdItemViewModel : ObservableObject
 {
-    public OverviewThresholdItemViewModel(OverviewItem item)
+    public OverviewThresholdItemViewModel(OverviewItem item, ILogger<OverviewThresholdItemViewModel> logger)
     {
         DisplayText = $"{item.Name} : {item.Quantity}";
         IsCritical = item.IsCritical;
@@ -18,7 +19,7 @@ public partial class OverviewThresholdItemViewModel : ObservableObject
         }
         catch (Exception e)
         {
-            var s = e.Message;
+            logger.LogError(e, "Failed to resolve threshold marker color for item {ItemName}.", item.Name);
         }
     }
 

@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Helpers;
@@ -11,11 +12,13 @@ namespace SquirrelStash.ViewModels
     {
         private readonly IItemsService _itemsService;
         private readonly int _itemId;
+        private readonly ILogger<ItemCardViewModel> _logger;
 
-        public ItemCardViewModel(Item item, IItemsService itemService)
+        public ItemCardViewModel(Item item, IItemsService itemService, ILogger<ItemCardViewModel> logger)
         {
             _itemsService = itemService;
             _itemId = item.Id;
+            _logger = logger;
 
             Quantity = item.Quantity;
 
@@ -26,6 +29,7 @@ namespace SquirrelStash.ViewModels
 
             ImagePath = string.IsNullOrEmpty(item.ImageSource) ? ImageHelper.ItemImagePlaceholder : item.ImageSource;
         }
+
 
         [ObservableProperty]
         private string name;
@@ -43,7 +47,7 @@ namespace SquirrelStash.ViewModels
 
             if (newQuantityResult.IsFailed)
             {
-                //TODO: add details logging/messaging
+                _logger.LogError($"Increase quantity failed for item {_itemId}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
                 await MessageHelper.ShowErrorAsync(AppText.QuantityChangeError);
             }
             else
@@ -61,7 +65,7 @@ namespace SquirrelStash.ViewModels
 
                 if (newQuantityResult.IsFailed)
                 {
-                    //TODO: add details logging/messaging
+                    _logger.LogError($"Decrease quantity failed for item {_itemId}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
                     await MessageHelper.ShowErrorAsync(AppText.QuantityChangeError);
                 }
                 else

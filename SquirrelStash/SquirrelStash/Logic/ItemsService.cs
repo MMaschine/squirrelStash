@@ -1,5 +1,6 @@
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess;
 using SquirrelStash.DataAccess.Entities;
@@ -8,7 +9,7 @@ using SquirrelStash.Resources;
 
 namespace SquirrelStash.Logic
 {
-    internal class ItemsService(StashContext context) : IItemsService
+    internal class ItemsService(StashContext context, ILogger<ItemsService> logger) : IItemsService
     {
         private readonly DbSet<Item> _itemSet = context.Set<Item>();
 
@@ -23,7 +24,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception e)
             {
-                //TODO: add log
+                logger.LogError(e, "Failed to load items for category {CategoryId}.", categoryId);
                 return Result.Fail(AppText.CannotGetCategories);
             }
         }
@@ -55,7 +56,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception e)
             {
-                //TODO: add logging
+                logger.LogError(e, "Failed to add item to category {CategoryId}.", categoryId);
                 return Result.Fail(AppText.FailedToCreateItem);
             }
         }
@@ -72,6 +73,7 @@ namespace SquirrelStash.Logic
         {
             if (increment <= 0)
             {
+                logger.LogWarning("Rejected quantity increase for item {ItemId} because increment {Increment} is invalid.", id, increment);
                 return Result.Fail(AppText.WrongIncrement);
             }
 
@@ -87,13 +89,13 @@ namespace SquirrelStash.Logic
                 }
                 else
                 {
-                    //TODO: add log
+                    logger.LogWarning("Failed to increase quantity because item {ItemId} was not found.", id);
                     return Result.Fail(AppText.ItemNotFound);
                 }
             }
             catch (Exception e)
             {
-                //TODO: add log
+                logger.LogError(e, "Failed to increase quantity for item {ItemId} by {Increment}.", id, increment);
                 return Result.Fail(AppText.FailedToUpdateItem);
             }
         }
@@ -114,13 +116,13 @@ namespace SquirrelStash.Logic
                 }
                 else
                 {
-                    //TODO: add log
+                    logger.LogWarning("Failed to decrease quantity because item {ItemId} was not found.", id);
                     return Result.Fail(AppText.ItemNotFound);
                 }
             }
             catch (Exception e)
             {
-                //TODO: add log
+                logger.LogError(e, "Failed to decrease quantity for item {ItemId} by {Decrement}.", id, decrement);
                 return Result.Fail(AppText.FailedToUpdateItem);
             }
         }
