@@ -14,11 +14,10 @@ public partial class CreateItemDialog : ContentPage
 
     public Task<DialogResult<CreateItemRequest>> ResultTask => _resultSource.Task;
 
-    public CreateItemDialog(Category category)
+    public CreateItemDialog(CreateItemDialogViewModel viewModel)
     {
         InitializeComponent();
 
-        var viewModel = new CreateItemDialogViewModel(category);
         viewModel.RequestCompleted += OnSaveRequested;
 
         _viewModel = viewModel;

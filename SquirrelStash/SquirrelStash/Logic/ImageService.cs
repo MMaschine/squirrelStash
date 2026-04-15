@@ -1,14 +1,17 @@
 using FluentResults;
+using Microsoft.Extensions.Logging;
+using SquirrelStash.Abstractions;
 using SquirrelStash.Enums;
+using SquirrelStash.Helpers;
 using SquirrelStash.Resources;
 
-namespace SquirrelStash.Helpers
+namespace SquirrelStash.Logic
 {
-    internal static class ImageHelper
+    internal class ImageService(ILogger<ImageService> logger) : IImageService
     {
-        public static string ItemImagePlaceholder = "grey_tshirt.png";
+        public const string ItemImagePlaceholder = "grey_tshirt.png";
 
-        public static async Task<Result<string>> PickAndStoreImageAsync(
+        public async Task<Result<string>> PickAndStoreImageAsync(
             ItemImageSource source,
             CancellationToken cancellationToken = default)
         {
@@ -23,7 +26,8 @@ namespace SquirrelStash.Helpers
 
                 if (fileResult is null)
                 {
-                    return Result.Fail($"Image selection failed for source {source}: no file was returned.");
+                    logger.LogWarning("Image selection failed for source {ImageSource}: no file was returned.", source);
+                    return Result.Fail(AppText.CannotGetImage);
                 }
 
                 var imagesFolder = Path.Combine(FileSystem.AppDataDirectory, "items-images");
@@ -47,7 +51,8 @@ namespace SquirrelStash.Helpers
             }
             catch (Exception e)
             {
-                return Result.Fail(e.Message);
+                logger.LogError(e, "Failed to pick and store image from source {ImageSource}.", source);
+                return Result.Fail(AppText.FailedToGetImageResult);
             }
         }
 

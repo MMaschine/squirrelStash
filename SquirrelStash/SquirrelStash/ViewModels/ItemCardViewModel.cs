@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Helpers;
+using SquirrelStash.Logic;
 using SquirrelStash.Resources;
 
 namespace SquirrelStash.ViewModels
@@ -27,7 +28,7 @@ namespace SquirrelStash.ViewModels
                     .Select(p => p.Value)
                     .Where(v => !string.IsNullOrWhiteSpace(v)));
 
-            ImagePath = string.IsNullOrEmpty(item.ImageSource) ? ImageHelper.ItemImagePlaceholder : item.ImageSource;
+            ImagePath = string.IsNullOrEmpty(item.ImageSource) ? ImageService.ItemImagePlaceholder : item.ImageSource;
         }
 
 
