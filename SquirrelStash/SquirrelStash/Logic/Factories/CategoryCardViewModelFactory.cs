@@ -8,12 +8,18 @@ namespace SquirrelStash.Logic.Factories
     internal class CategoryCardViewModelFactory(
         IItemsService itemService,
         IItemCardViewModelFactory itemCardViewModelFactory,
+        ICreateItemDialogFactory createItemDialogFactory,
         ILogger<CategoryCardViewModel> logger)
         : ICategoryCardViewModelFactory
     {
         public CategoryCardViewModel GetViewModel(Category category)
         {
-            return new CategoryCardViewModel(category, itemService, itemCardViewModelFactory, logger);
+            return new CategoryCardViewModel(
+                category,
+                itemService,
+                itemCardViewModelFactory,
+                createItemDialogFactory,
+                logger);
         }
     }
 }

@@ -9,10 +9,8 @@ using SquirrelStash.Logic.Factories;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.Resources;
-using SquirrelStash.Views;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SquirrelStash.ViewModels
 {
@@ -22,16 +20,19 @@ namespace SquirrelStash.ViewModels
         private readonly IItemsService _itemsService;
         private readonly ILogger _logger;
         private readonly IItemCardViewModelFactory _itemCardViewModelFactory;
+        private readonly ICreateItemDialogFactory _createItemDialogFactory;
 
         public CategoryCardViewModel(
             Category category,
             IItemsService itemService,
             IItemCardViewModelFactory itemCardViewModelFactory,
+            ICreateItemDialogFactory createItemDialogFactory,
             ILogger<CategoryCardViewModel> logger)
         {
             _itemsService = itemService;
             _currentCategory = category;
             _itemCardViewModelFactory = itemCardViewModelFactory;
+            _createItemDialogFactory = createItemDialogFactory;
             _logger = logger;
 
             Title = category.Title;
@@ -176,7 +177,7 @@ namespace SquirrelStash.ViewModels
 
         private async Task<DialogResult<CreateItemRequest>> ShowDialogAsync()
         {
-            var dialog = new CreateItemDialog(_currentCategory);
+            var dialog = _createItemDialogFactory.CreateDialog(_currentCategory);
 
             await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
 

@@ -1,11 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Helpers;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using System.Collections.ObjectModel;
-using Microsoft.Extensions.Logging;
 using SquirrelStash.Enums;
 using SquirrelStash.Resources;
 
@@ -18,12 +18,13 @@ namespace SquirrelStash.ViewModels
 
         private readonly int _categoryId;
 
-        private readonly ILogger _logger;
+        private readonly IImageService _imageService;
 
-        public CreateItemDialogViewModel(Category category)
+        public CreateItemDialogViewModel(Category category, IImageService imageService)
         {
             ArgumentNullException.ThrowIfNull(category);
 
+            _imageService = imageService;
             _categoryId = category.Id;
 
             PropertyEntries = new ObservableCollection<CreateItemPropertyEntryViewModel>(
@@ -50,7 +51,7 @@ namespace SquirrelStash.ViewModels
 
         public async Task UpdateImageAsync(ItemImageSource source)
         {
-            var result = await ImageHelper.PickAndStoreImageAsync(source);
+            var result = await _imageService.PickAndStoreImageAsync(source);
 
             if (result.IsSuccess)
             {

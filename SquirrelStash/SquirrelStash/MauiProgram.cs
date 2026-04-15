@@ -36,9 +36,11 @@ namespace SquirrelStash
 
             builder.Services.ConfigureDbContext(Path.Combine(FileSystem.AppDataDirectory, "squirrelstash.db"));
 
+            builder.Services.AddScoped<IImageService, ImageService>();
             builder.Services.AddScoped<IItemsService, ItemsService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IOverviewService, OverviewService>();
+            builder.Services.AddScoped<ICreateItemDialogFactory, CreateItemDialogFactory>();
             builder.Services.AddScoped<IItemCardViewModelFactory, ItemCardViewModelFactory>();
             builder.Services.AddScoped<ICategoryCardViewModelFactory, CategoryCardViewModelFactory>();
             builder.Services.AddScoped<IOverviewThresholdItemViewModelFactory, OverviewThresholdItemViewModelFactory>();
