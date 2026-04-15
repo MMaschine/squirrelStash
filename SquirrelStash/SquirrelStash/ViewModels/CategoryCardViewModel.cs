@@ -9,10 +9,8 @@ using SquirrelStash.Logic.Factories;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.Resources;
-using SquirrelStash.Views;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SquirrelStash.ViewModels
 {
