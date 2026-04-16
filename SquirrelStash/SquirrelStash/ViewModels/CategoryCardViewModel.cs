@@ -37,7 +37,7 @@ namespace SquirrelStash.ViewModels
 
             Title = category.Title;
 
-            FilterOptions = new ObservableCollection<PropertyDefinition>(
+            OrderByOptions = new ObservableCollection<PropertyDefinition>(
                 (category.Properties ?? [])
                     .OrderBy(x => x.Id));
             SelectedFilterAllowedValues = [];
@@ -76,10 +76,9 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string itemsToggleText = ">";
 
-        [ObservableProperty]
+        public ObservableCollection<PropertyDefinition> OrderByOptions { get; }
         private string? selectedOrderOption;
-
-        public ObservableCollection<PropertyDefinition> FilterOptions { get; }
+        [ObservableProperty]
 
         public ObservableCollection<string> SelectedFilterAllowedValues { get; }
 
@@ -156,9 +155,6 @@ namespace SquirrelStash.ViewModels
             OnPropertyChanged(nameof(IsManualValueFilter));
         }
 
-        partial void OnFilterValueChanged(string? value)
-        {
-        }
 
         partial void OnSelectedAllowedValueChanged(string? value)
         {
