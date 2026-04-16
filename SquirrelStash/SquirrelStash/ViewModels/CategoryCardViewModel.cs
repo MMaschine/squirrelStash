@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Enums;
@@ -11,6 +12,7 @@ using SquirrelStash.Requests;
 using SquirrelStash.Resources;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Globalization;
 
 namespace SquirrelStash.ViewModels
 {
@@ -37,15 +39,8 @@ namespace SquirrelStash.ViewModels
 
             Title = category.Title;
 
-            OrderByOptions = new ObservableCollection<PropertyDefinition>(
-                (category.Properties ?? [])
-                    .OrderBy(x => x.Id));
-            SelectedFilterAllowedValues = [];
-            OrderOption = new ObservableCollection<string>
-            {
-                AppText.OrderByName,
-                AppText.OrderByQuantity
-            };
+            OrderOptions = new ObservableCollection<PropertyDefinition>(
+                (category.Properties ?? []));
 
             Items.CollectionChanged += OnItemsCollectionChanged;
 
@@ -76,22 +71,15 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string itemsToggleText = ">";
 
-        public ObservableCollection<PropertyDefinition> OrderByOptions { get; }
-        private string? selectedOrderOption;
+        public ObservableCollection<PropertyDefinition> OrderOptions { get; }
+
         [ObservableProperty]
+        private PropertyDefinition? selectedOrderOption;
 
-        public ObservableCollection<string> SelectedFilterAllowedValues { get; }
-
-        public ObservableCollection<string> OrderOption { get; }
-
-        public ObservableCollection<ItemCardViewModel> Items { get; } = [];
+        public ObservableCollection<ItemCardViewModel> Items { get; private set; } = [];
 
         public string ItemsHeaderText => AppText.FormatItemsHeader(ItemsCount);
 
-        public bool IsAllowedValuesFilter =>
-            SelectedFilter?.TypeCode == (int)PropertyTypes.AllowedValues;
-
-        public bool IsManualValueFilter => !IsAllowedValuesFilter;
 
         [RelayCommand]
         private void ToggleItemsVisibility()
@@ -128,33 +116,23 @@ namespace SquirrelStash.ViewModels
                 await MessageHelper.ShowInfoAsync(AppText.FormatItemAdded(_currentCategory.Title));
                 Items.Add(_itemCardViewModelFactory.GetViewModel(result.Value));
                 IsItemsVisible = true;
+
+                //If we have order by function, we should apply it 
+                if (SelectedOrderOption != null)
+                {
+                    SortItems(SelectedOrderOption.Id);
+                }
             }
         }
 
         [RelayCommand]
-        private void HandleOrderSelection(string? orderOption)
+        private void HandleOrderSelection(PropertyDefinition? orderOption)
         {
-        }
-
-        partial void OnSelectedFilterChanged(PropertyDefinition? value)
-        {
-            SelectedAllowedValue = null;
-            FilterValue = null;
-
-            SelectedFilterAllowedValues.Clear();
-
-            if (value?.TypeCode == (int)PropertyTypes.AllowedValues)
+            if (orderOption != null)
             {
-                foreach (var item in ParseAllowedValues(value.AllowedValues))
-                {
-                    SelectedFilterAllowedValues.Add(item);
-                }
+                SortItems(orderOption.Id);
             }
-
-            OnPropertyChanged(nameof(IsAllowedValuesFilter));
-            OnPropertyChanged(nameof(IsManualValueFilter));
         }
-
 
         partial void OnSelectedAllowedValueChanged(string? value)
         {
@@ -164,7 +142,7 @@ namespace SquirrelStash.ViewModels
             }
         }
 
-        partial void OnSelectedOrderOptionChanged(string? value)
+        partial void OnSelectedOrderOptionChanged(PropertyDefinition? value)
         {
             HandleOrderSelectionCommand.Execute(value);
         }
@@ -198,6 +176,19 @@ namespace SquirrelStash.ViewModels
             await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
 
             return await dialog.ResultTask;
+        }
+
+        private void SortItems(int id)
+        {
+            var ordered = Items.OrderBy(x => x.GetOrderByValue(id)).ToArray();
+            for (var i = 0; i < ordered.Length; i++)
+            {
+                var oldIndex = Items.IndexOf(ordered[i]);
+                if (oldIndex != i)
+                {
+                    Items.Move(oldIndex, i);
+                }
+            }
         }
     }
 }

@@ -46,12 +46,23 @@
 
             <VerticalStackLayout IsVisible="{Binding IsItemsVisible}"
                                  Spacing="6">
-                <Picker
-                    Title="{x:Static resources:AppText.SelectOrderTitle}"
-                    ItemsSource="{Binding OrderOption}"
-                    SelectedItem="{Binding SelectedOrderOption}"
-                    HorizontalOptions="End"
-                    WidthRequest="180" />
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="12">
+                    <Label
+                        Grid.Column="0"
+                        Text="{x:Static resources:AppText.SelectOrderTitle}"
+                        Style="{StaticResource BodySecondaryLabelStyle}"
+                        VerticalOptions="Center" />
+
+                    <Picker
+                        Grid.Column="1"
+                        TextColor="{StaticResource Color.TextPrimary}"
+                        ItemsSource="{Binding OrderOptions}"
+                        SelectedItem="{Binding SelectedOrderOption}"
+                        ItemDisplayBinding="{Binding Name}"
+                        HorizontalOptions="End"
+                        WidthRequest="180" />
+                </Grid>
 
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}"
                                      Spacing="6">

@@ -15,6 +15,8 @@ namespace SquirrelStash.ViewModels
         private readonly int _itemId;
         private readonly ILogger<ItemCardViewModel> _logger;
 
+        private Dictionary<int, string> _itemsToOrderBy = [];
+
         public ItemCardViewModel(Item item, IItemsService itemService, ILogger<ItemCardViewModel> logger)
         {
             _itemsService = itemService;
@@ -29,8 +31,12 @@ namespace SquirrelStash.ViewModels
                     .Where(v => !string.IsNullOrWhiteSpace(v)));
 
             ImagePath = string.IsNullOrEmpty(item.ImageSource) ? ImageService.ItemImagePlaceholder : item.ImageSource;
-        }
 
+            foreach (var property in item.PropertyEntries)
+            {
+                _itemsToOrderBy.Add(property.PropertyDefinitionId, property.Value);
+            }
+        }
 
         [ObservableProperty]
         private string name;
@@ -40,6 +46,11 @@ namespace SquirrelStash.ViewModels
 
         [ObservableProperty]
         private string imagePath;
+
+        public string GetOrderByValue(int id)
+        {
+            return _itemsToOrderBy.TryGetValue(id, out var result) ? result : string.Empty;
+        } 
 
         [RelayCommand]
         private async Task IncreaseQuantity()
