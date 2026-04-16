@@ -41,6 +41,11 @@ namespace SquirrelStash.ViewModels
                 (category.Properties ?? [])
                     .OrderBy(x => x.Id));
             SelectedFilterAllowedValues = [];
+            OrderOption = new ObservableCollection<string>
+            {
+                AppText.OrderByName,
+                AppText.OrderByQuantity
+            };
 
             Items.CollectionChanged += OnItemsCollectionChanged;
 
@@ -71,9 +76,14 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string itemsToggleText = ">";
 
+        [ObservableProperty]
+        private string? selectedOrderOption;
+
         public ObservableCollection<PropertyDefinition> FilterOptions { get; }
 
         public ObservableCollection<string> SelectedFilterAllowedValues { get; }
+
+        public ObservableCollection<string> OrderOption { get; }
 
         public ObservableCollection<ItemCardViewModel> Items { get; } = [];
 
@@ -122,6 +132,11 @@ namespace SquirrelStash.ViewModels
             }
         }
 
+        [RelayCommand]
+        private void HandleOrderSelection(string? orderOption)
+        {
+        }
+
         partial void OnSelectedFilterChanged(PropertyDefinition? value)
         {
             SelectedAllowedValue = null;
@@ -151,6 +166,11 @@ namespace SquirrelStash.ViewModels
             {
                 FilterValue = value;
             }
+        }
+
+        partial void OnSelectedOrderOptionChanged(string? value)
+        {
+            HandleOrderSelectionCommand.Execute(value);
         }
 
         partial void OnIsItemsVisibleChanged(bool value)

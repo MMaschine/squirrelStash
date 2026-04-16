@@ -103,13 +103,22 @@
             </Grid>
 
             <VerticalStackLayout IsVisible="{Binding IsItemsVisible}"
-                                 BindableLayout.ItemsSource="{Binding Items}"
                                  Spacing="6">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="viewModels:ItemCardViewModel">
-                        <views:ItemCardView />
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
+                <Picker
+                    Title="{x:Static resources:AppText.SelectOrderTitle}"
+                    ItemsSource="{Binding OrderOption}"
+                    SelectedItem="{Binding SelectedOrderOption}"
+                    HorizontalOptions="End"
+                    WidthRequest="180" />
+
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}"
+                                     Spacing="6">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:ItemCardViewModel">
+                            <views:ItemCardView />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
             </VerticalStackLayout>
         </VerticalStackLayout>
     </Border>
