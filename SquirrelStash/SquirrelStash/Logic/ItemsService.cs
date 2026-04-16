@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess;
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Helpers;
 using SquirrelStash.Requests;
 using SquirrelStash.Resources;
 
@@ -56,7 +57,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Failed to add item to category {CategoryId}.", categoryId);
+                await MessageHelper.NotifyException(e, $"Failed to add item to category {categoryId}", logger);
                 return Result.Fail(AppText.FailedToCreateItem);
             }
         }

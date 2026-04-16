@@ -15,9 +15,10 @@
 +++ Bug: not allow numeric values for the numeric type 
 +++ Bug: delete property icon is strange 
 +++ Default Quantity for item 
-
++++ Logs 
++++ Refactoring. Create service to deal with images, inject in dialog properly + factory for dialog 
 -----------------------------------------------------------------------------------------------------------------------
 
-- Logs !
+- ShareFile integration for exceptions
 - Grouping ! 
 - Version update 
