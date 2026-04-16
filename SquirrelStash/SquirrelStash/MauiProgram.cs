@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Helpers;
@@ -30,8 +30,9 @@ namespace SquirrelStash
 #endif
             //Serilog configuration 
             builder.Services.AddSerilog(new LoggerConfiguration()
+                .MinimumLevel.Information()
                 .WriteTo.Debug()
-                .WriteTo.File(Path.Combine(FileSystem.Current.AppDataDirectory, "log.txt"), rollingInterval: RollingInterval.Day)
+                .WriteTo.File(Path.Combine(FileSystem.AppDataDirectory, "log.txt"), rollingInterval: RollingInterval.Day)
                 .CreateLogger());
 
             builder.Services.ConfigureDbContext(Path.Combine(FileSystem.AppDataDirectory, "squirrelstash.db"));
@@ -43,7 +44,7 @@ namespace SquirrelStash
             builder.Services.AddScoped<ICreateItemDialogFactory, CreateItemDialogFactory>();
             builder.Services.AddScoped<IItemCardViewModelFactory, ItemCardViewModelFactory>();
             builder.Services.AddScoped<ICategoryCardViewModelFactory, CategoryCardViewModelFactory>();
-            builder.Services.AddScoped<IOverviewThresholdItemViewModelFactory, OverviewThresholdItemViewModelFactory>();
+
 
             builder.Services.AddViewWithViewModel<OverviewPage, OverviewPageViewModel>();
             builder.Services.AddViewWithViewModel<TreePage, TreePageViewModel>();

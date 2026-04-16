@@ -51,7 +51,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Failed to pick and store image from source {ImageSource}.", source);
+                await MessageHelper.NotifyException(e, $"Failed to pick and store image from source {source}.", logger);
                 return Result.Fail(AppText.FailedToGetImageResult);
             }
         }
