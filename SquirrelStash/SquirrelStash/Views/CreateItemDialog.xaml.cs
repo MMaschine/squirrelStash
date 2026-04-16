@@ -1,4 +1,3 @@
-using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Enums;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;

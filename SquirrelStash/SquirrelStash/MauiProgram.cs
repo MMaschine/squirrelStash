@@ -44,7 +44,7 @@ namespace SquirrelStash
             builder.Services.AddScoped<ICreateItemDialogFactory, CreateItemDialogFactory>();
             builder.Services.AddScoped<IItemCardViewModelFactory, ItemCardViewModelFactory>();
             builder.Services.AddScoped<ICategoryCardViewModelFactory, CategoryCardViewModelFactory>();
-            builder.Services.AddScoped<IOverviewThresholdItemViewModelFactory, OverviewThresholdItemViewModelFactory>();
+
 
             builder.Services.AddViewWithViewModel<OverviewPage, OverviewPageViewModel>();
             builder.Services.AddViewWithViewModel<TreePage, TreePageViewModel>();

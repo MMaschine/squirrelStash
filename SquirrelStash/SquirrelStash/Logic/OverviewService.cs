@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess;
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Helpers;
 using SquirrelStash.Models;
 using SquirrelStash.Resources;
 
@@ -40,7 +41,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to build overview.");
+                await MessageHelper.NotifyException(ex, "Failed to build overview.", logger);
                 return Result.Fail(AppText.FailedToBuildOverview);
             }
         }

@@ -1,8 +1,6 @@
 using Android.App;
 using Android.Content.PM;
-using Android.OS;
 using Google.Android.Material.BottomNavigation;
-using Google.Android.Material.Navigation;
 using AView = Android.Views.View;
 using AViewGroup = Android.Views.ViewGroup;
 

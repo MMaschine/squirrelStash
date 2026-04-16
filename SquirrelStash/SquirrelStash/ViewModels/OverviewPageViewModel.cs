@@ -1,10 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Graphics;
 using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.Helpers;
-using SquirrelStash.Logic.Factories;
 using SquirrelStash.Models;
 using SquirrelStash.Resources;
 using System.Collections.ObjectModel;
@@ -13,7 +10,6 @@ namespace SquirrelStash.ViewModels;
 
 public partial class OverviewPageViewModel(
     IOverviewService overviewService,
-    IOverviewThresholdItemViewModelFactory thresholdItemViewModelFactory,
     ILogger<OverviewPageViewModel> logger) : ObservableObject
 {
     public string VersionText { get; } = FormatVersion(AppInfo.Current.VersionString);
@@ -119,7 +115,7 @@ public partial class OverviewPageViewModel(
             (key, g) => new { Category = key, Items = g.ToList() });
 
         return groupedItems
-            .Select(x => new OverviewCategoryNodeViewModel(x.Category, x.Items, thresholdItemViewModelFactory))
+            .Select(x => new OverviewCategoryNodeViewModel(x.Category, x.Items))
             .ToArray();
     }
 

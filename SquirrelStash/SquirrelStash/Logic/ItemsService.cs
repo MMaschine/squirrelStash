@@ -25,7 +25,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Failed to load items for category {CategoryId}.", categoryId);
+                await MessageHelper.NotifyException(e, $"Failed to load items for category {categoryId}.", logger);
                 return Result.Fail(AppText.CannotGetCategories);
             }
         }
@@ -96,7 +96,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Failed to increase quantity for item {ItemId} by {Increment}.", id, increment);
+                await MessageHelper.NotifyException(e, $"Failed to increase quantity for item {id} by {increment}.", logger);
                 return Result.Fail(AppText.FailedToUpdateItem);
             }
         }
@@ -123,7 +123,7 @@ namespace SquirrelStash.Logic
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Failed to decrease quantity for item {ItemId} by {Decrement}.", id, decrement);
+                await MessageHelper.NotifyException(e, $"Failed to decrease quantity for item {id} by {decrement}.", logger);
                 return Result.Fail(AppText.FailedToUpdateItem);
             }
         }
