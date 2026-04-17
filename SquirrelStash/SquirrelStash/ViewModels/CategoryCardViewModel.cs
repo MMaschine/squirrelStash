@@ -1,10 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
-using SquirrelStash.Enums;
 using SquirrelStash.Helpers;
 using SquirrelStash.Logic.Factories;
 using SquirrelStash.Models;
@@ -12,7 +10,7 @@ using SquirrelStash.Requests;
 using SquirrelStash.Resources;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Globalization;
+
 
 namespace SquirrelStash.ViewModels
 {
@@ -71,14 +69,15 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string itemsToggleText = ">";
 
-        public ObservableCollection<PropertyDefinition> OrderOptions { get; }
-
         [ObservableProperty]
         private PropertyDefinition? selectedOrderOption;
 
+        public string ItemsHeaderText => AppText.FormatItemsHeader(ItemsCount);
+
+        public ObservableCollection<PropertyDefinition> OrderOptions { get; }
+
         public ObservableCollection<ItemCardViewModel> Items { get; private set; } = [];
 
-        public string ItemsHeaderText => AppText.FormatItemsHeader(ItemsCount);
 
 
         [RelayCommand]
@@ -134,6 +133,13 @@ namespace SquirrelStash.ViewModels
             }
         }
 
+        [RelayCommand]
+        private void ClearOrderSelection()
+        {
+            SelectedOrderOption = null;
+            SortItemsById();
+        }
+
         partial void OnSelectedAllowedValueChanged(string? value)
         {
             if (FilterValue != value)
@@ -180,7 +186,17 @@ namespace SquirrelStash.ViewModels
 
         private void SortItems(int id)
         {
-            var ordered = Items.OrderBy(x => x.GetOrderByValue(id)).ToArray();
+            MoveItemsToOrder(Items.OrderBy(x => x.GetOrderByValue(id)));
+        }
+
+        private void SortItemsById()
+        {
+            MoveItemsToOrder(Items.OrderBy(x => x.Id));
+        }
+
+        private void MoveItemsToOrder(IEnumerable<ItemCardViewModel> orderedItems)
+        {
+            var ordered = orderedItems.ToArray();
             for (var i = 0; i < ordered.Length; i++)
             {
                 var oldIndex = Items.IndexOf(ordered[i]);

@@ -46,7 +46,7 @@
 
             <VerticalStackLayout IsVisible="{Binding IsItemsVisible}"
                                  Spacing="6">
-                <Grid ColumnDefinitions="*,Auto"
+                <Grid ColumnDefinitions="*,Auto,Auto"
                       ColumnSpacing="12">
                     <Label
                         Grid.Column="0"
@@ -58,10 +58,17 @@
                         Grid.Column="1"
                         TextColor="{StaticResource Color.TextPrimary}"
                         ItemsSource="{Binding OrderOptions}"
-                        SelectedItem="{Binding SelectedOrderOption}"
+                        SelectedItem="{Binding SelectedOrderOption, Mode=TwoWay}"
                         ItemDisplayBinding="{Binding Name}"
                         HorizontalOptions="End"
                         WidthRequest="180" />
+
+                    <Button
+                        Grid.Column="2"
+                        Text="x"
+                        Style="{StaticResource SmallRoundToggleButtonStyle}"
+                        VerticalOptions="Center"
+                        Command="{Binding ClearOrderSelectionCommand}" />
                 </Grid>
 
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}"

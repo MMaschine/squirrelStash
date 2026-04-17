@@ -47,6 +47,8 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string imagePath;
 
+        public int Id => _itemId;
+
         public string GetOrderByValue(int id)
         {
             return _itemsToOrderBy.TryGetValue(id, out var result) ? result : string.Empty;
