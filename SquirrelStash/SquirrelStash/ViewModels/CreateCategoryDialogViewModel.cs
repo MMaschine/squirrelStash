@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace SquirrelStash.ViewModels
 {
-    public partial class CreateCategoryDialogViewModel : ObservableObject
+    public partial class CreateCategoryDialogViewModel(string[] existingTitles) : ObservableObject
     {
         private static readonly Regex AllowedValuesPattern =
             new(@"^\s*$|^\s*[^,\s]+(?:\s*,\s*[^,\s]+)*\s*$", RegexOptions.Compiled);
@@ -49,6 +49,12 @@ namespace SquirrelStash.ViewModels
         private async Task Save()
         {
             var trimmedTitle = Title?.Trim() ?? string.Empty;
+
+            if (existingTitles.Any(x => x == trimmedTitle))
+            {
+                await MessageHelper.ShowErrorAsync(AppText.FormatCategoryExists(trimmedTitle));
+                return;
+            }
 
             var filledProperties = Properties
                 .Where(x => !string.IsNullOrWhiteSpace(x.Name))
@@ -114,7 +120,8 @@ namespace SquirrelStash.ViewModels
 
             return string.Join(",",
                 allowedValues
-                    .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
+                    .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                    .Distinct(StringComparer.OrdinalIgnoreCase));
         }
     }
 }

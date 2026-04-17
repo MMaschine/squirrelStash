@@ -5,12 +5,15 @@ namespace SquirrelStash.ViewModels;
 
 public partial class OverviewCategoryNodeViewModel : ObservableObject
 {
-    public OverviewCategoryNodeViewModel(string title, ICollection<OverviewItem> overviewItems)
+    public OverviewCategoryNodeViewModel(
+        string title,
+        ICollection<OverviewItem> overviewItems)
     {
         Title = title;
 
         Items = overviewItems
-            .Select(item => new OverviewThresholdItemViewModel(item)).ToList();
+            .Select(x => new OverviewThresholdItemViewModel(x))
+            .ToList();
     }
 
     public IReadOnlyList<OverviewThresholdItemViewModel> Items { get; }

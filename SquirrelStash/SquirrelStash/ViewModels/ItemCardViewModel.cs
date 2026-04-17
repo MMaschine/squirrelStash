@@ -1,8 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Helpers;
+using SquirrelStash.Logic;
 using SquirrelStash.Resources;
 
 namespace SquirrelStash.ViewModels
@@ -11,11 +13,15 @@ namespace SquirrelStash.ViewModels
     {
         private readonly IItemsService _itemsService;
         private readonly int _itemId;
+        private readonly ILogger<ItemCardViewModel> _logger;
 
-        public ItemCardViewModel(Item item, IItemsService itemService)
+        private Dictionary<int, string> _itemsToOrderBy = [];
+
+        public ItemCardViewModel(Item item, IItemsService itemService, ILogger<ItemCardViewModel> logger)
         {
             _itemsService = itemService;
             _itemId = item.Id;
+            _logger = logger;
 
             Quantity = item.Quantity;
 
@@ -24,7 +30,12 @@ namespace SquirrelStash.ViewModels
                     .Select(p => p.Value)
                     .Where(v => !string.IsNullOrWhiteSpace(v)));
 
-            ImagePath = string.IsNullOrEmpty(item.ImageSource) ? ImageHelper.ItemImagePlaceholder : item.ImageSource;
+            ImagePath = string.IsNullOrEmpty(item.ImageSource) ? ImageService.ItemImagePlaceholder : item.ImageSource;
+
+            foreach (var property in item.PropertyEntries)
+            {
+                _itemsToOrderBy.Add(property.PropertyDefinitionId, property.Value);
+            }
         }
 
         [ObservableProperty]
@@ -36,6 +47,13 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string imagePath;
 
+        public int Id => _itemId;
+
+        public string GetOrderByValue(int id)
+        {
+            return _itemsToOrderBy.TryGetValue(id, out var result) ? result : string.Empty;
+        } 
+
         [RelayCommand]
         private async Task IncreaseQuantity()
         {
@@ -43,7 +61,7 @@ namespace SquirrelStash.ViewModels
 
             if (newQuantityResult.IsFailed)
             {
-                //TODO: add details logging/messaging
+                _logger.LogError($"Increase quantity failed for item {_itemId}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
                 await MessageHelper.ShowErrorAsync(AppText.QuantityChangeError);
             }
             else
@@ -61,7 +79,7 @@ namespace SquirrelStash.ViewModels
 
                 if (newQuantityResult.IsFailed)
                 {
-                    //TODO: add details logging/messaging
+                    _logger.LogError($"Decrease quantity failed for item {_itemId}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
                     await MessageHelper.ShowErrorAsync(AppText.QuantityChangeError);
                 }
                 else

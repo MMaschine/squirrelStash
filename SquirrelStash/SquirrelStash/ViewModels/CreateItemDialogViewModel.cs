@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Helpers;
 using SquirrelStash.Models;
@@ -17,10 +18,13 @@ namespace SquirrelStash.ViewModels
 
         private readonly int _categoryId;
 
-        public CreateItemDialogViewModel(Category category)
+        private readonly IImageService _imageService;
+
+        public CreateItemDialogViewModel(Category category, IImageService imageService)
         {
             ArgumentNullException.ThrowIfNull(category);
 
+            _imageService = imageService;
             _categoryId = category.Id;
 
             PropertyEntries = new ObservableCollection<CreateItemPropertyEntryViewModel>(
@@ -38,13 +42,16 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string criticalThreshold = CriticalThresholdDef.ToString();
 
+        [ObservableProperty]
+        private int defaultQuantity = 0;
+
         public ObservableCollection<CreateItemPropertyEntryViewModel> PropertyEntries { get; }
 
         public event Action<DialogResult<CreateItemRequest>>? RequestCompleted;
 
         public async Task UpdateImageAsync(ItemImageSource source)
         {
-            var result = await ImageHelper.PickAndStoreImageAsync(source);
+            var result = await _imageService.PickAndStoreImageAsync(source);
 
             if (result.IsSuccess)
             {
@@ -76,7 +83,8 @@ namespace SquirrelStash.ViewModels
                         .Select(x => new CreatePropertyEntryRequest(x.DefinitionId, x.Value.Trim()))
                         .ToArray(),
                     ParseThreshold(WarningThreshold, WarningThresholdDef),
-                    ParseThreshold(CriticalThreshold, CriticalThresholdDef));
+                    ParseThreshold(CriticalThreshold, CriticalThresholdDef),
+                    DefaultQuantity >= 0 ? DefaultQuantity : 0);
 
                 RequestCompleted?.Invoke(DialogResult<CreateItemRequest>.GetSuccess(request));
             }

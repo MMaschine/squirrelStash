@@ -10,14 +10,13 @@ public partial class CreateCategoryDialog : ContentPage
 
     public Task<DialogResult<CreateCategoryRequest>> ResultTask => _resultSource.Task;
 
-    public CreateCategoryDialog()
+    public CreateCategoryDialog(string[] existingTitles)
     {
         InitializeComponent();
 
-        var viewModel = new CreateCategoryDialogViewModel();
+        var viewModel = new CreateCategoryDialogViewModel(existingTitles);
 
         viewModel.RequestCompleted += OnSaveRequested;
-
 
         BindingContext = viewModel;
     }

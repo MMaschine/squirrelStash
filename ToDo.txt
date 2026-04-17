@@ -1,0 +1,28 @@
++++ Property card should be smaller with horizontal placements of boxes, not vertical
++++ Check validation of properties. Now it is possible to create numeric ones and empty "Complex"
++++ Hide filter for now, turn them into grouping next 
++++ CAtegory title in create form is redundant 
++++ Change items number works wrongly 
++++ Rework Tree view: One component with Card search and Button to add 
++++ Add search logic
++++ Add number of items on the Items tab
++++ Remove "category title"
++++ Fix id problem for new items 
++++ V> in small black round
++++ Messages to resources
++++ If we just added Item, the list should be opened 
++++ CAtegory name Existance validation
++++ Bug: not allow numeric values for the numeric type 
++++ Bug: delete property icon is strange 
++++ Default Quantity for item 
++++ Logs 
++++ Refactoring. Create service to deal with images, inject in dialog properly + factory for dialog 
++++ Add size for strings in data-objects 
++++ ShareFile integration for exceptions
++++ OrderBy
++++ Specific OrderBy for properties with predefined values (Allowed values) if requested
+-----------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------
+Small possible improvements: 
+

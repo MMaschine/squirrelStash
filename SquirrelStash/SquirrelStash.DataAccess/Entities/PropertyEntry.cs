@@ -1,5 +1,7 @@
 ﻿namespace SquirrelStash.DataAccess.Entities
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class PropertyEntry : BaseEntity
     {
         #region Navigation
@@ -12,6 +14,7 @@
 
         #endregion
 
+        [MaxLength(255)]
         public string Value { get; set; }
     }
 }
