@@ -17,8 +17,12 @@
 +++ Default Quantity for item 
 +++ Logs 
 +++ Refactoring. Create service to deal with images, inject in dialog properly + factory for dialog 
++++ Add size for strings in data-objects 
++++ ShareFile integration for exceptions
++++ OrderBy
++++ Specific OrderBy for properties with predefined values (Allowed values) if requested
 -----------------------------------------------------------------------------------------------------------------------
 
-- ShareFile integration for exceptions
-- Grouping ! 
-- Version update 
+-----------------------------------------------------------------------------------------------------------------------
+Small possible improvements: 
+

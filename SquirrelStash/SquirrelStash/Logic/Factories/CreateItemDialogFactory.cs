@@ -8,6 +8,7 @@ namespace SquirrelStash.Logic.Factories;
 internal class CreateItemDialogFactory(IImageService imageService)
     : ICreateItemDialogFactory
 {
+    /// <inheritdoc />
     public CreateItemDialog CreateDialog(Category category)
     {
         var viewModel = new CreateItemDialogViewModel(category, imageService);

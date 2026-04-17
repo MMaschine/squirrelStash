@@ -11,6 +11,7 @@ namespace SquirrelStash.Logic
     {
         public const string ItemImagePlaceholder = "grey_tshirt.png";
 
+        /// <inheritdoc />
         public async Task<Result<string>> PickAndStoreImageAsync(
             ItemImageSource source,
             CancellationToken cancellationToken = default)

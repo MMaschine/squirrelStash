@@ -15,6 +15,7 @@ namespace SquirrelStash.Logic
         private readonly DbSet<Item> _itemSet = context.Items;
         private readonly DbSet<Category> _categorySet = context.Categories;
 
+        /// <inheritdoc />
         public async Task<Result<Overview>> GetOverviewAsync()
         {
             try

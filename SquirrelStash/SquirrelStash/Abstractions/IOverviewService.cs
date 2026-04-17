@@ -1,15 +1,16 @@
-﻿using FluentResults;
+using FluentResults;
 using SquirrelStash.Models;
 
 namespace SquirrelStash.Abstractions;
 
 /// <summary>
-/// Abstraction of service to build general report about items in store 
+/// Abstraction of the service to provide overview report data for the stash.
 /// </summary>
 public interface IOverviewService
 {
     /// <summary>
-    /// Provide data for overview report
+    /// Builds the overview report.
     /// </summary>
+    /// <returns>A result containing overview data.</returns>
     Task<Result<Overview>> GetOverviewAsync();
 }

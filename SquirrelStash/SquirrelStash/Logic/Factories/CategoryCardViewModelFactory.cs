@@ -12,6 +12,7 @@ namespace SquirrelStash.Logic.Factories
         ILogger<CategoryCardViewModel> logger)
         : ICategoryCardViewModelFactory
     {
+        /// <inheritdoc />
         public CategoryCardViewModel GetViewModel(Category category)
         {
             return new CategoryCardViewModel(

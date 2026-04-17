@@ -14,6 +14,7 @@ namespace SquirrelStash.Logic
     {
         private readonly DbSet<Category> _categoriesSet = context.Set<Category>();
 
+        /// <inheritdoc />
         public async Task<Result<IReadOnlyList<Category>>> GetCategoriesAsync()
         {
             try
@@ -34,6 +35,7 @@ namespace SquirrelStash.Logic
             }
         }
 
+        /// <inheritdoc />
         public async Task<Result<Category>> CreateCategoryAsync(CreateCategoryRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);

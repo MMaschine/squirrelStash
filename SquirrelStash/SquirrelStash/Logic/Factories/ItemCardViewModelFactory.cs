@@ -8,6 +8,7 @@ namespace SquirrelStash.Logic.Factories;
 internal class ItemCardViewModelFactory(IItemsService itemService, ILogger<ItemCardViewModel> logger)
     : IItemCardViewModelFactory
 {
+    /// <inheritdoc />
     public ItemCardViewModel GetViewModel(Item item)
     {
         return new ItemCardViewModel(item, itemService, logger);
