@@ -1,5 +1,7 @@
 ﻿namespace SquirrelStash.DataAccess.Entities
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class Item : BaseEntity
     {
         #region Navigation
@@ -12,6 +14,7 @@
 
         #endregion
 
+        [MaxLength(1024)]
         public string? ImageSource { get; set; }
 
         public int WarningThreshold { get; set; }
@@ -20,6 +23,7 @@
 
         public int Quantity { get; set; }
 
+        [MaxLength(1000)]
         public string? Note { get; set; }
     }
 }

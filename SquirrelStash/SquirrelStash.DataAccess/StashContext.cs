@@ -17,7 +17,7 @@ namespace SquirrelStash.DataAccess
             builder.Entity<Item>().HasKey(e => e.Id);
             builder.Entity<Category>().HasKey(e => e.Id);
             builder.Entity<PropertyDefinition>().HasKey(e => e.Id);
-            builder.Entity<PropertyEntry>().HasKey(e => e.Id); 
+            builder.Entity<PropertyEntry>().HasKey(e => e.Id);
 
             builder.Entity<Item>()
                 .HasOne(e => e.Category)
