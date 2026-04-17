@@ -120,7 +120,8 @@ namespace SquirrelStash.ViewModels
 
             return string.Join(",",
                 allowedValues
-                    .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
+                    .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                    .Distinct(StringComparer.OrdinalIgnoreCase));
         }
     }
 }

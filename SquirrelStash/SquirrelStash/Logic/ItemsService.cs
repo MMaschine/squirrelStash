@@ -14,6 +14,7 @@ namespace SquirrelStash.Logic
     {
         private readonly DbSet<Item> _itemSet = context.Set<Item>();
 
+        /// <inheritdoc />
         public async Task<Result<IReadOnlyList<Item>>> GetCategoryItemsAsync(int categoryId)
         {
             try
@@ -30,6 +31,7 @@ namespace SquirrelStash.Logic
             }
         }
 
+        /// <inheritdoc />
         public async Task<Result<Item>> AddItemAsync(int categoryId, CreateItemRequest createItemRequest)
         {
             try
@@ -62,14 +64,19 @@ namespace SquirrelStash.Logic
             }
         }
 
+        //TODO: implement when required
+        /// <inheritdoc />
         public async Task UpdateItemAsync(Item item)
         {
         }
 
+        //TODO: implement when required
+        /// <inheritdoc />
         public async Task RemoveItemAsync(int id)
         {
         }
 
+        /// <inheritdoc />
         public async Task<Result<int>> IncreaseQuantityAsync(int id, int increment = 1)
         {
             if (increment <= 0)
@@ -101,6 +108,7 @@ namespace SquirrelStash.Logic
             }
         }
 
+        /// <inheritdoc />
         public async Task<Result<int>> DecreaseQuantityAsync(int id, int decrement = 1)
         {
             try

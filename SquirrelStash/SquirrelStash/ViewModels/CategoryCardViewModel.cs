@@ -10,6 +10,7 @@ using SquirrelStash.Requests;
 using SquirrelStash.Resources;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using SquirrelStash.Enums;
 
 
 namespace SquirrelStash.ViewModels
@@ -56,9 +57,6 @@ namespace SquirrelStash.ViewModels
 
         [ObservableProperty]
         private string? filterValue;
-
-        [ObservableProperty]
-        private string? selectedAllowedValue;
 
         [ObservableProperty]
         private int itemsCount;
@@ -119,7 +117,7 @@ namespace SquirrelStash.ViewModels
                 //If we have order by function, we should apply it 
                 if (SelectedOrderOption != null)
                 {
-                    SortItems(SelectedOrderOption.Id);
+                    SortItems(SelectedOrderOption);
                 }
             }
         }
@@ -129,7 +127,7 @@ namespace SquirrelStash.ViewModels
         {
             if (orderOption != null)
             {
-                SortItems(orderOption.Id);
+                SortItems(orderOption);
             }
         }
 
@@ -140,14 +138,6 @@ namespace SquirrelStash.ViewModels
             SortItemsById();
         }
 
-        partial void OnSelectedAllowedValueChanged(string? value)
-        {
-            if (FilterValue != value)
-            {
-                FilterValue = value;
-            }
-        }
-
         partial void OnSelectedOrderOptionChanged(PropertyDefinition? value)
         {
             HandleOrderSelectionCommand.Execute(value);
@@ -156,17 +146,6 @@ namespace SquirrelStash.ViewModels
         partial void OnIsItemsVisibleChanged(bool value)
         {
             ItemsToggleText = value ? "v" : ">";
-        }
-
-        private static IEnumerable<string> ParseAllowedValues(string? allowedValues)
-        {
-            if (string.IsNullOrWhiteSpace(allowedValues))
-            {
-                return [];
-            }
-
-            return allowedValues
-                .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         }
 
         private void OnItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -184,9 +163,33 @@ namespace SquirrelStash.ViewModels
             return await dialog.ResultTask;
         }
 
-        private void SortItems(int id)
+        private void SortItems(PropertyDefinition property)
         {
-            MoveItemsToOrder(Items.OrderBy(x => x.GetOrderByValue(id)));
+            //If the property is "AllowedValues" we should place them according the order defined in the values string ,
+            //not default order (Size: S, M, L, XL not L,M,S,XL)
+            if (property.TypeCode == (int)PropertyTypes.AllowedValues && 
+                !string.IsNullOrWhiteSpace(property.AllowedValues))
+            {
+                var orderMap = property.AllowedValues.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .Select((value, index) => (value, index))
+                    .ToDictionary(x => x.value, x => x.index, StringComparer.OrdinalIgnoreCase);
+
+                MoveItemsToOrder(Items
+                    .OrderBy(x => orderMap.TryGetValue(x.GetOrderByValue(property.Id), out var index) ? index : int.MaxValue));
+            }
+            else
+            {
+                if (property.TypeCode == (int)PropertyTypes.Numeric) //Beware of numeric values 
+                {
+                    MoveItemsToOrder(Items.OrderBy(x =>
+                        Int32.TryParse(x.GetOrderByValue(property.Id), out var index) ? index : int.MaxValue)); 
+                }
+                else
+                {
+                    MoveItemsToOrder(Items.OrderBy(x => x.GetOrderByValue(property.Id)));
+                }
+            }
         }
 
         private void SortItemsById()
