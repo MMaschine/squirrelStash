@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
-using SquirrelStash.Enums;
 using SquirrelStash.Helpers;
 using SquirrelStash.Logic.Factories;
 using SquirrelStash.Models;
@@ -11,6 +10,7 @@ using SquirrelStash.Requests;
 using SquirrelStash.Resources;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+
 
 namespace SquirrelStash.ViewModels
 {
@@ -37,10 +37,8 @@ namespace SquirrelStash.ViewModels
 
             Title = category.Title;
 
-            FilterOptions = new ObservableCollection<PropertyDefinition>(
-                (category.Properties ?? [])
-                    .OrderBy(x => x.Id));
-            SelectedFilterAllowedValues = [];
+            OrderOptions = new ObservableCollection<PropertyDefinition>(
+                (category.Properties ?? []));
 
             Items.CollectionChanged += OnItemsCollectionChanged;
 
@@ -71,18 +69,16 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string itemsToggleText = ">";
 
-        public ObservableCollection<PropertyDefinition> FilterOptions { get; }
-
-        public ObservableCollection<string> SelectedFilterAllowedValues { get; }
-
-        public ObservableCollection<ItemCardViewModel> Items { get; } = [];
+        [ObservableProperty]
+        private PropertyDefinition? selectedOrderOption;
 
         public string ItemsHeaderText => AppText.FormatItemsHeader(ItemsCount);
 
-        public bool IsAllowedValuesFilter =>
-            SelectedFilter?.TypeCode == (int)PropertyTypes.AllowedValues;
+        public ObservableCollection<PropertyDefinition> OrderOptions { get; }
 
-        public bool IsManualValueFilter => !IsAllowedValuesFilter;
+        public ObservableCollection<ItemCardViewModel> Items { get; private set; } = [];
+
+
 
         [RelayCommand]
         private void ToggleItemsVisibility()
@@ -119,30 +115,29 @@ namespace SquirrelStash.ViewModels
                 await MessageHelper.ShowInfoAsync(AppText.FormatItemAdded(_currentCategory.Title));
                 Items.Add(_itemCardViewModelFactory.GetViewModel(result.Value));
                 IsItemsVisible = true;
-            }
-        }
 
-        partial void OnSelectedFilterChanged(PropertyDefinition? value)
-        {
-            SelectedAllowedValue = null;
-            FilterValue = null;
-
-            SelectedFilterAllowedValues.Clear();
-
-            if (value?.TypeCode == (int)PropertyTypes.AllowedValues)
-            {
-                foreach (var item in ParseAllowedValues(value.AllowedValues))
+                //If we have order by function, we should apply it 
+                if (SelectedOrderOption != null)
                 {
-                    SelectedFilterAllowedValues.Add(item);
+                    SortItems(SelectedOrderOption.Id);
                 }
             }
-
-            OnPropertyChanged(nameof(IsAllowedValuesFilter));
-            OnPropertyChanged(nameof(IsManualValueFilter));
         }
 
-        partial void OnFilterValueChanged(string? value)
+        [RelayCommand]
+        private void HandleOrderSelection(PropertyDefinition? orderOption)
         {
+            if (orderOption != null)
+            {
+                SortItems(orderOption.Id);
+            }
+        }
+
+        [RelayCommand]
+        private void ClearOrderSelection()
+        {
+            SelectedOrderOption = null;
+            SortItemsById();
         }
 
         partial void OnSelectedAllowedValueChanged(string? value)
@@ -151,6 +146,11 @@ namespace SquirrelStash.ViewModels
             {
                 FilterValue = value;
             }
+        }
+
+        partial void OnSelectedOrderOptionChanged(PropertyDefinition? value)
+        {
+            HandleOrderSelectionCommand.Execute(value);
         }
 
         partial void OnIsItemsVisibleChanged(bool value)
@@ -182,6 +182,29 @@ namespace SquirrelStash.ViewModels
             await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
 
             return await dialog.ResultTask;
+        }
+
+        private void SortItems(int id)
+        {
+            MoveItemsToOrder(Items.OrderBy(x => x.GetOrderByValue(id)));
+        }
+
+        private void SortItemsById()
+        {
+            MoveItemsToOrder(Items.OrderBy(x => x.Id));
+        }
+
+        private void MoveItemsToOrder(IEnumerable<ItemCardViewModel> orderedItems)
+        {
+            var ordered = orderedItems.ToArray();
+            for (var i = 0; i < ordered.Length; i++)
+            {
+                var oldIndex = Items.IndexOf(ordered[i]);
+                if (oldIndex != i)
+                {
+                    Items.Move(oldIndex, i);
+                }
+            }
         }
     }
 }

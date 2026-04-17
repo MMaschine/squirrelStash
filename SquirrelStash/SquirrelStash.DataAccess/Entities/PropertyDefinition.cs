@@ -1,4 +1,4 @@
-﻿namespace SquirrelStash.DataAccess.Entities
+namespace SquirrelStash.DataAccess.Entities
 {
     public class PropertyDefinition : BaseEntity
     {
@@ -11,10 +11,10 @@
 
         public int TypeCode { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
-        /// Values we use to 1. Show in Property construction combobox, 2. Define sort order.
+        /// Values we use to show in Property construction combobox
         /// It should be a string with values separated by commas  
         /// </summary>
         public string? AllowedValues { get; set; }

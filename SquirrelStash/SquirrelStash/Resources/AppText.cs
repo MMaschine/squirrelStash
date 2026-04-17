@@ -26,7 +26,7 @@ public static class AppText
     public const string EnterValuePlaceholder = "Enter value";
     public const string SelectValueTitle = "Select value";
 
-    public const string SelectFilterTitle = "Select filter";
+    public const string SelectOrderTitle = "Order by";
     public const string SearchCategoryPlaceholder = "Search category";
     public const string LoadingCategories = "Loading categories...";
     public const string LoadingOverview = "Loading overview...";
