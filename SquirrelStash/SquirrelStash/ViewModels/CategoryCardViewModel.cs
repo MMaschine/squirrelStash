@@ -65,12 +65,11 @@ namespace SquirrelStash.ViewModels
         private bool isItemsVisible;
 
         [ObservableProperty]
-        private string itemsToggleText = ">";
-
-        [ObservableProperty]
         private PropertyDefinition? selectedOrderOption;
 
         public string ItemsHeaderText => AppText.FormatItemsHeader(ItemsCount);
+
+        public bool CanOrderItems => ItemsCount >= 2;
 
         public ObservableCollection<PropertyDefinition> OrderOptions { get; }
 
@@ -143,15 +142,11 @@ namespace SquirrelStash.ViewModels
             HandleOrderSelectionCommand.Execute(value);
         }
 
-        partial void OnIsItemsVisibleChanged(bool value)
-        {
-            ItemsToggleText = value ? "v" : ">";
-        }
-
         private void OnItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             ItemsCount = Items.Count;
             OnPropertyChanged(nameof(ItemsHeaderText));
+            OnPropertyChanged(nameof(CanOrderItems));
         }
 
         private async Task<DialogResult<CreateItemRequest>> ShowDialogAsync()
