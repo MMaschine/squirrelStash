@@ -36,12 +36,6 @@ public partial class OverviewPageViewModel(
     private bool isLoading;
 
     [ObservableProperty]
-    private int totalCategoriesCount;
-
-    [ObservableProperty]
-    private int totalItemsCount;
-
-    [ObservableProperty]
     private int warningThresholdsReachedCount;
 
     [ObservableProperty]
@@ -84,8 +78,6 @@ public partial class OverviewPageViewModel(
         {
             var overview = loadResult.Value;
 
-            TotalCategoriesCount = overview.TotalCategoriesCount;
-            TotalItemsCount = overview.TotalItemsCount;
             WarningThresholdsReachedCount = overview.WarningThresholdsReachedCount;
             CriticalThresholdsReachedCount = overview.CriticalThresholdsReachedCount;
 
@@ -97,9 +89,7 @@ public partial class OverviewPageViewModel(
             }
 
             logger.LogInformation(
-                "Overview loaded. Categories: {CategoryCount}, Items: {ItemCount}, WarningItems: {WarningCount}, CriticalItems: {CriticalCount}.",
-                TotalCategoriesCount,
-                TotalItemsCount,
+                "Overview loaded. WarningItems: {WarningCount}, CriticalItems: {CriticalCount}.",
                 WarningThresholdsReachedCount,
                 CriticalThresholdsReachedCount);
         }

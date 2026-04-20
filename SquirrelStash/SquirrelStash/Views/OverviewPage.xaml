@@ -15,31 +15,9 @@
                                Style="{StaticResource H2LabelStyle}" />
 
                         <Grid ColumnDefinitions="*,*"
-                              RowDefinitions="Auto,Auto"
+                              RowDefinitions="Auto"
                               ColumnSpacing="12"
                               RowSpacing="12">
-                            <Border Grid.Row="0"
-                                    Grid.Column="0"
-                                    Style="{StaticResource SurfaceBorderStyle}">
-                                <VerticalStackLayout Spacing="4">
-                                    <Label Text="{x:Static resources:AppText.CategoriesLabel}"
-                                           Style="{StaticResource BodySecondaryLabelStyle}" />
-                                    <Label Text="{Binding TotalCategoriesCount}"
-                                           Style="{StaticResource H2LabelStyle}" />
-                                </VerticalStackLayout>
-                            </Border>
-
-                            <Border Grid.Row="0"
-                                    Grid.Column="1"
-                                    Style="{StaticResource SurfaceBorderStyle}">
-                                <VerticalStackLayout Spacing="4">
-                                    <Label Text="{x:Static resources:AppText.ItemsLabel}"
-                                           Style="{StaticResource BodySecondaryLabelStyle}" />
-                                    <Label Text="{Binding TotalItemsCount}"
-                                           Style="{StaticResource H2LabelStyle}" />
-                                </VerticalStackLayout>
-                            </Border>
-
                             <Border Grid.Row="1"
                                     Grid.Column="0"
                                     Style="{StaticResource SurfaceBorderStyle}"
