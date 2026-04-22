@@ -78,7 +78,7 @@
 	  <MauiXaml Update="Views\CategoryCardView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\CreateCategoryDialog.xaml">
+	  <MauiXaml Update="Views\EditCategoryDialog.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\CreateItemDialog.xaml">

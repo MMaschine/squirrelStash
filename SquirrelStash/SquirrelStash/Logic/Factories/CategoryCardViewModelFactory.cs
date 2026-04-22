@@ -1,4 +1,4 @@
-﻿using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.ViewModels;
 using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
@@ -13,13 +13,14 @@ namespace SquirrelStash.Logic.Factories
         : ICategoryCardViewModelFactory
     {
         /// <inheritdoc />
-        public CategoryCardViewModel GetViewModel(Category category)
+        public CategoryCardViewModel GetViewModel(Category category, Func<Category, Task> editCategoryAction)
         {
             return new CategoryCardViewModel(
                 category,
                 itemService,
                 itemCardViewModelFactory,
                 createItemDialogFactory,
+                editCategoryAction,
                 logger);
         }
     }

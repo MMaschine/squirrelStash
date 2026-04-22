@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Enums;
 using SquirrelStash.Requests;
 using System.Collections.ObjectModel;
@@ -10,13 +11,30 @@ using System.Text.RegularExpressions;
 
 namespace SquirrelStash.ViewModels
 {
-    public partial class CreateCategoryDialogViewModel(string[] existingTitles) : ObservableObject
+    public partial class EditCategoryDialogViewModel(string[] existingTitles) : ObservableObject
     {
         private static readonly Regex AllowedValuesPattern =
             new(@"^\s*$|^\s*[^,\s]+(?:\s*,\s*[^,\s]+)*\s*$", RegexOptions.Compiled);
 
+        private readonly string? _initialTitle;
+
+        public EditCategoryDialogViewModel(string[] existingTitles, Category category)
+            : this(existingTitles)
+        {
+            IsEdit = true;
+            _initialTitle = category.Title;
+            Title = category.Title;
+
+            foreach (var property in category.Properties ?? [])
+            {
+                Properties.Add(new CategoryPropertyViewModel(property, RemovePropertyCommand));
+            }
+        }
+
         [ObservableProperty]
         private string _title = string.Empty;
+
+        public bool IsEdit { get; } = false;
 
         public ObservableCollection<CategoryPropertyViewModel> Properties { get; } = [];
 
@@ -25,7 +43,7 @@ namespace SquirrelStash.ViewModels
         [RelayCommand]
         private void AddProperty()
         {
-            Properties.Add(new CategoryPropertyViewModel() { DeleteCommand = RemovePropertyCommand });
+            Properties.Add(new CategoryPropertyViewModel(RemovePropertyCommand));
         }
 
         [RelayCommand]
@@ -50,7 +68,8 @@ namespace SquirrelStash.ViewModels
         {
             var trimmedTitle = Title?.Trim() ?? string.Empty;
 
-            if (existingTitles.Any(x => x == trimmedTitle))
+            if (existingTitles.Any(x => x == trimmedTitle) &&
+                (!IsEdit || _initialTitle != trimmedTitle))
             {
                 await MessageHelper.ShowErrorAsync(AppText.FormatCategoryExists(trimmedTitle));
                 return;

@@ -32,7 +32,8 @@
                              Source="edit.png"
                              Style="{StaticResource CategoryAddButtonStyle}"
                              HorizontalOptions="End"
-                             VerticalOptions="Center" />
+                             VerticalOptions="Center"
+                             Command="{Binding EditCategoryCommand}" />
 
                 <HorizontalStackLayout Grid.Row="1"
                                        Grid.Column="0"

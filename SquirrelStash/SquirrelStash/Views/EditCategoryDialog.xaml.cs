@@ -4,17 +4,15 @@ using SquirrelStash.ViewModels;
 
 namespace SquirrelStash.Views;
 
-public partial class CreateCategoryDialog : ContentPage
+public partial class EditCategoryDialog : ContentPage
 {
     private readonly TaskCompletionSource<DialogResult<CreateCategoryRequest>> _resultSource = new();
 
     public Task<DialogResult<CreateCategoryRequest>> ResultTask => _resultSource.Task;
 
-    public CreateCategoryDialog(string[] existingTitles)
+    public EditCategoryDialog(EditCategoryDialogViewModel viewModel)
     {
         InitializeComponent();
-
-        var viewModel = new CreateCategoryDialogViewModel(existingTitles);
 
         viewModel.RequestCompleted += OnSaveRequested;
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="SquirrelStash.Views.CreateCategoryDialog"
+    x:Class="SquirrelStash.Views.EditCategoryDialog"
     xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
     xmlns:resources="clr-namespace:SquirrelStash.Resources"
-    x:DataType="viewModels:CreateCategoryDialogViewModel"
+    x:DataType="viewModels:EditCategoryDialogViewModel"
     Title="{x:Static resources:AppText.CreateCategoryPageTitle}">
 
     <ScrollView>

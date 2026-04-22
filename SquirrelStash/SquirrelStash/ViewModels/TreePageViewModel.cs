@@ -3,17 +3,20 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.Helpers;
-using SquirrelStash.Logic.Factories;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.Resources;
-using SquirrelStash.Views;
 using System.Collections.ObjectModel;
+using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Views;
 
 namespace SquirrelStash.ViewModels
 {
     public partial class TreePageViewModel(
-        ICategoryService categoryService, ICategoryCardViewModelFactory cardViewModelFactory, ILogger<TreePageViewModel> logger) : ObservableObject
+        ICategoryService categoryService,
+        ICategoryCardViewModelFactory cardViewModelFactory,
+        IEditCategoryDialogFactory editCategoryDialogFactory,
+        ILogger<TreePageViewModel> logger) : ObservableObject
     {
         private bool _isInitialized;
         private bool _isLoading;
@@ -61,10 +64,12 @@ namespace SquirrelStash.ViewModels
             await LoadCategoriesAsync();
         }
 
+        private string[] AllTitles => _allCategories.Select(x => x.Title).ToArray();
+
         [RelayCommand]
         public async Task CreateCategory()
         {
-            var dialogResult = await ShowDialogAsync();
+            var dialogResult = await ShowEditDialogAsync(editCategoryDialogFactory.GetDialogToCreate(AllTitles));
 
             if (!dialogResult.IsSuccess || dialogResult.Data == null)
             {
@@ -87,12 +92,17 @@ namespace SquirrelStash.ViewModels
             }
             else
             {
-                _allCategories.Add(cardViewModelFactory.GetViewModel(result.Value));
+                _allCategories.Add(cardViewModelFactory.GetViewModel(result.Value, EditCategoryAsync));
                 SearchText = string.Empty;
                 ApplyFilter(SearchText);
 
                 await MessageHelper.ShowInfoAsync(AppText.FormatCategoryAdded(dialogResult.Data.Title));
             }
+        }
+
+        private async Task EditCategoryAsync(Category category)
+        {
+            await ShowEditDialogAsync(editCategoryDialogFactory.GetDialogToEdit(AllTitles, category));
         }
 
         private async Task LoadCategoriesAsync()
@@ -113,7 +123,7 @@ namespace SquirrelStash.ViewModels
                 return;
             }
 
-            _allCategories.AddRange(result.Value.Select(cardViewModelFactory.GetViewModel));
+            _allCategories.AddRange(result.Value.Select(x=> cardViewModelFactory.GetViewModel(x, EditCategoryAsync)));
             logger.LogInformation("Loaded {CategoryCount} categories.", result.Value.Count);
 
             ApplyFilter(string.Empty);
@@ -135,13 +145,12 @@ namespace SquirrelStash.ViewModels
             }
         }
 
-        private async Task<DialogResult<CreateCategoryRequest>> ShowDialogAsync()
+        private async Task<DialogResult<CreateCategoryRequest>> ShowEditDialogAsync(EditCategoryDialog dialog)
         {
-            var dialog = new CreateCategoryDialog(_allCategories.Select(x=>x.Title).ToArray());
-
             await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
 
             return await dialog.ResultTask;
         }
+
     }
 }

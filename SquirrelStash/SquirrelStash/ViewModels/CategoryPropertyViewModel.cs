@@ -1,5 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Enums;
 
 namespace SquirrelStash.ViewModels
@@ -9,6 +10,21 @@ namespace SquirrelStash.ViewModels
     /// </summary>
     public partial class CategoryPropertyViewModel : ObservableObject
     {
+        public CategoryPropertyViewModel(IRelayCommand<CategoryPropertyViewModel> deleteCommand)
+        {
+            DeleteCommand = deleteCommand;
+        }
+
+        public CategoryPropertyViewModel(
+            PropertyDefinition propertyDefinition,
+            IRelayCommand<CategoryPropertyViewModel> deleteCommand)
+        {
+            Name = propertyDefinition.Name;
+            SelectedType = (PropertyTypes)propertyDefinition.TypeCode;
+            AllowedValues = propertyDefinition.AllowedValues ?? string.Empty;
+            DeleteCommand = deleteCommand;
+        }
+
         [ObservableProperty]
         private string name = string.Empty;
 

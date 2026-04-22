@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Helpers;
-using SquirrelStash.Logic.Factories;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.Resources;
@@ -22,18 +21,21 @@ namespace SquirrelStash.ViewModels
         private readonly ILogger _logger;
         private readonly IItemCardViewModelFactory _itemCardViewModelFactory;
         private readonly ICreateItemDialogFactory _createItemDialogFactory;
+        private readonly Func<Category, Task> _editCategoryAction;
 
         public CategoryCardViewModel(
             Category category,
             IItemsService itemService,
             IItemCardViewModelFactory itemCardViewModelFactory,
             ICreateItemDialogFactory createItemDialogFactory,
+            Func<Category, Task> editCategoryAction,
             ILogger<CategoryCardViewModel> logger)
         {
             _itemsService = itemService;
             _currentCategory = category;
             _itemCardViewModelFactory = itemCardViewModelFactory;
             _createItemDialogFactory = createItemDialogFactory;
+            _editCategoryAction = editCategoryAction;
             _logger = logger;
 
             Title = category.Title;
@@ -81,6 +83,12 @@ namespace SquirrelStash.ViewModels
         private void ToggleItemsVisibility()
         {
             IsItemsVisible = !IsItemsVisible;
+        }
+
+        [RelayCommand]
+        private async Task EditCategory()
+        {
+            await _editCategoryAction(_currentCategory);
         }
 
         [RelayCommand]
