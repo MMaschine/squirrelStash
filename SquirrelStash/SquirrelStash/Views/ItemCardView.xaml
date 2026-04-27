@@ -31,13 +31,27 @@
             </Border>
 
             <!-- Name -->
-            <Label
+            <Grid
                 Grid.Column="1"
-                Text="{Binding Name}"
-                LineBreakMode="WordWrap"
-                MaxLines="3"
-                VerticalOptions="Center"
-                Style="{StaticResource BodyLabelStyle}" />
+                ColumnDefinitions="*,Auto"
+                ColumnSpacing="6"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="{Binding Name}"
+                    LineBreakMode="WordWrap"
+                    MaxLines="3"
+                    VerticalOptions="Center"
+                    Style="{StaticResource BodyLabelStyle}" />
+
+                <Image
+                    Grid.Column="1"
+                    Source="warning.png"
+                    WidthRequest="20"
+                    HeightRequest="20"
+                    VerticalOptions="Center"
+                    IsVisible="{Binding HasWarning}" />
+            </Grid>
 
             <!-- Quantity controls -->
             <HorizontalStackLayout

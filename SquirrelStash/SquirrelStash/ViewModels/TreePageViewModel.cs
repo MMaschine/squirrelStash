@@ -132,7 +132,10 @@ namespace SquirrelStash.ViewModels
                 return;
             }
 
+
             _allCategories[index] = cardViewModelFactory.GetViewModel(result.Value, EditCategoryAsync);
+            _allCategories[index].CheckItemWarnings();
+            
             ApplyFilter(string.Empty);
         }
 

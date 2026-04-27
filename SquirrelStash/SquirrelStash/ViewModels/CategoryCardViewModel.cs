@@ -79,6 +79,13 @@ namespace SquirrelStash.ViewModels
 
         public ObservableCollection<ItemCardViewModel> Items { get; private set; } = [];
 
+        public void CheckItemWarnings()
+        {
+            foreach (var item in Items)
+            {
+                item.CheckWarnings(_currentCategory);
+            }
+        }
 
         [RelayCommand]
         private void ToggleItemsVisibility()

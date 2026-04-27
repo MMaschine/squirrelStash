@@ -30,6 +30,8 @@ namespace SquirrelStash.ViewModels
                     .Select(p => p.Value)
                     .Where(v => !string.IsNullOrWhiteSpace(v)));
 
+            HasWarning = string.IsNullOrEmpty(Name);
+
             ImagePath = string.IsNullOrEmpty(item.ImageSource) ? ImageService.ItemImagePlaceholder : item.ImageSource;
 
             foreach (var property in item.PropertyEntries)
@@ -47,7 +49,15 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string imagePath;
 
+        [ObservableProperty]
+        private bool hasWarning;
+
         public int Id => _itemId;
+
+        public void CheckWarnings(Category category)
+        {
+            HasWarning = category.Properties.Count != _itemsToOrderBy.Count || string.IsNullOrEmpty(Name);
+        }
 
         public string GetOrderByValue(int id)
         {

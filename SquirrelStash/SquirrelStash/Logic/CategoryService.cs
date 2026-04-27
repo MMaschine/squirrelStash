@@ -91,7 +91,11 @@ namespace SquirrelStash.Logic
 
             try
             {
-                var category = await _categoriesSet.Include(x=> x.Properties).FirstOrDefaultAsync(x => x.Id == request.CategoryId);
+                var category = await _categoriesSet
+                    .Include(x=> x.Properties)
+                    .Include(x=> x.Items)
+                    .ThenInclude(x=>x.PropertyEntries)
+                    .FirstOrDefaultAsync(x => x.Id == request.CategoryId);
 
                 if (category == null)
                 {
