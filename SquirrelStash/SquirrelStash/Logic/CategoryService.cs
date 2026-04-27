@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess;
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Enums;
 using SquirrelStash.Helpers;
 using SquirrelStash.Requests;
 using SquirrelStash.Resources;
@@ -98,6 +99,22 @@ namespace SquirrelStash.Logic
                 }
 
                 category.Title = request.Title;
+
+                //Update existing properties 
+                foreach (var toUpdate in request.Properties.Where(x => !x.IsNew).ToArray())
+                {
+                    var property = category.Properties.FirstOrDefault(x => x.Id == toUpdate.Id);
+
+                    if (property == null)
+                    {
+                        continue;
+                    }
+
+                    property.Name = toUpdate.Name;
+                    property.AllowedValues = property.TypeCode == (int)PropertyTypes.AllowedValues
+                        ? toUpdate.AllowedValues
+                        : null;
+                }
 
                 //Properties to add: 
                 category.Properties.AddRange(request.Properties.Where(x => x.IsNew).Select(x => new PropertyDefinition()

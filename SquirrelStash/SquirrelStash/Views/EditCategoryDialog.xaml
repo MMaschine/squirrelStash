@@ -64,7 +64,8 @@
                                     <Picker
                                         Title="{x:Static resources:AppText.SelectPropertyTypeTitle}"
                                         ItemsSource="{Binding AvailableTypes}"
-                                        SelectedItem="{Binding SelectedType}" />
+                                        SelectedItem="{Binding SelectedType}"
+                                        IsEnabled="{Binding IsNew}" />
                                 </Border>
 
                                 <Button
