@@ -6,9 +6,9 @@ namespace SquirrelStash.Views;
 
 public partial class EditCategoryDialog : ContentPage
 {
-    private readonly TaskCompletionSource<DialogResult<CreateCategoryRequest>> _resultSource = new();
+    private readonly TaskCompletionSource<DialogResult<EditCategoryRequest>> _resultSource = new();
 
-    public Task<DialogResult<CreateCategoryRequest>> ResultTask => _resultSource.Task;
+    public Task<DialogResult<EditCategoryRequest>> ResultTask => _resultSource.Task;
 
     public EditCategoryDialog(EditCategoryDialogViewModel viewModel)
     {
@@ -19,7 +19,7 @@ public partial class EditCategoryDialog : ContentPage
         BindingContext = viewModel;
     }
 
-    private async void OnSaveRequested(DialogResult<CreateCategoryRequest> request)
+    private async void OnSaveRequested(DialogResult<EditCategoryRequest> request)
     {
         _resultSource.TrySetResult(request);
         await Navigation.PopModalAsync();

@@ -69,6 +69,8 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private PropertyDefinition? selectedOrderOption;
 
+        public int CategoryId => _currentCategory.Id;
+
         public string ItemsHeaderText => AppText.FormatItemsHeader(ItemsCount);
 
         public bool CanOrderItems => ItemsCount >= 2;
@@ -76,7 +78,6 @@ namespace SquirrelStash.ViewModels
         public ObservableCollection<PropertyDefinition> OrderOptions { get; }
 
         public ObservableCollection<ItemCardViewModel> Items { get; private set; } = [];
-
 
 
         [RelayCommand]

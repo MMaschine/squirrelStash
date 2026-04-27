@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SquirrelStash.DataAccess.Entities;
 
 
@@ -19,20 +19,29 @@ namespace SquirrelStash.DataAccess
             builder.Entity<PropertyDefinition>().HasKey(e => e.Id);
             builder.Entity<PropertyEntry>().HasKey(e => e.Id);
 
+            builder.Entity<Category>()
+                .HasMany(e => e.Items)
+                .WithOne(e => e.Category)
+                .HasForeignKey(e => e.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<Item>()
-                .HasOne(e => e.Category)
-                .WithMany(e => e.Items)
-                .HasForeignKey(e => e.CategoryId);
+                .HasMany(e => e.PropertyEntries)
+                .WithOne(e => e.Item)
+                .HasForeignKey(e => e.ItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Category>()
+                .HasMany(e => e.Properties)
+                .WithOne(e => e.Category)
+                .HasForeignKey(e => e.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<PropertyDefinition>()
-                .HasOne(e => e.Category)
-                .WithMany(e => e.Properties)
-                .HasForeignKey(e => e.CategoryId);
-
-            builder.Entity<PropertyEntry>()
-                .HasOne(e => e.Item)
-                .WithMany(e => e.PropertyEntries)
-                .HasForeignKey(e => e.ItemId);
+                .HasMany(e => e.Entries)
+                .WithOne(e => e.Definition)
+                .HasForeignKey(e => e.PropertyDefinitionId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

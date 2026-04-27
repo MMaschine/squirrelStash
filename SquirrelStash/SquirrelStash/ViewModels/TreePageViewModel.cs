@@ -102,7 +102,38 @@ namespace SquirrelStash.ViewModels
 
         private async Task EditCategoryAsync(Category category)
         {
-            await ShowEditDialogAsync(editCategoryDialogFactory.GetDialogToEdit(AllTitles, category));
+            var dialogResult = await ShowEditDialogAsync(editCategoryDialogFactory.GetDialogToEdit(AllTitles, category));
+
+            if (!dialogResult.IsSuccess || dialogResult.Data == null)
+            {
+                if (!string.IsNullOrEmpty(dialogResult.ErrorMessage))
+                {
+                    logger.LogWarning("Edit category dialog failed: {ErrorMessage}", dialogResult.ErrorMessage);
+                }
+
+                return;
+            }
+
+            var result = await categoryService.UpdateCategoryAsync(dialogResult.Data);
+
+            if (result.IsFailed)
+            {
+                await MessageHelper.ShowErrorAsync("Failed to update category");
+                return;
+            }
+
+            var currCategory = _allCategories.FirstOrDefault(x => x.CategoryId == category.Id);
+            var index = currCategory is null ? -1 : _allCategories.IndexOf(currCategory);
+
+            if (index == -1)
+            {
+                await MessageHelper.ShowWarningAsync("Failed to update the category list. Contact the developer");
+                logger.LogWarning("Can't update category list. CategoryId: {CategoryId}", category.Id);
+                return;
+            }
+
+            _allCategories[index] = cardViewModelFactory.GetViewModel(result.Value, EditCategoryAsync);
+            ApplyFilter(string.Empty);
         }
 
         private async Task LoadCategoriesAsync()
@@ -145,7 +176,7 @@ namespace SquirrelStash.ViewModels
             }
         }
 
-        private async Task<DialogResult<CreateCategoryRequest>> ShowEditDialogAsync(EditCategoryDialog dialog)
+        private async Task<DialogResult<EditCategoryRequest>> ShowEditDialogAsync(EditCategoryDialog dialog)
         {
             await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
 

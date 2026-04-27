@@ -21,6 +21,7 @@ namespace SquirrelStash.ViewModels
         {
             Name = propertyDefinition.Name;
             SelectedType = (PropertyTypes)propertyDefinition.TypeCode;
+            Id = propertyDefinition.Id;
             AllowedValues = propertyDefinition.AllowedValues ?? string.Empty;
             DeleteCommand = deleteCommand;
         }
@@ -33,6 +34,10 @@ namespace SquirrelStash.ViewModels
 
         [ObservableProperty]
         private PropertyTypes selectedType = PropertyTypes.Basic;
+
+        public int? Id { get; set; }
+
+        public bool IsNew => Id == null;
 
         public IReadOnlyList<PropertyTypes> AvailableTypes { get; } =
             Enum.GetValues<PropertyTypes>();

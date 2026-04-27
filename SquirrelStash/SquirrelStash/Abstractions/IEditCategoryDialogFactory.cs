@@ -1,4 +1,5 @@
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Requests;
 using SquirrelStash.Views;
 
 namespace SquirrelStash.Abstractions;

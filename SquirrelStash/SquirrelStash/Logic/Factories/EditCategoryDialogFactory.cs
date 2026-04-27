@@ -1,5 +1,6 @@
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Requests;
 using SquirrelStash.ViewModels;
 using SquirrelStash.Views;
 
