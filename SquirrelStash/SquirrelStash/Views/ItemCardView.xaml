@@ -50,7 +50,11 @@
                     WidthRequest="20"
                     HeightRequest="20"
                     VerticalOptions="Center"
-                    IsVisible="{Binding HasWarning}" />
+                    IsVisible="{Binding HasWarning}">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding EditItemCommand}" />
+                    </Image.GestureRecognizers>
+                </Image>
             </Grid>
 
             <!-- Quantity controls -->

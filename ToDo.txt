@@ -23,6 +23,26 @@
 +++ Specific OrderBy for properties with predefined values (Allowed values) if requested
 -----------------------------------------------------------------------------------------------------------------------
 
+UI: 
+- Cards visual rework 
+- Lock "Apply" button in creation of Category if no properties 
+- Change "hide" button
+- Divide the properties in an Item name by "/"
+- Total number of categories and items in overview is useless. Delete 
+- OrderBy visible only if we have any items 
+- Highlight item by border color if it is reach the threshold (Tree view)
+
+Func: 
+- Edit/Delete for Categories and Items both 
+- Editable (dragable) order of Properties in Create Category Dialog
+- "Copy item" function
+
+Bug: 
+- BUG: Add several properties. Edit. The screen is shaking when inputing. Especially visible with "Allowed values".
+- BUG: Clean the Edit form in case of error 
+
+Tst: 
+- Test case when sorting involve property without value (newly added property)
 -----------------------------------------------------------------------------------------------------------------------
 Small possible improvements: 
 

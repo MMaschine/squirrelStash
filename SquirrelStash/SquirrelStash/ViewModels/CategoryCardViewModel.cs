@@ -20,21 +20,21 @@ namespace SquirrelStash.ViewModels
         private readonly IItemsService _itemsService;
         private readonly ILogger _logger;
         private readonly IItemCardViewModelFactory _itemCardViewModelFactory;
-        private readonly ICreateItemDialogFactory _createItemDialogFactory;
+        private readonly IEditItemDialogFactory _editItemDialogFactory;
         private readonly Func<Category, Task> _editCategoryAction;
 
         public CategoryCardViewModel(
             Category category,
             IItemsService itemService,
             IItemCardViewModelFactory itemCardViewModelFactory,
-            ICreateItemDialogFactory createItemDialogFactory,
+            IEditItemDialogFactory editItemDialogFactory,
             Func<Category, Task> editCategoryAction,
             ILogger<CategoryCardViewModel> logger)
         {
             _itemsService = itemService;
             _currentCategory = category;
             _itemCardViewModelFactory = itemCardViewModelFactory;
-            _createItemDialogFactory = createItemDialogFactory;
+            _editItemDialogFactory = editItemDialogFactory;
             _editCategoryAction = editCategoryAction;
             _logger = logger;
 
@@ -47,7 +47,7 @@ namespace SquirrelStash.ViewModels
 
             foreach (var item in category.Items)
             {
-                Items.Add(_itemCardViewModelFactory.GetViewModel(item));
+                Items.Add(_itemCardViewModelFactory.GetViewModel(item, EditItem));
             }
         }
 
@@ -100,9 +100,9 @@ namespace SquirrelStash.ViewModels
         }
 
         [RelayCommand]
-        public async Task AddItem()
+        private async Task AddItem()
         {
-            var dialogResult = await ShowDialogAsync();
+            var dialogResult = await ShowDialogToAddItemAsync();
 
             if (!dialogResult.IsSuccess || dialogResult.Data == null)
             {
@@ -116,7 +116,7 @@ namespace SquirrelStash.ViewModels
                 return;
             }
 
-            var result = await _itemsService.AddItemAsync(_currentCategory.Id, dialogResult.Data);
+            var result = await _itemsService.AddItemAsync(dialogResult.Data);
 
             if (result.IsFailed)
             {  
@@ -126,7 +126,7 @@ namespace SquirrelStash.ViewModels
             else
             {
                 await MessageHelper.ShowInfoAsync(AppText.FormatItemAdded(_currentCategory.Title));
-                Items.Add(_itemCardViewModelFactory.GetViewModel(result.Value));
+                Items.Add(_itemCardViewModelFactory.GetViewModel(result.Value, EditItem));
                 IsItemsVisible = true;
 
                 //If we have order by function, we should apply it 
@@ -137,6 +137,7 @@ namespace SquirrelStash.ViewModels
             }
         }
 
+        
         [RelayCommand]
         private void HandleOrderSelection(PropertyDefinition? orderOption)
         {
@@ -165,13 +166,73 @@ namespace SquirrelStash.ViewModels
             OnPropertyChanged(nameof(CanOrderItems));
         }
 
-        private async Task<DialogResult<CreateItemRequest>> ShowDialogAsync()
+        private async Task<DialogResult<EditItemRequest>> ShowDialogToAddItemAsync()
         {
-            var dialog = _createItemDialogFactory.CreateDialog(_currentCategory);
+            var dialog = _editItemDialogFactory.CreateDialog(_currentCategory);
 
             await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
 
             return await dialog.ResultTask;
+        }
+
+        private async Task<DialogResult<EditItemRequest>> ShowDialogToEditAsync(Item item)
+        {
+            var dialog = _editItemDialogFactory.CreateDialog(_currentCategory, item);
+
+            await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
+            return await dialog.ResultTask;
+        }
+
+        private async Task EditItem(Item item)
+        {
+            var dialogResult = await ShowDialogToEditAsync(item);
+
+            if (!dialogResult.IsSuccess || dialogResult.Data == null)
+            {
+                if (!string.IsNullOrEmpty(dialogResult.ErrorMessage))
+                {
+                    _logger.LogWarning($"Edit item dialog failed for category {Title} and item with id: {item.Id}: {dialogResult.ErrorMessage}",
+                        _currentCategory.Title,
+                        dialogResult.ErrorMessage);
+                }
+
+                return;
+            }
+
+            var result = await _itemsService.UpdateItemAsync( dialogResult.Data);
+
+            if (result.IsFailed)
+            {
+                _logger.LogError($"Update item failed for category {_currentCategory.Title}. Errors: {string.Join("; ", result.Errors.Select(x => x.Message))}");
+                await MessageHelper.ShowErrorAsync(AppText.FailedToUpdateItem);
+            }
+            else
+            {
+                var newItemVm = _itemCardViewModelFactory.GetViewModel(result.Value, EditItem);
+                newItemVm.CheckWarnings(_currentCategory);
+
+                var currVm = Items.FirstOrDefault(x => x.Id == newItemVm.Id);
+
+                if (currVm != null)
+                {
+                    var index = Items.IndexOf(currVm);
+                    Items[index] = newItemVm;
+                    await MessageHelper.ShowInfoAsync(AppText.FormatItemUpdate(_currentCategory.Title, newItemVm.Name));
+                    IsItemsVisible = true;
+                }
+                else
+                {
+                    //If we don't have VM in the list it is exceptional situation - log and notify user
+                    await MessageHelper.NotifyException(new InvalidOperationException("Failed to update Items list"),
+                        "Failed to update Items list", _logger);
+                }
+
+                //If we have order by function, we should apply it 
+                if (SelectedOrderOption != null)
+                {
+                    SortItems(SelectedOrderOption);
+                }
+            }
         }
 
         private void SortItems(PropertyDefinition property)

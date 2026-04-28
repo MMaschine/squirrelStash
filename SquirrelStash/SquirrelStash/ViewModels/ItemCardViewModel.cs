@@ -12,16 +12,19 @@ namespace SquirrelStash.ViewModels
     public partial class ItemCardViewModel : ObservableObject
     {
         private readonly IItemsService _itemsService;
-        private readonly int _itemId;
+        private readonly Item _item;
         private readonly ILogger<ItemCardViewModel> _logger;
 
         private Dictionary<int, string> _itemsToOrderBy = [];
 
-        public ItemCardViewModel(Item item, IItemsService itemService, ILogger<ItemCardViewModel> logger)
+        private readonly Func<Item, Task> _editAction;  
+
+        public ItemCardViewModel(Item item, IItemsService itemService, Func<Item,Task> editAction, ILogger<ItemCardViewModel> logger)
         {
             _itemsService = itemService;
-            _itemId = item.Id;
+            _item = item;
             _logger = logger;
+            _editAction = editAction;
 
             Quantity = item.Quantity;
 
@@ -52,7 +55,7 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private bool hasWarning;
 
-        public int Id => _itemId;
+        public int Id => _item.Id;
 
         public void CheckWarnings(Category category)
         {
@@ -62,16 +65,22 @@ namespace SquirrelStash.ViewModels
         public string GetOrderByValue(int id)
         {
             return _itemsToOrderBy.TryGetValue(id, out var result) ? result : string.Empty;
-        } 
+        }
+
+        [RelayCommand]
+        private async Task EditItem()
+        {
+            await _editAction.Invoke(_item);
+        }
 
         [RelayCommand]
         private async Task IncreaseQuantity()
         {
-            var newQuantityResult = await _itemsService.IncreaseQuantityAsync(_itemId);
+            var newQuantityResult = await _itemsService.IncreaseQuantityAsync(_item.Id);
 
             if (newQuantityResult.IsFailed)
             {
-                _logger.LogError($"Increase quantity failed for item {_itemId}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
+                _logger.LogError($"Increase quantity failed for item {_item.Id}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
                 await MessageHelper.ShowErrorAsync(AppText.QuantityChangeError);
             }
             else
@@ -85,11 +94,11 @@ namespace SquirrelStash.ViewModels
         {
             if (Quantity > 0)
             {
-                var newQuantityResult = await _itemsService.DecreaseQuantityAsync(_itemId);
+                var newQuantityResult = await _itemsService.DecreaseQuantityAsync(_item.Id);
 
                 if (newQuantityResult.IsFailed)
                 {
-                    _logger.LogError($"Decrease quantity failed for item {_itemId}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
+                    _logger.LogError($"Decrease quantity failed for item {_item.Id}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
                     await MessageHelper.ShowErrorAsync(AppText.QuantityChangeError);
                 }
                 else

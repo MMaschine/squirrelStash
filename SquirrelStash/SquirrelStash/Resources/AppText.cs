@@ -71,6 +71,9 @@ public static class AppText
     public static string FormatItemAdded(string categoryTitle) =>
         $"New item added to the category {categoryTitle}";
 
+    public static string FormatItemUpdate(string categoryTitle, string itemName) =>
+        $"Item {itemName} updated in the category {categoryTitle}";
+
     public static string FormatItemsHeader(int itemsCount) =>
         $"Items ({itemsCount})";
 

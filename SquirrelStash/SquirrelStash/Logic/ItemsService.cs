@@ -32,21 +32,21 @@ namespace SquirrelStash.Logic
         }
 
         /// <inheritdoc />
-        public async Task<Result<Item>> AddItemAsync(int categoryId, CreateItemRequest createItemRequest)
+        public async Task<Result<Item>> AddItemAsync(EditItemRequest editItemRequest)
         {
             try
             {
                 var newItem = new Item()
                 {
-                    CategoryId = categoryId,
-                    CriticalThreshold = createItemRequest.CriticalThreshold,
-                    WarningThreshold = createItemRequest.WarningThreshold,
-                    ImageSource = createItemRequest.ImageSource,
-                    Quantity = createItemRequest.DefaultQuantity,
-                    Note = createItemRequest.Note
+                    CategoryId = editItemRequest.CategoryId,
+                    CriticalThreshold = editItemRequest.CriticalThreshold,
+                    WarningThreshold = editItemRequest.WarningThreshold,
+                    ImageSource = editItemRequest.ImageSource,
+                    Quantity = editItemRequest.DefaultQuantity,
+                    Note = editItemRequest.Note
                 };
 
-                newItem.PropertyEntries.AddRange(createItemRequest.Entries.Select(x => new PropertyEntry()
+                newItem.PropertyEntries.AddRange(editItemRequest.Entries.Select(x => new PropertyEntry()
                 {
                     PropertyDefinitionId = x.PropertyDefinitionId,
                     Value = x.Value
@@ -59,15 +59,60 @@ namespace SquirrelStash.Logic
             }
             catch (Exception e)
             {
-                await MessageHelper.NotifyException(e, $"Failed to add item to category {categoryId}", logger);
+                await MessageHelper.NotifyException(e, $"Failed to add item to category {editItemRequest.CategoryId}", logger);
                 return Result.Fail(AppText.FailedToCreateItem);
             }
         }
 
-        //TODO: implement when required
         /// <inheritdoc />
-        public async Task UpdateItemAsync(Item item)
+        public async Task<Result<Item>> UpdateItemAsync(EditItemRequest request)
         {
+            if (!request.IsEdit)
+            {
+                throw new InvalidOperationException("Not an edit request");
+            }
+
+            try
+            {
+                var item = await _itemSet.Include(x=>x.PropertyEntries).FirstOrDefaultAsync(x=> x.Id == request.ItemId);
+
+                if (item == null)
+                {
+                    return Result.Fail($"There is no item with id {request.ItemId} to be edited");
+                }
+
+                item.CriticalThreshold = request.CriticalThreshold;
+                item.WarningThreshold = request.WarningThreshold;
+                item.ImageSource = request.ImageSource;
+                item.Quantity = request.DefaultQuantity;
+                item.Note = request.Note;
+
+                foreach (var requestEntry in request.Entries)
+                {
+                    var existingEntry = item.PropertyEntries.FirstOrDefault(x => x.PropertyDefinitionId == requestEntry.PropertyDefinitionId);
+
+                    if (existingEntry == null)
+                    {
+                        item.PropertyEntries.Add(new PropertyEntry()
+                        {
+                            PropertyDefinitionId = requestEntry.PropertyDefinitionId,
+                            Value = requestEntry.Value
+                        });
+                    }
+                    else
+                    {
+                        existingEntry.Value = requestEntry.Value;
+                    }
+                }
+
+                await context.SaveChangesAsync();
+                return Result.Ok(item);
+            }
+            catch (Exception e)
+            {
+                await MessageHelper.NotifyException(e, $"Failed to update item from category {request.CategoryId} with Id: {request.ItemId}", logger);
+                return Result.Fail(AppText.FailedToUpdateItem);
+            }
         }
 
         //TODO: implement when required

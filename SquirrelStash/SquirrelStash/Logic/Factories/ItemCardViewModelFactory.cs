@@ -9,8 +9,8 @@ internal class ItemCardViewModelFactory(IItemsService itemService, ILogger<ItemC
     : IItemCardViewModelFactory
 {
     /// <inheritdoc />
-    public ItemCardViewModel GetViewModel(Item item)
+    public ItemCardViewModel GetViewModel(Item item, Func<Item, Task> editAction)
     {
-        return new ItemCardViewModel(item, itemService, logger);
+        return new ItemCardViewModel(item, itemService, editAction, logger);
     }
 }
