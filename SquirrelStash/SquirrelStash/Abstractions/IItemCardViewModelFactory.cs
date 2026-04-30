@@ -12,7 +12,7 @@ public interface IItemCardViewModelFactory
     /// Builds a view model for the provided item.
     /// </summary>
     /// <param name="item">The item entity used to initialize the view model.</param>
-    /// <param name="editAction">The action invoked when the item should be edited.</param>
+    /// <param name="itemCardActions">The owner actions available to the item card.</param>
     /// <returns>An item card view model.</returns>
-    ItemCardViewModel GetViewModel(Item item, Func<Item, Task> editAction);
+    ItemCardViewModel GetViewModel(Item item, IItemCardActions itemCardActions);
 }

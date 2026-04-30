@@ -6,6 +6,7 @@ using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Helpers;
 using SquirrelStash.Logic;
 using SquirrelStash.Resources;
+using SquirrelStash.Views;
 
 namespace SquirrelStash.ViewModels
 {
@@ -17,14 +18,18 @@ namespace SquirrelStash.ViewModels
 
         private Dictionary<int, string> _itemsToOrderBy = [];
 
-        private readonly Func<Item, Task> _editAction;  
+        private readonly IItemCardActions _itemCardActions;
 
-        public ItemCardViewModel(Item item, IItemsService itemService, Func<Item,Task> editAction, ILogger<ItemCardViewModel> logger)
+        public ItemCardViewModel(
+            Item item,
+            IItemsService itemService,
+            IItemCardActions itemCardActions,
+            ILogger<ItemCardViewModel> logger)
         {
             _itemsService = itemService;
             _item = item;
             _logger = logger;
-            _editAction = editAction;
+            _itemCardActions = itemCardActions;
 
             Quantity = item.Quantity;
 
@@ -70,7 +75,25 @@ namespace SquirrelStash.ViewModels
         [RelayCommand]
         private async Task EditItem()
         {
-            await _editAction.Invoke(_item);
+            await _itemCardActions.EditItemAsync(_item);
+        }
+
+        [RelayCommand]
+        private async Task ShowItemDetails()
+        {
+            var dialog = new ItemDetailsDialog(ImagePath, Name);
+            await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
+
+            var action = await dialog.ResultTask;
+
+            if (action == ItemDetailsDialogResult.Edit)
+            {
+                await _itemCardActions.EditItemAsync(_item);
+            }
+            else if (action == ItemDetailsDialogResult.Delete)
+            {
+                await _itemCardActions.DeleteItemAsync(_item);
+            }
         }
 
         [RelayCommand]

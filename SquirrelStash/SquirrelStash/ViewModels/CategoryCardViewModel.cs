@@ -7,6 +7,7 @@ using SquirrelStash.Helpers;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.Resources;
+using SquirrelStash.Logic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using SquirrelStash.Enums;
@@ -21,21 +22,23 @@ namespace SquirrelStash.ViewModels
         private readonly ILogger _logger;
         private readonly IItemCardViewModelFactory _itemCardViewModelFactory;
         private readonly IEditItemDialogFactory _editItemDialogFactory;
-        private readonly Func<Category, Task> _editCategoryAction;
+        private readonly ICategoryCardActions _categoryCardActions;
+        private readonly IItemCardActions _itemCardActions;
 
         public CategoryCardViewModel(
             Category category,
             IItemsService itemService,
             IItemCardViewModelFactory itemCardViewModelFactory,
             IEditItemDialogFactory editItemDialogFactory,
-            Func<Category, Task> editCategoryAction,
+            ICategoryCardActions categoryCardActions,
             ILogger<CategoryCardViewModel> logger)
         {
             _itemsService = itemService;
             _currentCategory = category;
             _itemCardViewModelFactory = itemCardViewModelFactory;
             _editItemDialogFactory = editItemDialogFactory;
-            _editCategoryAction = editCategoryAction;
+            _categoryCardActions = categoryCardActions;
+            _itemCardActions = new ItemCardActionsAdapter(EditItemAsync, DeleteItemAsync);
             _logger = logger;
 
             Title = category.Title;
@@ -47,7 +50,7 @@ namespace SquirrelStash.ViewModels
 
             foreach (var item in category.Items)
             {
-                Items.Add(_itemCardViewModelFactory.GetViewModel(item, EditItem));
+                Items.Add(_itemCardViewModelFactory.GetViewModel(item, _itemCardActions));
             }
         }
 
@@ -96,7 +99,7 @@ namespace SquirrelStash.ViewModels
         [RelayCommand]
         private async Task EditCategory()
         {
-            await _editCategoryAction(_currentCategory);
+            await _categoryCardActions.EditCategoryAsync(_currentCategory);
         }
 
         [RelayCommand]
@@ -126,7 +129,7 @@ namespace SquirrelStash.ViewModels
             else
             {
                 await MessageHelper.ShowInfoAsync(AppText.FormatItemAdded(_currentCategory.Title));
-                Items.Add(_itemCardViewModelFactory.GetViewModel(result.Value, EditItem));
+                Items.Add(_itemCardViewModelFactory.GetViewModel(result.Value, _itemCardActions));
                 IsItemsVisible = true;
 
                 //If we have order by function, we should apply it 
@@ -183,7 +186,7 @@ namespace SquirrelStash.ViewModels
             return await dialog.ResultTask;
         }
 
-        private async Task EditItem(Item item)
+        private async Task EditItemAsync(Item item)
         {
             var dialogResult = await ShowDialogToEditAsync(item);
 
@@ -208,7 +211,7 @@ namespace SquirrelStash.ViewModels
             }
             else
             {
-                var newItemVm = _itemCardViewModelFactory.GetViewModel(result.Value, EditItem);
+                var newItemVm = _itemCardViewModelFactory.GetViewModel(result.Value, _itemCardActions);
                 newItemVm.CheckWarnings(_currentCategory);
 
                 var currVm = Items.FirstOrDefault(x => x.Id == newItemVm.Id);
@@ -233,6 +236,48 @@ namespace SquirrelStash.ViewModels
                     SortItems(SelectedOrderOption);
                 }
             }
+        }
+
+        private async Task DeleteItemAsync(Item item)
+        {
+            var itemName = GetItemName(item);
+            var confirmed = await MessageHelper.ShowConfirmationAsync(AppText.FormatDeleteItemConfirmation(itemName));
+
+            if (!confirmed)
+            {
+                return;
+            }
+
+            var result = await _itemsService.RemoveItemAsync(item.Id);
+
+            if (result.IsFailed)
+            {
+                _logger.LogError($"Delete item failed for category {_currentCategory.Title} and item {item.Id}. Errors: {string.Join("; ", result.Errors.Select(x => x.Message))}");
+                await MessageHelper.ShowErrorAsync(AppText.FailedToDeleteItem);
+                return;
+            }
+
+            var itemViewModel = Items.FirstOrDefault(x => x.Id == item.Id);
+
+            if (itemViewModel == null)
+            {
+                await MessageHelper.NotifyException(new InvalidOperationException("Failed to delete item from Items list"),
+                    "Failed to delete item from Items list", _logger);
+                return;
+            }
+
+            Items.Remove(itemViewModel);
+            await MessageHelper.ShowInfoAsync(AppText.ItemDeletedMessage);
+        }
+
+        private static string GetItemName(Item item)
+        {
+            var itemName = string.Join(" ",
+                item.PropertyEntries
+                    .Select(p => p.Value)
+                    .Where(v => !string.IsNullOrWhiteSpace(v)));
+
+            return string.IsNullOrWhiteSpace(itemName) ? item.Id.ToString() : itemName;
         }
 
         private void SortItems(PropertyDefinition property)

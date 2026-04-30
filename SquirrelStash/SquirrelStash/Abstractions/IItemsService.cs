@@ -34,7 +34,7 @@ public interface IItemsService
     /// Removes an item by identifier.
     /// </summary>
     /// <param name="id">The item identifier.</param>
-    Task RemoveItemAsync(int id);
+    Task<Result> RemoveItemAsync(int id);
 
     /// <summary>
     /// Increases an item's quantity.

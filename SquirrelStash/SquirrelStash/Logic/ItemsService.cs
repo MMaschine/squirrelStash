@@ -115,10 +115,31 @@ namespace SquirrelStash.Logic
             }
         }
 
-        //TODO: implement when required
         /// <inheritdoc />
-        public async Task RemoveItemAsync(int id)
+        public async Task<Result> RemoveItemAsync(int id)
         {
+            try
+            {
+                var item = await _itemSet
+                    .Include(x => x.PropertyEntries)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                if (item == null)
+                {
+                    logger.LogWarning("Failed to remove item because item {ItemId} was not found.", id);
+                    return Result.Fail(AppText.ItemNotFound);
+                }
+
+                _itemSet.Remove(item);
+                await context.SaveChangesAsync();
+
+                return Result.Ok();
+            }
+            catch (Exception e)
+            {
+                await MessageHelper.NotifyException(e, $"Failed to remove item {id}.", logger);
+                return Result.Fail(AppText.FailedToDeleteItem);
+            }
         }
 
         /// <inheritdoc />

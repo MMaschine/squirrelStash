@@ -26,8 +26,11 @@
 
                 <Image
                     Source="{Binding ImagePath}"
-                    Aspect="AspectFit"
-                   />
+                    Aspect="AspectFit">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowItemDetailsCommand}" />
+                    </Image.GestureRecognizers>
+                </Image>
             </Border>
 
             <!-- Name -->

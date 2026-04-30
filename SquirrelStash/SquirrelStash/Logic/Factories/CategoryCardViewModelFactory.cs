@@ -13,14 +13,14 @@ namespace SquirrelStash.Logic.Factories
         : ICategoryCardViewModelFactory
     {
         /// <inheritdoc />
-        public CategoryCardViewModel GetViewModel(Category category, Func<Category, Task> editCategoryAction)
+        public CategoryCardViewModel GetViewModel(Category category, ICategoryCardActions categoryCardActions)
         {
             return new CategoryCardViewModel(
                 category,
                 itemService,
                 itemCardViewModelFactory,
                 editItemDialogFactory,
-                editCategoryAction,
+                categoryCardActions,
                 logger);
         }
     }

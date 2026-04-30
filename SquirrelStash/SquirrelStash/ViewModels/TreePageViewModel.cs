@@ -8,6 +8,7 @@ using SquirrelStash.Requests;
 using SquirrelStash.Resources;
 using System.Collections.ObjectModel;
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Logic;
 using SquirrelStash.Views;
 
 namespace SquirrelStash.ViewModels
@@ -21,8 +22,10 @@ namespace SquirrelStash.ViewModels
         private bool _isInitialized;
         private bool _isLoading;
         private string _searchText = null!;
-
+       
         private readonly List<CategoryCardViewModel> _allCategories = [];
+
+        private ICategoryCardActions CategoryCardActions => new CategoryCardActionsAdapter(EditCategoryAsync);
 
         public ObservableCollection<CategoryCardViewModel> Categories { get; } = [];
 
@@ -92,7 +95,7 @@ namespace SquirrelStash.ViewModels
             }
             else
             {
-                _allCategories.Add(cardViewModelFactory.GetViewModel(result.Value, EditCategoryAsync));
+                _allCategories.Add(cardViewModelFactory.GetViewModel(result.Value, CategoryCardActions));
                 SearchText = string.Empty;
                 ApplyFilter(SearchText);
 
@@ -133,7 +136,7 @@ namespace SquirrelStash.ViewModels
             }
 
 
-            _allCategories[index] = cardViewModelFactory.GetViewModel(result.Value, EditCategoryAsync);
+            _allCategories[index] = cardViewModelFactory.GetViewModel(result.Value, CategoryCardActions);
             _allCategories[index].CheckItemWarnings();
             
             ApplyFilter(string.Empty);
@@ -157,7 +160,7 @@ namespace SquirrelStash.ViewModels
                 return;
             }
 
-            _allCategories.AddRange(result.Value.Select(x=> cardViewModelFactory.GetViewModel(x, EditCategoryAsync)));
+            _allCategories.AddRange(result.Value.Select(x=> cardViewModelFactory.GetViewModel(x, CategoryCardActions)));
             logger.LogInformation("Loaded {CategoryCount} categories.", result.Value.Count);
 
             ApplyFilter(string.Empty);
