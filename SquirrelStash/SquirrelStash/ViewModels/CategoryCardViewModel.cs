@@ -50,7 +50,9 @@ namespace SquirrelStash.ViewModels
 
             foreach (var item in category.Items)
             {
-                Items.Add(_itemCardViewModelFactory.GetViewModel(item, _itemCardActions));
+                var itemVm = _itemCardViewModelFactory.GetViewModel(item, _itemCardActions);
+                itemVm.CheckWarnings(category);
+                Items.Add(itemVm);
             }
         }
 

@@ -52,6 +52,7 @@ namespace SquirrelStash.ViewModels
         private void AddProperty()
         {
             Properties.Add(new CategoryPropertyViewModel(RemovePropertyCommand));
+            SaveCommand.NotifyCanExecuteChanged();
         }
 
         [RelayCommand]
@@ -63,6 +64,7 @@ namespace SquirrelStash.ViewModels
             }
 
             Properties.Remove(property);
+            SaveCommand.NotifyCanExecuteChanged();
 
             if (IsEdit && property.Id.HasValue)
             {
@@ -92,7 +94,7 @@ namespace SquirrelStash.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanSave))]
         private async Task Save()
         {
             var trimmedTitle = Title?.Trim() ?? string.Empty;
@@ -129,6 +131,11 @@ namespace SquirrelStash.ViewModels
                     new EditCategoryRequest(trimmedTitle,props, _categoryId, _propertiesToRemoveIds.ToArray()) : new EditCategoryRequest(trimmedTitle, props));
 
             RequestCompleted?.Invoke(dialogResult);
+        }
+
+        private bool CanSave()
+        {
+            return Properties.Any();
         }
 
         private async Task<bool> ValidateCategory(string title, CategoryPropertyViewModel[]? properties)

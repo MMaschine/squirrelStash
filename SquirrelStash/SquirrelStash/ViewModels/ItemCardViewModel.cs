@@ -34,7 +34,7 @@ namespace SquirrelStash.ViewModels
 
             Quantity = item.Quantity;
 
-            Name = string.Join(" ",
+            Name = string.Join("/",
                 item.PropertyEntries
                     .Select(p => p.Value)
                     .Where(v => !string.IsNullOrWhiteSpace(v)));
@@ -65,6 +65,16 @@ namespace SquirrelStash.ViewModels
 
         public void CheckWarnings(Category category)
         {
+            var diff = category.Properties.Count - _itemsToOrderBy.Count;
+
+            if (diff > 0)
+            {
+                for (int i = 0; i < diff; i++)
+                {
+                    Name += "/";
+                }
+            }
+
             HasWarning = category.Properties.Count != _itemsToOrderBy.Count || string.IsNullOrEmpty(Name);
         }
 

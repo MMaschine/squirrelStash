@@ -259,6 +259,20 @@
         <Setter Property="MinimumHeightRequest" Value="{StaticResource Size.Icon.Form}" />
         <Setter Property="CornerRadius" Value="{StaticResource Size.Corner.Small}" />
         <Setter Property="Padding" Value="9" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.35" />
+                            <Setter Property="BackgroundColor" Value="{StaticResource Color.ImagePlaceholder}" />
+                            <Setter Property="BorderColor" Value="{StaticResource Color.BorderDefault}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
     </Style>
 
     <Style x:Key="CategoryAddButtonStyle" TargetType="ImageButton" BasedOn="{StaticResource IconImageButtonBaseStyle}">
