@@ -53,6 +53,8 @@ namespace SquirrelStash.ViewModels
 
         public bool IsEdit => _itemId != null;
 
+        public string DialogTitle => IsEdit ? AppText.EditItemPageTitle : AppText.CreateItemPageTitle;
+
         [ObservableProperty]
         private string? imagePath;
 

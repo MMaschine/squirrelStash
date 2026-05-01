@@ -15,7 +15,7 @@ public static class AppText
     public const string AppTitle = "Squirrel Stash";
 
     public const string CreateCategoryPageTitle = "Create Category";
-    public const string CreateCategoryHeader = "Create Category";
+    public const string EditCategoryPageTitle = "Edit Category";
     public const string EnterCategoryTitlePlaceholder = "Enter category title";
     public const string PropertiesLabel = "Properties";
     public const string PropertyNamePlaceholder = "Property name";
@@ -23,7 +23,7 @@ public static class AppText
     public const string AllowedValuesPlaceholder = "Allowed values (comma-separated)";
 
     public const string CreateItemPageTitle = "Create Item";
-    public const string CreateItemHeader = "Create Item";
+    public const string EditItemPageTitle = "Edit Item";
     public const string TapToAddImage = "Tap to add image";
     public const string ThresholdsLabel = "Thresholds";
     public const string WarningThresholdLabel = "Warning threshold";

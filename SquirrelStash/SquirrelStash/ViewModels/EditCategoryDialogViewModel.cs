@@ -40,6 +40,8 @@ namespace SquirrelStash.ViewModels
 
         public bool IsEdit { get; } = false;
 
+        public string DialogTitle => IsEdit ? AppText.EditCategoryPageTitle : AppText.CreateCategoryPageTitle;
+
         public ObservableCollection<CategoryPropertyViewModel> Properties { get; } = [];
 
         public event Action<DialogResult<EditCategoryRequest>>? RequestCompleted;

@@ -6,7 +6,7 @@
     xmlns:converters="clr-namespace:SquirrelStash.Converters"
     xmlns:resources="clr-namespace:SquirrelStash.Resources"
     x:DataType="viewModels:EditItemDialogViewModel"
-    Title="{x:Static resources:AppText.CreateItemPageTitle}">
+    Title="{Binding DialogTitle}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -18,7 +18,7 @@
         <VerticalStackLayout Padding="20" Spacing="16">
 
             <Label
-                Text="{x:Static resources:AppText.CreateItemHeader}"
+                Text="{Binding DialogTitle}"
                 Style="{StaticResource H1LabelStyle}" />
 
             <VerticalStackLayout

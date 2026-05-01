@@ -5,13 +5,13 @@
     xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
     xmlns:resources="clr-namespace:SquirrelStash.Resources"
     x:DataType="viewModels:EditCategoryDialogViewModel"
-    Title="{x:Static resources:AppText.CreateCategoryPageTitle}">
+    Title="{Binding DialogTitle}">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="16">
 
             <Label
-                Text="{x:Static resources:AppText.CreateCategoryHeader}"
+                Text="{Binding DialogTitle}"
                 Style="{StaticResource H1LabelStyle}" />
 
             <Border Style="{StaticResource InputContainerStyle}"
