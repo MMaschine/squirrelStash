@@ -25,7 +25,7 @@ namespace SquirrelStash.ViewModels
        
         private readonly List<CategoryCardViewModel> _allCategories = [];
 
-        private ICategoryCardActions CategoryCardActions => new CategoryCardActionsAdapter(EditCategoryAsync);
+        private ICategoryCardActions CategoryCardActions => new CategoryCardActionsAdapter(ChangeCategoryAsync);
 
         public ObservableCollection<CategoryCardViewModel> Categories { get; } = [];
 
@@ -74,7 +74,7 @@ namespace SquirrelStash.ViewModels
         {
             var dialogResult = await ShowEditDialogAsync(editCategoryDialogFactory.GetDialogToCreate(AllTitles));
 
-            if (!dialogResult.IsSuccess || dialogResult.Data == null)
+            if (!dialogResult.IsChangesApplied || dialogResult.Data == null)
             {
                 if (!string.IsNullOrEmpty(dialogResult.ErrorMessage))
                 {
@@ -103,11 +103,22 @@ namespace SquirrelStash.ViewModels
             }
         }
 
-        private async Task EditCategoryAsync(Category category)
+        private async Task ChangeCategoryAsync(Category category)
         {
             var dialogResult = await ShowEditDialogAsync(editCategoryDialogFactory.GetDialogToEdit(AllTitles, category));
 
-            if (!dialogResult.IsSuccess || dialogResult.Data == null)
+            await HandleEditCategoryDialogResultAsync(category, dialogResult);
+        }
+
+        private async Task HandleEditCategoryDialogResultAsync(Category category, EditCategoryDialogResult dialogResult)
+        {
+            if (dialogResult.IsDeleted)
+            {
+                await DeleteCategoryAsync(category);
+                return;
+            }
+
+            if (!dialogResult.IsChangesApplied || dialogResult.Data == null)
             {
                 if (!string.IsNullOrEmpty(dialogResult.ErrorMessage))
                 {
@@ -117,11 +128,16 @@ namespace SquirrelStash.ViewModels
                 return;
             }
 
-            var result = await categoryService.UpdateCategoryAsync(dialogResult.Data);
+            await UpdateCategoryAsync(category, dialogResult.Data);
+        }
+
+        private async Task UpdateCategoryAsync(Category category, EditCategoryRequest request)
+        {
+            var result = await categoryService.UpdateCategoryAsync(request);
 
             if (result.IsFailed)
             {
-                await MessageHelper.ShowErrorAsync("Failed to update category");
+                await MessageHelper.ShowErrorAsync("ChangeFailed to update category");
                 return;
             }
 
@@ -130,7 +146,7 @@ namespace SquirrelStash.ViewModels
 
             if (index == -1)
             {
-                await MessageHelper.ShowWarningAsync("Failed to update the category list. Contact the developer");
+                await MessageHelper.ShowWarningAsync("ChangeFailed to update the category list. Contact the developer");
                 logger.LogWarning("Can't update category list. CategoryId: {CategoryId}", category.Id);
                 return;
             }
@@ -140,6 +156,34 @@ namespace SquirrelStash.ViewModels
             _allCategories[index].CheckItemWarnings();
             
             ApplyFilter(string.Empty);
+        }
+
+        private async Task DeleteCategoryAsync(Category category)
+        {
+            var result = await categoryService.RemoveCategoryAsync(category.Id);
+
+            if (result.IsFailed)
+            {
+                logger.LogError("Delete category failed for {CategoryTitle}. Errors: {Errors}",
+                    category.Title,
+                    string.Join("; ", result.Errors.Select(x => x.Message)));
+                await MessageHelper.ShowErrorAsync(AppText.FailedToDeleteCategory);
+                return;
+            }
+
+            var categoryViewModel = _allCategories.FirstOrDefault(x => x.CategoryId == category.Id);
+
+            if (categoryViewModel == null)
+            {
+                await MessageHelper.ShowWarningAsync("ChangeFailed to update the category list. Contact the developer");
+                logger.LogWarning("Can't delete category from list. CategoryId: {CategoryId}", category.Id);
+                return;
+            }
+
+            _allCategories.Remove(categoryViewModel);
+            ApplyFilter(SearchText);
+
+            await MessageHelper.ShowInfoAsync(AppText.CategoryDeletedMessage);
         }
 
         private async Task LoadCategoriesAsync()
@@ -182,7 +226,7 @@ namespace SquirrelStash.ViewModels
             }
         }
 
-        private async Task<DialogResult<EditCategoryRequest>> ShowEditDialogAsync(EditCategoryDialog dialog)
+        private async Task<EditCategoryDialogResult> ShowEditDialogAsync(EditCategoryDialog dialog)
         {
             await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
 

@@ -5,6 +5,8 @@
 - Do not create `ContentPage` instances or compose page/dialog UI inline inside methods. Create a proper view in `Views` with XAML and code-behind, then show that view from helpers or view models.
 - Every abstraction must have XML documentation comments that describe its contract.
 - Every implementation member that satisfies a documented abstraction should use `<inheritdoc />` instead of duplicating the abstraction documentation.
+- Keep all enum declarations in the project `Enums` folder.
+- Every enum must have an XML documentation comment that describes the enum's purpose; enum members only need comments when the member meaning is not obvious.
 
 ## Folder Structure
 

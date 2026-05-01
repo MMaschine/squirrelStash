@@ -28,4 +28,11 @@ public interface ICategoryService
     /// <param name="category">Category to update</param>
     /// <returns>A result containing updated category.</returns>
     Task<Result<Category>> UpdateCategoryAsync(EditCategoryRequest category);
+
+    /// <summary>
+    /// Removes a category by identifier.
+    /// </summary>
+    /// <param name="id">The category identifier.</param>
+    /// <returns>The operation result.</returns>
+    Task<Result> RemoveCategoryAsync(int id);
 }

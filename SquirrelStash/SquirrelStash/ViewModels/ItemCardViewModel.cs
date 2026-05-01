@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Enums;
 using SquirrelStash.Helpers;
 using SquirrelStash.Logic;
 using SquirrelStash.Resources;

@@ -54,7 +54,7 @@
                 <ImageButton Grid.Row="1"
                              Grid.Column="1"
                              Source="add_item.png"
-                             Style="{StaticResource CategoryAddButtonStyle}"
+                             Style="{StaticResource CategoryAddItemButtonStyle}"
                              HorizontalOptions="End"
                              VerticalOptions="Center"
                              Command="{Binding AddItemCommand}" />

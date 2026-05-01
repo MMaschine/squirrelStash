@@ -42,9 +42,11 @@ namespace SquirrelStash.ViewModels
 
         public string DialogTitle => IsEdit ? AppText.EditCategoryPageTitle : AppText.CreateCategoryPageTitle;
 
+        public bool CanRemoveCategory => IsEdit;
+
         public ObservableCollection<CategoryPropertyViewModel> Properties { get; } = [];
 
-        public event Action<DialogResult<EditCategoryRequest>>? RequestCompleted;
+        public event Action<EditCategoryDialogResult>? RequestCompleted;
 
         [RelayCommand]
         private void AddProperty()
@@ -71,7 +73,23 @@ namespace SquirrelStash.ViewModels
         [RelayCommand]
         private void Cancel()
         {
-            RequestCompleted?.Invoke(DialogResult<EditCategoryRequest>.GetCanceled());
+            RequestCompleted?.Invoke(EditCategoryDialogResult.GetCanceled());
+        }
+
+        [RelayCommand]
+        private async Task RemoveCategory()
+        {
+            if (!IsEdit)
+            {
+                return;
+            }
+
+            var confirmed = await MessageHelper.ShowConfirmationAsync(AppText.FormatDeleteCategoryConfirmation(Title));
+
+            if (confirmed)
+            {
+                RequestCompleted?.Invoke(EditCategoryDialogResult.GetDeleted());
+            }
         }
 
         [RelayCommand]
@@ -107,7 +125,7 @@ namespace SquirrelStash.ViewModels
                 .ToArray();
 
             var dialogResult =
-                DialogResult<EditCategoryRequest>.GetSuccess(IsEdit ? 
+                EditCategoryDialogResult.GetChangesApplied(IsEdit ? 
                     new EditCategoryRequest(trimmedTitle,props, _categoryId, _propertiesToRemoveIds.ToArray()) : new EditCategoryRequest(trimmedTitle, props));
 
             RequestCompleted?.Invoke(dialogResult);

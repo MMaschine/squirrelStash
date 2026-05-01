@@ -94,19 +94,28 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <HorizontalStackLayout HorizontalOptions="End"
-                                   Spacing="10"
-                                   Margin="0,20,0,0">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                  ColumnSpacing="10"
+                  Margin="0,20,0,0">
+                <Button
+                    Grid.Column="0"
+                    ImageSource="delete.png"
+                    Style="{StaticResource CardIconButtonStyle}"
+                    Command="{Binding RemoveCategoryCommand}"
+                    IsVisible="{Binding CanRemoveCategory}" />
+
                 <ImageButton
+                    Grid.Column="2"
                     Source="cross.png"
                     Style="{StaticResource FormActionButtonStyle}"
                     Command="{Binding CancelCommand}" />
 
                 <ImageButton
+                    Grid.Column="3"
                     Source="apply.png"
                     Style="{StaticResource FormActionButtonStyle}"
                     Command="{Binding SaveCommand}" />
-            </HorizontalStackLayout>
+            </Grid>
 
         </VerticalStackLayout>
     </ScrollView>

@@ -147,5 +147,29 @@ namespace SquirrelStash.Logic
                 return Result.Fail(AppText.FailedToCreateCategory);
             }
         }
+
+        /// <inheritdoc />
+        public async Task<Result> RemoveCategoryAsync(int id)
+        {
+            try
+            {
+                var category = await _categoriesSet.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (category == null)
+                {
+                    return Result.Fail(AppText.CategoryNotFound);
+                }
+
+                _categoriesSet.Remove(category);
+                await context.SaveChangesAsync();
+
+                return Result.Ok();
+            }
+            catch (Exception e)
+            {
+                await MessageHelper.NotifyException(e, $"Failed to delete category {id}.", logger);
+                return Result.Fail(AppText.FailedToDeleteCategory);
+            }
+        }
     }
 }

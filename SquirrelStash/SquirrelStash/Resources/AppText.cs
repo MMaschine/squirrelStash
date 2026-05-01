@@ -1,3 +1,5 @@
+using FluentResults;
+
 namespace SquirrelStash.Resources;
 
 public static class AppText
@@ -44,6 +46,7 @@ public static class AppText
     public const string FailedToAddNewCategory = "Failed to add new category!";
     public const string FailedToCreateCategory = "Can't add category because of exception";
     public const string FailedToUploadCategories = "Failed to upload categories";
+    public const string FailedToDeleteCategory = "Failed to delete category";
     public const string FailedToAddItem = "Failed to add item!";
     public const string FailedToDeleteItem = "Failed to delete item";
     public const string FailedToBuildOverview = "Failed to build overview";
@@ -58,14 +61,16 @@ public static class AppText
     public const string AllowedValuesInvalidFormat = "Allowed values for '{0}' must be comma-separated.";
 
     public const string CannotGetCategories = "Can't get categories";
-    public const string FailedToCreateItem = "Failed to create item";
+    public const string CategoryNotFound = "Category not found";
     public const string FailedToUpdateItem = "Failed to update item";
     public const string WrongIncrement = "Wrong increment";
     public const string ItemNotFound = "Item not found";
     public const string CannotGetImage = "Can't get image";
 
     public const string DefaultQuantity = "Default quantity";
+    public const string CategoryDeletedMessage = "Category deleted";
     public const string ItemDeletedMessage = "Item deleted";
+    public const string DeleteCategoryConfirmationFormat = "Do you really want to delete category {0}?";
     public const string DeleteItemConfirmationFormat = "Do you really want to delete item {0}?";
 
     public static string FormatCategoryAdded(string categoryTitle) =>
@@ -73,6 +78,9 @@ public static class AppText
 
     public static string FormatCategoryExists(string categoryTitle) =>
         $"Category {categoryTitle} already exists";
+
+    public static string FormatDeleteCategoryConfirmation(string categoryTitle) =>
+        string.Format(DeleteCategoryConfirmationFormat, categoryTitle);
 
     public static string FormatItemAdded(string categoryTitle) =>
         $"New item added to the category {categoryTitle}";

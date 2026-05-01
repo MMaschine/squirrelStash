@@ -60,7 +60,7 @@ namespace SquirrelStash.Logic
             catch (Exception e)
             {
                 await MessageHelper.NotifyException(e, $"Failed to add item to category {editItemRequest.CategoryId}", logger);
-                return Result.Fail(AppText.FailedToCreateItem);
+                return Result.Fail(AppText.FailedToAddItem);
             }
         }
 
@@ -120,9 +120,7 @@ namespace SquirrelStash.Logic
         {
             try
             {
-                var item = await _itemSet
-                    .Include(x => x.PropertyEntries)
-                    .FirstOrDefaultAsync(x => x.Id == id);
+                var item = await _itemSet.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (item == null)
                 {

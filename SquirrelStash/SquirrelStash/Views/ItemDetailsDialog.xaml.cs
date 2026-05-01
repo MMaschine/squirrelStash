@@ -1,3 +1,5 @@
+using SquirrelStash.Enums;
+
 namespace SquirrelStash.Views;
 
 public partial class ItemDetailsDialog : ContentPage
@@ -52,11 +54,4 @@ public partial class ItemDetailsDialog : ContentPage
         await Navigation.PopModalAsync();
         _resultSource.TrySetResult(result);
     }
-}
-
-public enum ItemDetailsDialogResult
-{
-    None,
-    Edit,
-    Delete
 }
