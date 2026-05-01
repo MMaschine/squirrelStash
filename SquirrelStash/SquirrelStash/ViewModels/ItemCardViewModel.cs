@@ -63,6 +63,26 @@ namespace SquirrelStash.ViewModels
 
         public int Id => _item.Id;
 
+        public ItemCardStatus Status
+        {
+            get
+            {
+                if (Quantity <= _item.CriticalThreshold)
+                {
+                    return ItemCardStatus.CriticalThresholdReached;
+                }
+
+                if (Quantity <= _item.WarningThreshold)
+                {
+                    return ItemCardStatus.WarningThresholdReached;
+                }
+
+                return HasWarning
+                    ? ItemCardStatus.MissingData
+                    : ItemCardStatus.Normal;
+            }
+        }
+
         public void CheckWarnings(Category category)
         {
             var diff = category.Properties.Count - _itemsToOrderBy.Count;
@@ -144,6 +164,16 @@ namespace SquirrelStash.ViewModels
                     Quantity = newQuantityResult.Value;
                 }
             }
+        }
+
+        partial void OnQuantityChanged(int value)
+        {
+            OnPropertyChanged(nameof(Status));
+        }
+
+        partial void OnHasWarningChanged(bool value)
+        {
+            OnPropertyChanged(nameof(Status));
         }
     }
 }

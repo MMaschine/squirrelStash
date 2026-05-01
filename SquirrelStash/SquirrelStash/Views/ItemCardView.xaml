@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:enums="clr-namespace:SquirrelStash.Enums"
              x:Class="SquirrelStash.Views.ItemCardView">
     <Border
-        Style="{StaticResource CardBorderStyle}"
         Padding="10">
+        <Border.Style>
+            <Style TargetType="Border" BasedOn="{StaticResource CardBorderStyle}">
+                <Style.Triggers>
+                    <DataTrigger
+                        TargetType="Border"
+                        Binding="{Binding Status}"
+                        Value="{x:Static enums:ItemCardStatus.MissingData}">
+                        <Setter Property="Stroke" Value="#E0B12C" />
+                        <Setter Property="StrokeThickness" Value="2" />
+                    </DataTrigger>
+                    <DataTrigger
+                        TargetType="Border"
+                        Binding="{Binding Status}"
+                        Value="{x:Static enums:ItemCardStatus.WarningThresholdReached}">
+                        <Setter Property="Stroke" Value="{StaticResource Color.WarningOrange}" />
+                        <Setter Property="StrokeThickness" Value="2" />
+                    </DataTrigger>
+                    <DataTrigger
+                        TargetType="Border"
+                        Binding="{Binding Status}"
+                        Value="{x:Static enums:ItemCardStatus.CriticalThresholdReached}">
+                        <Setter Property="Stroke" Value="{StaticResource Color.CriticalRed}" />
+                        <Setter Property="StrokeThickness" Value="2" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
 
         <Grid
             ColumnDefinitions="64,*,Auto"
