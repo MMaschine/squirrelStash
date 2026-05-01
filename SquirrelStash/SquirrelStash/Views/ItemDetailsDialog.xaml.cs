@@ -38,6 +38,11 @@ public partial class ItemDetailsDialog : ContentPage
         await CompleteAsync(ItemDetailsDialogResult.Edit);
     }
 
+    private async void OnCopyClicked(object? sender, EventArgs e)
+    {
+        await CompleteAsync(ItemDetailsDialogResult.Copy);
+    }
+
     private async void OnDeleteClicked(object? sender, EventArgs e)
     {
         await CompleteAsync(ItemDetailsDialogResult.Delete);

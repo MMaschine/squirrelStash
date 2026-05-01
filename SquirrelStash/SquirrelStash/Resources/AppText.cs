@@ -48,6 +48,7 @@ public static class AppText
     public const string FailedToUploadCategories = "Failed to upload categories";
     public const string FailedToDeleteCategory = "Failed to delete category";
     public const string FailedToAddItem = "Failed to add item!";
+    public const string FailedToCopyItem = "Failed to copy item";
     public const string FailedToDeleteItem = "Failed to delete item";
     public const string FailedToBuildOverview = "Failed to build overview";
     public const string FailedToGetImage = "Failed to get the image";

@@ -18,4 +18,10 @@ public interface IItemCardActions
     /// </summary>
     /// <param name="item">The item to delete.</param>
     Task DeleteItemAsync(Item item);
+
+    /// <summary>
+    /// Copies the specified item.
+    /// </summary>
+    /// <param name="item">The item to copy.</param>
+    Task CopyItemAsync(Item item);
 }

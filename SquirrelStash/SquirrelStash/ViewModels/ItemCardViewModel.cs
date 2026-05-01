@@ -87,13 +87,17 @@ namespace SquirrelStash.ViewModels
 
             var action = await dialog.ResultTask;
 
-            if (action == ItemDetailsDialogResult.Edit)
+            switch (action)
             {
-                await _itemCardActions.EditItemAsync(_item);
-            }
-            else if (action == ItemDetailsDialogResult.Delete)
-            {
-                await _itemCardActions.DeleteItemAsync(_item);
+                case ItemDetailsDialogResult.Edit:
+                    await _itemCardActions.EditItemAsync(_item);
+                    break;
+                case ItemDetailsDialogResult.Copy:
+                    await _itemCardActions.CopyItemAsync(_item);
+                    break;
+                case ItemDetailsDialogResult.Delete:
+                    await _itemCardActions.DeleteItemAsync(_item);
+                    break;
             }
         }
 

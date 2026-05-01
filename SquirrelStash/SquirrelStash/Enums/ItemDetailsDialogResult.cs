@@ -7,6 +7,7 @@ namespace SquirrelStash.Enums
     {
         None,
         Edit,
+        Copy,
         Delete
     }
 }

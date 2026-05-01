@@ -5,7 +5,8 @@ namespace SquirrelStash.Logic;
 
 internal sealed class ItemCardActionsAdapter(
     Func<Item, Task> editItemAsync,
-    Func<Item, Task> deleteItemAsync)
+    Func<Item, Task> deleteItemAsync,
+    Func<Item, Task> copyItemAsync)
     : IItemCardActions
 {
     /// <inheritdoc />
@@ -18,5 +19,11 @@ internal sealed class ItemCardActionsAdapter(
     public Task DeleteItemAsync(Item item)
     {
         return deleteItemAsync(item);
+    }
+
+    /// <inheritdoc />
+    public Task CopyItemAsync(Item item)
+    {
+        return copyItemAsync(item);
     }
 }

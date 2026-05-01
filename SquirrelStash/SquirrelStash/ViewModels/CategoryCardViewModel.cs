@@ -38,7 +38,7 @@ namespace SquirrelStash.ViewModels
             _itemCardViewModelFactory = itemCardViewModelFactory;
             _editItemDialogFactory = editItemDialogFactory;
             _categoryCardActions = categoryCardActions;
-            _itemCardActions = new ItemCardActionsAdapter(EditItemAsync, DeleteItemAsync);
+            _itemCardActions = new ItemCardActionsAdapter(EditItemAsync, DeleteItemAsync, CopyItemAsync);
             _logger = logger;
 
             Title = category.Title;
@@ -268,6 +268,41 @@ namespace SquirrelStash.ViewModels
 
             Items.Remove(itemViewModel);
             await MessageHelper.ShowInfoAsync(AppText.ItemDeletedMessage);
+        }
+
+        private async Task CopyItemAsync(Item item)
+        {
+            var request = new EditItemRequest(
+                _currentCategory.Id,
+                item.ImageSource,
+                item.PropertyEntries
+                    .Select(x => new CreatePropertyEntryRequest(x.PropertyDefinitionId, x.Value))
+                    .ToArray(),
+                null,
+                item.WarningThreshold,
+                item.CriticalThreshold,
+                item.Quantity,
+                item.Note ?? string.Empty);
+
+            var result = await _itemsService.AddItemAsync(request);
+
+            if (result.IsFailed)
+            {
+                _logger.LogError($"Copy item failed for category {_currentCategory.Title} and item {item.Id}. Errors: {string.Join("; ", result.Errors.Select(x => x.Message))}");
+                await MessageHelper.ShowErrorAsync(AppText.FailedToCopyItem);
+                return;
+            }
+
+            var copiedItemViewModel = _itemCardViewModelFactory.GetViewModel(result.Value, _itemCardActions);
+            Items.Add(copiedItemViewModel);
+            IsItemsVisible = true;
+
+            if (SelectedOrderOption != null)
+            {
+                SortItems(SelectedOrderOption);
+            }
+
+            await EditItemAsync(result.Value);
         }
 
         private static string GetItemName(Item item)
