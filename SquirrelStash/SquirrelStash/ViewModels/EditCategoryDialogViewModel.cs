@@ -2,19 +2,22 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Enums;
-using SquirrelStash.Requests;
-using System.Collections.ObjectModel;
 using SquirrelStash.Helpers;
 using SquirrelStash.Models;
+using SquirrelStash.Requests;
 using SquirrelStash.Resources;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using FluentResults;
 
 namespace SquirrelStash.ViewModels
 {
     public partial class EditCategoryDialogViewModel(string[] existingTitles) : ObservableObject
     {
         private static readonly Regex AllowedValuesPattern =
-            new(@"^\s*$|^\s*[^,\s]+(?:\s*,\s*[^,\s]+)*\s*$", RegexOptions.Compiled);
+            new(
+                @"^\s*$|^(?!.*(?:^|,)\s*([^,\s]+)\s*(?=,|$).*(?:^|,)\s*\1\s*(?=,|$))\s*[^,\s]+(?:\s*,\s*[^,\s]+)*\s*$",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private readonly string? _initialTitle;
         private readonly int? _categoryId;
@@ -90,34 +93,32 @@ namespace SquirrelStash.ViewModels
 
             if (confirmed)
             {
-                RequestCompleted?.Invoke(EditCategoryDialogResult.GetDeleted());
+                var res = EditCategoryDialogResult.GetDeleted();
+                RequestCompleted?.Invoke(res);
             }
         }
 
         [RelayCommand(CanExecute = nameof(CanSave))]
         private async Task Save()
         {
-            var trimmedTitle = Title?.Trim() ?? string.Empty;
 
-            if (existingTitles.Any(x => x == trimmedTitle) &&
-                (!IsEdit || _initialTitle != trimmedTitle))
-            {
-                await MessageHelper.ShowErrorAsync(AppText.FormatCategoryExists(trimmedTitle));
-                return;
-            }
-
-            var filledProperties = (IsEdit? Properties : Properties.Where(x=>x.IsNew))
-                .Where(x => !string.IsNullOrWhiteSpace(x.Name))
-                .ToArray();
-
-            var isValid = await ValidateCategory(trimmedTitle, filledProperties);
-
-            if (!isValid)
+            var validTitleResult = await GetTrimmedValidTitleAsync();
+            if (!validTitleResult.IsSuccess)
             {
                 return;
             }
 
-            var props = filledProperties
+            var trimmedTitle = validTitleResult.Value;
+
+            //After passing this all properties are valid 
+            if (!(await ValidatePropertiesAsync()).IsSuccess)
+            {
+                return;
+            }
+
+
+            //New category - add all properties, updating category - only that not in the DB
+            var propertiesToAdd = (IsEdit ? Properties.Where(x => x.IsNew) : Properties)
                 .Select(x => new CreatePropertyRequest(
                     x.Name.Trim(),
                     x.SelectedType,
@@ -128,43 +129,70 @@ namespace SquirrelStash.ViewModels
 
             var dialogResult =
                 EditCategoryDialogResult.GetChangesApplied(IsEdit ? 
-                    new EditCategoryRequest(trimmedTitle,props, _categoryId, _propertiesToRemoveIds.ToArray()) : new EditCategoryRequest(trimmedTitle, props));
+                    new EditCategoryRequest(trimmedTitle, propertiesToAdd, _categoryId, _propertiesToRemoveIds.ToArray()) :
+                    new EditCategoryRequest(trimmedTitle, propertiesToAdd));
 
             RequestCompleted?.Invoke(dialogResult);
         }
 
-        private bool CanSave()
+        private async Task<Result<string>> GetTrimmedValidTitleAsync()
         {
-            return Properties.Any();
+            var trimmedTitle = Title?.Trim();
+
+            //Category must have a title
+            if (string.IsNullOrWhiteSpace(trimmedTitle))
+            {
+                await MessageHelper.ShowErrorAsync(AppText.CategoryTitleRequired);
+                return Result.Fail("Empty title");
+            }
+
+            //Title must be unique
+            if (existingTitles.Any(x => x == trimmedTitle) &&
+                (!IsEdit || _initialTitle != trimmedTitle))
+            {
+                await MessageHelper.ShowErrorAsync(AppText.FormatCategoryExists(trimmedTitle));
+                return Result.Fail("Not unique title");
+            }
+
+            return Result.Ok(trimmedTitle);
         }
 
-        private async Task<bool> ValidateCategory(string title, CategoryPropertyViewModel[]? properties)
+        private async Task<Result> ValidatePropertiesAsync()
         {
-            if (string.IsNullOrWhiteSpace(title))
+            //Must be at least one property
+            if (!Properties.Any())
             {
-                await MessageHelper.ShowWarningAsync(AppText.CategoryTitleRequired);
-                return false;
+                await MessageHelper.ShowErrorAsync(AppText.CategoryPropertyRequired);
+                return Result.Fail("No properties");
             }
 
-            if (properties == null || !properties.Any())
+            var namelessProperty = Properties.FirstOrDefault(x => string.IsNullOrWhiteSpace(x.Name));
+
+            if (namelessProperty != null)
             {
-                await MessageHelper.ShowWarningAsync(AppText.CategoryPropertyRequired);
-                return false;
+                await MessageHelper.ShowErrorAsync(AppText.FillPropertyName);
+                return Result.Fail("Nameless property");
             }
 
-            var invalidProperty = properties.FirstOrDefault(x =>
+            var invalidProperty = Properties.FirstOrDefault(x =>
                 x.SelectedType == PropertyTypes.AllowedValues &&
                 (string.IsNullOrWhiteSpace(x.AllowedValues) ||
-                !AllowedValuesPattern.IsMatch(x.AllowedValues)));
+                 !AllowedValuesPattern.IsMatch(x.AllowedValues)));
 
             if (invalidProperty is not null)
             {
-                await MessageHelper.ShowWarningAsync(
+                await MessageHelper.ShowErrorAsync(
                     string.Format(AppText.AllowedValuesInvalidFormat, invalidProperty.Name.Trim()));
-                return false;
+                return Result.Fail("Allowed values format violation");
             }
 
-            return true;
+            return Result.Ok();
+        }
+
+
+        private bool CanSave()
+        {
+            return Properties.Any();
         }
 
         private string? NormalizeAllowedValues(string? allowedValues)
@@ -176,8 +204,7 @@ namespace SquirrelStash.ViewModels
 
             return string.Join(",",
                 allowedValues
-                    .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-                    .Distinct(StringComparer.OrdinalIgnoreCase));
+                    .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
         }
     }
 }

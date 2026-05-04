@@ -2,15 +2,20 @@ using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.ViewModels;
 using System.Collections.Specialized;
+using SquirrelStash.Abstractions;
 
 namespace SquirrelStash.Views;
 
-public partial class EditCategoryDialog : ContentPage
+public partial class EditCategoryDialog : ContentPage, IModalDialog<EditCategoryDialogResult>
 {
     private readonly TaskCompletionSource<EditCategoryDialogResult> _resultSource = new();
     private readonly EditCategoryDialogViewModel _viewModel;
+    private bool _isDisposed;
 
     public Task<EditCategoryDialogResult> ResultTask => _resultSource.Task;
+
+    /// <inheritdoc />
+    public Task<EditCategoryDialogResult> DialogResultTask => _resultSource.Task;
 
     public EditCategoryDialog(EditCategoryDialogViewModel viewModel)
     {
@@ -46,11 +51,16 @@ public partial class EditCategoryDialog : ContentPage
         });
     }
 
-    protected override void OnDisappearing()
+    /// <inheritdoc />
+    public void Dispose()
     {
-        base.OnDisappearing();
+        if (_isDisposed)
+        {
+            return;
+        }
 
         _viewModel.RequestCompleted -= OnSaveRequested;
         _viewModel.Properties.CollectionChanged -= OnPropertiesCollectionChanged;
+        _isDisposed = true;
     }
 }

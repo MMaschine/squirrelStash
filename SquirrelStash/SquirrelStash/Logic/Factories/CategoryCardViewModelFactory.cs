@@ -9,6 +9,7 @@ namespace SquirrelStash.Logic.Factories
         IItemsService itemService,
         IItemCardViewModelFactory itemCardViewModelFactory,
         IEditItemDialogFactory editItemDialogFactory,
+        IModalDialogService modalDialogService,
         ILogger<CategoryCardViewModel> logger)
         : ICategoryCardViewModelFactory
     {
@@ -20,6 +21,7 @@ namespace SquirrelStash.Logic.Factories
                 itemService,
                 itemCardViewModelFactory,
                 editItemDialogFactory,
+                modalDialogService,
                 categoryCardActions,
                 logger);
         }

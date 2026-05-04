@@ -17,6 +17,7 @@ namespace SquirrelStash.ViewModels
         ICategoryService categoryService,
         ICategoryCardViewModelFactory cardViewModelFactory,
         IEditCategoryDialogFactory editCategoryDialogFactory,
+        IModalDialogService modalDialogService,
         ILogger<TreePageViewModel> logger) : ObservableObject
     {
         private bool _isInitialized;
@@ -230,9 +231,7 @@ namespace SquirrelStash.ViewModels
 
         private async Task<EditCategoryDialogResult> ShowEditDialogAsync(EditCategoryDialog dialog)
         {
-            await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
-
-            return await dialog.ResultTask;
+            return await modalDialogService.ShowAsync(dialog);
         }
 
     }

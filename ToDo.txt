@@ -42,6 +42,8 @@
 Func: 
 - Editable (dragable) order of Properties in Create Category Dialog
 
+Refactoring: 
+- walk through dependencies. In categoriesCard it smells 
 
 Bug: 
 - BUG: Add several properties. Edit. The screen is shaking when inputing. Especially visible with "Allowed values".
