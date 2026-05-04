@@ -20,5 +20,19 @@ public interface ICategoryService
     /// </summary>
     /// <param name="request">The category creation request.</param>
     /// <returns>A result containing the created category.</returns>
-    Task<Result<Category>> CreateCategoryAsync(CreateCategoryRequest request);
+    Task<Result<Category>> CreateCategoryAsync(EditCategoryRequest request);
+
+    /// <summary>
+    /// Update existing category
+    /// </summary>
+    /// <param name="category">Category to update</param>
+    /// <returns>A result containing updated category.</returns>
+    Task<Result<Category>> UpdateCategoryAsync(EditCategoryRequest category);
+
+    /// <summary>
+    /// Removes a category by identifier.
+    /// </summary>
+    /// <param name="id">The category identifier.</param>
+    /// <returns>The operation result.</returns>
+    Task<Result> RemoveCategoryAsync(int id);
 }

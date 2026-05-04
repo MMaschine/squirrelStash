@@ -2,6 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:SquirrelStash.Views"
+             xmlns:components="clr-namespace:SquirrelStash.Components"
              xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
              xmlns:resources="clr-namespace:SquirrelStash.Resources"
              x:Class="SquirrelStash.Views.CategoryCardView"
@@ -10,43 +11,61 @@
 
         <VerticalStackLayout Spacing="12">
 
-            <Grid ColumnDefinitions="*,Auto">
-                <Label
-                    Grid.Column="0"
-                    Text="{Binding Title}"
-                    Style="{StaticResource H2LabelStyle}"
-                    VerticalOptions="Center" />
+            <Grid RowDefinitions="Auto,Auto"
+                  ColumnDefinitions="85*,15*"
+                  RowSpacing="8"
+                  ColumnSpacing="10">
+                <Grid Grid.Row="0"
+                      Grid.Column="0"
+                      Padding="0,2">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleItemsVisibilityCommand}" />
+                    </Grid.GestureRecognizers>
 
-                <Button
-                    Grid.Column="1"
-                    Text="+"
-                    Style="{StaticResource RoundIconButtonStyle}"
-                    HorizontalOptions="End"
-                    VerticalOptions="Start"
-                    Command="{Binding AddItemCommand}" />
+                    <Label Text="{Binding Title}"
+                           Style="{StaticResource H2LabelStyle}"
+                           VerticalOptions="Center" />
+                </Grid>
+
+                <ImageButton Grid.Row="0"
+                             Grid.Column="1"
+                             Source="edit.png"
+                             Style="{StaticResource CategoryAddButtonStyle}"
+                             HorizontalOptions="End"
+                             VerticalOptions="Center"
+                             Command="{Binding EditCategoryCommand}" />
+
+                <HorizontalStackLayout Grid.Row="1"
+                                       Grid.Column="0"
+                                       Spacing="8"
+                                       Padding="0,2"
+                                       VerticalOptions="Center">
+                    <HorizontalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleItemsVisibilityCommand}" />
+                    </HorizontalStackLayout.GestureRecognizers>
+
+                    <Label Text="{Binding ItemsHeaderText}"
+                           Style="{StaticResource BodyStrongLabelStyle}"
+                           VerticalOptions="Center" />
+
+                    <components:ExpandCollapseIndicator IsExpanded="{Binding IsItemsVisible}" />
+                </HorizontalStackLayout>
+
+                <ImageButton Grid.Row="1"
+                             Grid.Column="1"
+                             Source="add_item.png"
+                             Style="{StaticResource CategoryAddItemButtonStyle}"
+                             HorizontalOptions="End"
+                             VerticalOptions="Center"
+                             Command="{Binding AddItemCommand}" />
             </Grid>
 
-            <Grid ColumnDefinitions="*,Auto"
-                  Padding="0,6">
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ToggleItemsVisibilityCommand}" />
-                </Grid.GestureRecognizers>
-
-                <Label Text="{Binding ItemsHeaderText}"
-                       Style="{StaticResource BodyStrongLabelStyle}"
-                       VerticalOptions="Center" />
-
-                <Button Grid.Column="1"
-                        Text="{Binding ItemsToggleText}"
-                        Style="{StaticResource SmallRoundToggleButtonStyle}"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center"
-                        Command="{Binding ToggleItemsVisibilityCommand}" />
-            </Grid>
+            <BoxView />
 
             <VerticalStackLayout IsVisible="{Binding IsItemsVisible}"
                                  Spacing="6">
-                <Grid ColumnDefinitions="*,Auto,Auto"
+                <Grid IsVisible="{Binding CanOrderItems}"
+                      ColumnDefinitions="*,Auto,Auto"
                       ColumnSpacing="12">
                     <Label
                         Grid.Column="0"

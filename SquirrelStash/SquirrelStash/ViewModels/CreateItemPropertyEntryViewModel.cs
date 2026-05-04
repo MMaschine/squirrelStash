@@ -34,6 +34,8 @@ namespace SquirrelStash.ViewModels
 
         public bool IsManualValueType => !IsAllowedValuesType;
 
+        public bool HasMissingValue => string.IsNullOrWhiteSpace(Value);
+
         [ObservableProperty]
         private string value = string.Empty;
 
@@ -43,6 +45,18 @@ namespace SquirrelStash.ViewModels
         partial void OnSelectedAllowedValueChanged(string? value)
         {
             Value = value ?? string.Empty;
+        }
+
+        partial void OnValueChanged(string value)
+        {
+            OnPropertyChanged(nameof(HasMissingValue));
+
+            if (IsAllowedValuesType &&
+                !string.Equals(SelectedAllowedValue, value, StringComparison.Ordinal) &&
+                AllowedValues.Contains(value))
+            {
+                SelectedAllowedValue = value;
+            }
         }
 
         private static IEnumerable<string> ParseAllowedValues(string? allowedValues)

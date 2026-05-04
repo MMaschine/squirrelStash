@@ -5,15 +5,15 @@ using SquirrelStash.ViewModels;
 
 namespace SquirrelStash.Views;
 
-public partial class CreateItemDialog : ContentPage
+public partial class EditItemDialog : ContentPage
 {
-    private readonly TaskCompletionSource<DialogResult<CreateItemRequest>> _resultSource = new();
+    private readonly TaskCompletionSource<DialogResult<EditItemRequest>> _resultSource = new();
 
-    private readonly CreateItemDialogViewModel _viewModel;
+    private readonly EditItemDialogViewModel _viewModel;
 
-    public Task<DialogResult<CreateItemRequest>> ResultTask => _resultSource.Task;
+    public Task<DialogResult<EditItemRequest>> ResultTask => _resultSource.Task;
 
-    public CreateItemDialog(CreateItemDialogViewModel viewModel)
+    public EditItemDialog(EditItemDialogViewModel viewModel)
     {
         InitializeComponent();
 
@@ -23,7 +23,7 @@ public partial class CreateItemDialog : ContentPage
         BindingContext = _viewModel;
     }
 
-    private async void OnSaveRequested(DialogResult<CreateItemRequest> request)
+    private async void OnSaveRequested(DialogResult<EditItemRequest> request)
     {
         _resultSource.TrySetResult(request);
         await Navigation.PopModalAsync();
@@ -31,7 +31,7 @@ public partial class CreateItemDialog : ContentPage
 
     private async void OnImageTapped(object? sender, TappedEventArgs e)
     {
-        if (BindingContext is not CreateItemDialogViewModel viewModel)
+        if (BindingContext is not EditItemDialogViewModel viewModel)
             return;
 
         var action = await DisplayActionSheet(

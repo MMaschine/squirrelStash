@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using SquirrelStash.Resources;
+using SquirrelStash.Views;
 
 namespace SquirrelStash.Helpers
 {
@@ -29,6 +30,16 @@ namespace SquirrelStash.Helpers
                 AppText.AlertOk);
         }
 
+        public static async Task<bool> ShowConfirmationAsync(string message, string title = "")
+        {
+            var dialog = new ConfirmationDialog(message, title);
+
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+                await Application.Current!.MainPage!.Navigation.PushModalAsync(dialog));
+
+            return await dialog.ResultTask;
+        }
+
         public static async Task NotifyException(Exception exception, string message, ILogger logger)
         {
             try
@@ -37,21 +48,21 @@ namespace SquirrelStash.Helpers
                 logger.LogError(exception, "Exception");
 
                 var shouldShare = await MainThread.InvokeOnMainThreadAsync(async () => await Application.Current!.MainPage!.DisplayAlert(
-                    "Error",
-                    "Something went wrong.\nWould you like to send logs?",
-                    "Send",
-                    "Cancel"));
+                    AppText.AlertErrorTitle,
+                    AppText.SomethingWentWrongShareLogs,
+                    AppText.AlertSend,
+                    AppText.AlertCancel));
 
                 if (shouldShare)
                 {
                     var files = Directory.GetFiles(FileSystem.AppDataDirectory);
-                    var logPath = Path.Combine(FileSystem.AppDataDirectory, $"log{DateTime.Today.Date:yyyyMMdd}.txt");
+                    var logPath = System.IO.Path.Combine(FileSystem.AppDataDirectory, $"log{DateTime.Today.Date:yyyyMMdd}.txt");
 
                     if (!string.IsNullOrWhiteSpace(logPath) && File.Exists(logPath))
                     {
                         await Share.Default.RequestAsync(new ShareFileRequest
                         {
-                            Title = "Send log file",
+                            Title = AppText.SendLogFileTitle,
                             File = new ShareFile(logPath)
                         });
                     }

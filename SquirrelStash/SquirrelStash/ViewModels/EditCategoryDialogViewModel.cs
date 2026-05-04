@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SquirrelStash.DataAccess.Entities;
 using SquirrelStash.Enums;
 using SquirrelStash.Requests;
 using System.Collections.ObjectModel;
@@ -10,22 +11,48 @@ using System.Text.RegularExpressions;
 
 namespace SquirrelStash.ViewModels
 {
-    public partial class CreateCategoryDialogViewModel(string[] existingTitles) : ObservableObject
+    public partial class EditCategoryDialogViewModel(string[] existingTitles) : ObservableObject
     {
         private static readonly Regex AllowedValuesPattern =
             new(@"^\s*$|^\s*[^,\s]+(?:\s*,\s*[^,\s]+)*\s*$", RegexOptions.Compiled);
 
+        private readonly string? _initialTitle;
+        private readonly int? _categoryId;
+
+        private readonly List<int> _propertiesToRemoveIds = []; 
+
+        public EditCategoryDialogViewModel(string[] existingTitles, Category category)
+            : this(existingTitles)
+        {
+            IsEdit = true;
+            _initialTitle = category.Title;
+            _categoryId = category.Id;
+            Title = category.Title;
+
+            foreach (var property in category.Properties ?? [])
+            {
+                Properties.Add(new CategoryPropertyViewModel(property, RemovePropertyCommand));
+            }
+        }
+
         [ObservableProperty]
         private string _title = string.Empty;
 
+        public bool IsEdit { get; } = false;
+
+        public string DialogTitle => IsEdit ? AppText.EditCategoryPageTitle : AppText.CreateCategoryPageTitle;
+
+        public bool CanRemoveCategory => IsEdit;
+
         public ObservableCollection<CategoryPropertyViewModel> Properties { get; } = [];
 
-        public event Action<DialogResult<CreateCategoryRequest>>? RequestCompleted;
+        public event Action<EditCategoryDialogResult>? RequestCompleted;
 
         [RelayCommand]
         private void AddProperty()
         {
-            Properties.Add(new CategoryPropertyViewModel() { DeleteCommand = RemovePropertyCommand });
+            Properties.Add(new CategoryPropertyViewModel(RemovePropertyCommand));
+            SaveCommand.NotifyCanExecuteChanged();
         }
 
         [RelayCommand]
@@ -37,26 +64,49 @@ namespace SquirrelStash.ViewModels
             }
 
             Properties.Remove(property);
+            SaveCommand.NotifyCanExecuteChanged();
+
+            if (IsEdit && property.Id.HasValue)
+            {
+                _propertiesToRemoveIds.Add(property.Id.Value);
+            }
         }
 
         [RelayCommand]
         private void Cancel()
         {
-            RequestCompleted?.Invoke(DialogResult<CreateCategoryRequest>.GetCanceled());
+            RequestCompleted?.Invoke(EditCategoryDialogResult.GetCanceled());
         }
 
         [RelayCommand]
+        private async Task RemoveCategory()
+        {
+            if (!IsEdit)
+            {
+                return;
+            }
+
+            var confirmed = await MessageHelper.ShowConfirmationAsync(AppText.FormatDeleteCategoryConfirmation(Title));
+
+            if (confirmed)
+            {
+                RequestCompleted?.Invoke(EditCategoryDialogResult.GetDeleted());
+            }
+        }
+
+        [RelayCommand(CanExecute = nameof(CanSave))]
         private async Task Save()
         {
             var trimmedTitle = Title?.Trim() ?? string.Empty;
 
-            if (existingTitles.Any(x => x == trimmedTitle))
+            if (existingTitles.Any(x => x == trimmedTitle) &&
+                (!IsEdit || _initialTitle != trimmedTitle))
             {
                 await MessageHelper.ShowErrorAsync(AppText.FormatCategoryExists(trimmedTitle));
                 return;
             }
 
-            var filledProperties = Properties
+            var filledProperties = (IsEdit? Properties : Properties.Where(x=>x.IsNew))
                 .Where(x => !string.IsNullOrWhiteSpace(x.Name))
                 .ToArray();
 
@@ -73,13 +123,19 @@ namespace SquirrelStash.ViewModels
                     x.SelectedType,
                     x.SelectedType == PropertyTypes.AllowedValues
                         ? NormalizeAllowedValues(x.AllowedValues)
-                        : null))
+                        : null, x.Id))
                 .ToArray();
 
             var dialogResult =
-                DialogResult<CreateCategoryRequest>.GetSuccess(new CreateCategoryRequest(trimmedTitle, props));
+                EditCategoryDialogResult.GetChangesApplied(IsEdit ? 
+                    new EditCategoryRequest(trimmedTitle,props, _categoryId, _propertiesToRemoveIds.ToArray()) : new EditCategoryRequest(trimmedTitle, props));
 
             RequestCompleted?.Invoke(dialogResult);
+        }
+
+        private bool CanSave()
+        {
+            return Properties.Any();
         }
 
         private async Task<bool> ValidateCategory(string title, CategoryPropertyViewModel[]? properties)

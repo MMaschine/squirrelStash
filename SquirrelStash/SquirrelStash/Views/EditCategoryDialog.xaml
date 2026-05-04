@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="SquirrelStash.Views.CreateCategoryDialog"
+    x:Class="SquirrelStash.Views.EditCategoryDialog"
     xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
     xmlns:resources="clr-namespace:SquirrelStash.Resources"
-    x:DataType="viewModels:CreateCategoryDialogViewModel"
-    Title="{x:Static resources:AppText.CreateCategoryPageTitle}">
+    x:DataType="viewModels:EditCategoryDialogViewModel"
+    Title="{Binding DialogTitle}">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="16">
 
             <Label
-                Text="{x:Static resources:AppText.CreateCategoryHeader}"
+                Text="{Binding DialogTitle}"
                 Style="{StaticResource H1LabelStyle}" />
 
             <Border Style="{StaticResource InputContainerStyle}"
@@ -64,7 +64,8 @@
                                     <Picker
                                         Title="{x:Static resources:AppText.SelectPropertyTypeTitle}"
                                         ItemsSource="{Binding AvailableTypes}"
-                                        SelectedItem="{Binding SelectedType}" />
+                                        SelectedItem="{Binding SelectedType}"
+                                        IsEnabled="{Binding IsNew}" />
                                 </Border>
 
                                 <Button
@@ -93,19 +94,28 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <HorizontalStackLayout HorizontalOptions="End"
-                                   Spacing="10"
-                                   Margin="0,20,0,0">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                  ColumnSpacing="10"
+                  Margin="0,20,0,0">
+                <Button
+                    Grid.Column="0"
+                    ImageSource="delete.png"
+                    Style="{StaticResource CardIconButtonStyle}"
+                    Command="{Binding RemoveCategoryCommand}"
+                    IsVisible="{Binding CanRemoveCategory}" />
+
                 <ImageButton
+                    Grid.Column="2"
                     Source="cross.png"
                     Style="{StaticResource FormActionButtonStyle}"
                     Command="{Binding CancelCommand}" />
 
                 <ImageButton
+                    Grid.Column="3"
                     Source="apply.png"
                     Style="{StaticResource FormActionButtonStyle}"
                     Command="{Binding SaveCommand}" />
-            </HorizontalStackLayout>
+            </Grid>
 
         </VerticalStackLayout>
     </ScrollView>

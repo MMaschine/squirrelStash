@@ -7,7 +7,10 @@ namespace SquirrelStash.DataAccess.Entities
         #region Navigation
 
         public int CategoryId { get; set; }
+
         public Category Category;
+
+        public List<PropertyEntry> Entries { get; set; }
 
         #endregion
 
