@@ -51,19 +51,6 @@ public partial class EditItemDialog : ContentPage
         }
     }
 
-    private void OnThresholdTextChanged(object? sender, TextChangedEventArgs e)
-    {
-        if (sender is not Entry entry)
-            return;
-
-        var text = e.NewTextValue ?? string.Empty;
-
-        if (text.Contains('-'))
-        {
-            entry.Text = text.Replace("-", string.Empty);
-        }
-    }
-
     protected override async void OnAppearing()
     {
         base.OnAppearing();

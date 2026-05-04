@@ -41,6 +41,7 @@ namespace SquirrelStash.ViewModels
             _itemId = item.Id;
 
             ImagePath = item.ImageSource;
+            DefaultQuantity = item.Quantity;
 
             foreach (var entry in item.PropertyEntries)
             {
@@ -58,6 +59,8 @@ namespace SquirrelStash.ViewModels
         public bool IsEdit => _itemId != null;
 
         public string DialogTitle => IsEdit ? AppText.EditItemPageTitle : AppText.CreateItemPageTitle;
+
+        public string QuantityLabel => IsEdit ? AppText.CurrentQuantity : AppText.DefaultQuantity;
 
         [ObservableProperty]
         private string? imagePath;
@@ -113,7 +116,7 @@ namespace SquirrelStash.ViewModels
                     IsEdit ? _itemId : null,
                     ParseThreshold(WarningThreshold, WarningThresholdDef),
                     ParseThreshold(CriticalThreshold, CriticalThresholdDef),
-                    DefaultQuantity >= 0 ? DefaultQuantity : 0);
+                    DefaultQuantity);
 
                 RequestCompleted?.Invoke(DialogResult<EditItemRequest>.GetSuccess(request));
             }

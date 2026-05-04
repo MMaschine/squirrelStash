@@ -4,6 +4,7 @@
     x:Class="SquirrelStash.Views.EditItemDialog"
     xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
     xmlns:converters="clr-namespace:SquirrelStash.Converters"
+    xmlns:components="clr-namespace:SquirrelStash.Components"
     xmlns:resources="clr-namespace:SquirrelStash.Resources"
     x:DataType="viewModels:EditItemDialogViewModel"
     Title="{Binding DialogTitle}">
@@ -70,8 +71,11 @@
                                     Stroke="{StaticResource Color.WarningOrange}"
                                     BackgroundColor="{StaticResource Color.WarningSoft}">
                                 <Entry Text="{Binding WarningThreshold}"
-                                       TextChanged="OnThresholdTextChanged"
-                                       Keyboard="Numeric" />
+                                       Keyboard="Numeric">
+                                    <Entry.Behaviors>
+                                        <components:DigitsOnlyEntryBehavior />
+                                    </Entry.Behaviors>
+                                </Entry>
                             </Border>
                         </VerticalStackLayout>
 
@@ -84,8 +88,11 @@
                                     Stroke="{StaticResource Color.CriticalRed}"
                                     BackgroundColor="{StaticResource Color.CriticalSoft}">
                                 <Entry Text="{Binding CriticalThreshold}"
-                                       TextChanged="OnThresholdTextChanged"
-                                       Keyboard="Numeric" />
+                                       Keyboard="Numeric">
+                                    <Entry.Behaviors>
+                                        <components:DigitsOnlyEntryBehavior />
+                                    </Entry.Behaviors>
+                                </Entry>
                             </Border>
                         </VerticalStackLayout>
                     </Grid>
@@ -99,7 +106,7 @@
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                     <Label
                         Grid.Column="0"
-                        Text="{x:Static resources:AppText.DefaultQuantity}"
+                        Text="{Binding QuantityLabel}"
                         VerticalOptions="Center"
                         Style="{StaticResource BodyStrongLabelStyle}" />
 
@@ -108,7 +115,11 @@
                             Padding="12,6">
                         <Entry
                             Text="{Binding DefaultQuantity}"
-                            Keyboard="Numeric" />
+                            Keyboard="Numeric">
+                            <Entry.Behaviors>
+                                <components:DigitsOnlyEntryBehavior />
+                            </Entry.Behaviors>
+                        </Entry>
                     </Border>
 
                 </Grid>
