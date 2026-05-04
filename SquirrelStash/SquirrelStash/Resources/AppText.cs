@@ -74,6 +74,8 @@ public static class AppText
     public const string DeleteCategoryConfirmationFormat = "Do you really want to delete category {0}?";
     public const string DeleteItemConfirmationFormat = "Do you really want to delete item {0}?";
 
+    public const char ItemNameSeparator = '/';
+
     public static string FormatCategoryAdded(string categoryTitle) =>
         $"Category {categoryTitle} added";
 

@@ -34,7 +34,7 @@ namespace SquirrelStash.ViewModels
 
             Quantity = item.Quantity;
 
-            Name = string.Join("/",
+            Name = string.Join(AppText.ItemNameSeparator,
                 item.PropertyEntries
                     .Select(p => p.Value)
                     .Where(v => !string.IsNullOrWhiteSpace(v)));
@@ -87,15 +87,21 @@ namespace SquirrelStash.ViewModels
         {
             var diff = category.Properties.Count - _itemsToOrderBy.Count;
 
-            if (diff > 0)
+            if (diff != 0)
             {
-                for (int i = 0; i < diff; i++)
+                //Collision appears if we edit Category adding new Property, create new VM and then call CheckWarnings 
+                var separatorsCount = Name.Count(x => x == AppText.ItemNameSeparator);
+
+                if (separatorsCount < category.Properties.Count-1)
                 {
-                    Name += "/";
+                    for (int i = 0; i < diff; i++)
+                    {
+                        Name += "/";
+                    }
                 }
             }
 
-            HasWarning = category.Properties.Count != _itemsToOrderBy.Count || string.IsNullOrEmpty(Name);
+            HasWarning = diff != 0 || string.IsNullOrEmpty(Name);
         }
 
         public string GetOrderByValue(int id)

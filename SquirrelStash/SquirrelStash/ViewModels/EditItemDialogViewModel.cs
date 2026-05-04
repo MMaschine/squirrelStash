@@ -49,6 +49,8 @@ namespace SquirrelStash.ViewModels
                     propertyVm.Value = entry.Value;
                 }
             }
+
+            MoveMissingValuesToTop();
         }
 
         public bool IsEdit => _itemId != null;
@@ -137,6 +139,21 @@ namespace SquirrelStash.ViewModels
             }
 
             return parsedValue;
+        }
+
+        private void MoveMissingValuesToTop()
+        {
+            var orderedEntries = PropertyEntries
+                .OrderByDescending(x => x.HasMissingValue)
+                .ThenBy(x => x.DefinitionId)
+                .ToArray();
+
+            PropertyEntries.Clear();
+
+            foreach (var entry in orderedEntries)
+            {
+                PropertyEntries.Add(entry);
+            }
         }
     }
 }
