@@ -80,6 +80,8 @@ namespace SquirrelStash.ViewModels
 
         public bool CanOrderItems => ItemsCount >= 2;
 
+        public bool HasSelectedOrderOption => SelectedOrderOption != null;
+
         public ObservableCollection<PropertyDefinition> OrderOptions { get; }
 
         public ObservableCollection<ItemCardViewModel> Items { get; private set; } = [];
@@ -161,6 +163,7 @@ namespace SquirrelStash.ViewModels
 
         partial void OnSelectedOrderOptionChanged(PropertyDefinition? value)
         {
+            OnPropertyChanged(nameof(HasSelectedOrderOption));
             HandleOrderSelectionCommand.Execute(value);
         }
 
