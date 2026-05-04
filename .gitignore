@@ -392,3 +392,5 @@ temp
 # Gradle build reports
 src/Core/AndroidNative/build/reports/
 SquirrelStash/SquirrelStash.DataAccess/squirrelstash-dev.db
+
+ToDo.txt

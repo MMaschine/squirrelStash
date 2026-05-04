@@ -29,13 +29,13 @@
 +++ "Copy item" function
 +++ Lock "Apply" button in creation of Category if no properties 
 +++ Divide the properties in an Item name by "/"
-- OrderBy visible only if we have any items 
 +++ Highlight item by border color if it is reach the threshold (Tree view)
 +++ On the edit screen highlight property without values, and show them first
 -----------------------------------------------------------------------------------------------------------------------
 
-Func: 
+- Default quantity on edit form should turn to Actual quantity and show actual number 
 
+Func: 
 - Editable (dragable) order of Properties in Create Category Dialog
 
 
@@ -43,6 +43,9 @@ Bug:
 - BUG: Add several properties. Edit. The screen is shaking when inputing. Especially visible with "Allowed values".
 - BUG: Clean the Edit form in case of error 
 - MINOR: Save state of the list of items (open/close) after edit. Mandatory open if cat has warning
+- MINOR: OrderBy visible only if we have any items 
+
+- BUG: No image in EditItem form, especially critical for copy logic 
 
 Tst: 
 - Test case when sorting involve property without value (newly added property)

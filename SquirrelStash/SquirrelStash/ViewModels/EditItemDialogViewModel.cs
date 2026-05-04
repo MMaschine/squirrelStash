@@ -40,6 +40,8 @@ namespace SquirrelStash.ViewModels
         {
             _itemId = item.Id;
 
+            ImagePath = item.ImageSource;
+
             foreach (var entry in item.PropertyEntries)
             {
                 var propertyVm = PropertyEntries.FirstOrDefault(x => x.DefinitionId == entry.PropertyDefinitionId);
