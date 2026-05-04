@@ -65,27 +65,24 @@
             <VerticalStackLayout IsVisible="{Binding IsItemsVisible}"
                                  Spacing="6">
                 <Grid IsVisible="{Binding CanOrderItems}"
-                      ColumnDefinitions="*,Auto,Auto"
+                      ColumnDefinitions="Auto,Auto"
+                      HorizontalOptions="End"
                       ColumnSpacing="12">
-                    <Label
-                        Grid.Column="0"
-                        Text="{x:Static resources:AppText.SelectOrderTitle}"
-                        Style="{StaticResource BodySecondaryLabelStyle}"
-                        VerticalOptions="Center" />
-
                     <Picker
-                        Grid.Column="1"
+                        Grid.Column="0"
+                        Title="{x:Static resources:AppText.SelectOrderTitle}"
                         TextColor="{StaticResource Color.TextPrimary}"
+                        TitleColor="{StaticResource Color.TextSecondary}"
+                        WidthRequest="180"
                         ItemsSource="{Binding OrderOptions}"
                         SelectedItem="{Binding SelectedOrderOption, Mode=TwoWay}"
-                        ItemDisplayBinding="{Binding Name}"
-                        HorizontalOptions="End"
-                        WidthRequest="180" />
+                        ItemDisplayBinding="{Binding Name}" />
 
                     <Button
-                        Grid.Column="2"
+                        Grid.Column="1"
                         Text="x"
                         Style="{StaticResource SmallRoundToggleButtonStyle}"
+                        IsVisible="{Binding HasSelectedOrderOption}"
                         VerticalOptions="Center"
                         Command="{Binding ClearOrderSelectionCommand}" />
                 </Grid>

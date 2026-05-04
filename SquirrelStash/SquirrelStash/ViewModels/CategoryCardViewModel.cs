@@ -51,9 +51,10 @@ namespace SquirrelStash.ViewModels
             foreach (var item in category.Items)
             {
                 var itemVm = _itemCardViewModelFactory.GetViewModel(item, _itemCardActions);
-                itemVm.CheckWarnings(category);
                 Items.Add(itemVm);
             }
+
+            CheckItemWarnings();
         }
 
         [ObservableProperty]
@@ -80,6 +81,8 @@ namespace SquirrelStash.ViewModels
 
         public bool CanOrderItems => ItemsCount >= 2;
 
+        public bool HasSelectedOrderOption => SelectedOrderOption != null;
+
         public ObservableCollection<PropertyDefinition> OrderOptions { get; }
 
         public ObservableCollection<ItemCardViewModel> Items { get; private set; } = [];
@@ -89,6 +92,11 @@ namespace SquirrelStash.ViewModels
             foreach (var item in Items)
             {
                 item.CheckWarnings(_currentCategory);
+            }
+
+            if (Items.Any(x => x.HasWarning))
+            {
+                IsItemsVisible = true;
             }
         }
 
@@ -161,6 +169,7 @@ namespace SquirrelStash.ViewModels
 
         partial void OnSelectedOrderOptionChanged(PropertyDefinition? value)
         {
+            OnPropertyChanged(nameof(HasSelectedOrderOption));
             HandleOrderSelectionCommand.Execute(value);
         }
 

@@ -7,9 +7,12 @@
     x:DataType="viewModels:EditCategoryDialogViewModel"
     Title="{Binding DialogTitle}">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="16">
+    <Grid Padding="20"
+          RowDefinitions="Auto,Auto,*,Auto"
+          RowSpacing="16">
 
+        <VerticalStackLayout Grid.Row="0"
+                             Spacing="16">
             <Label
                 Text="{Binding DialogTitle}"
                 Style="{StaticResource H1LabelStyle}" />
@@ -20,103 +23,107 @@
                     Text="{Binding Title}"
                     Placeholder="{x:Static resources:AppText.EnterCategoryTitlePlaceholder}" />
             </Border>
-
-            <Grid ColumnDefinitions="*,Auto">
-                <Label
-                    Text="{x:Static resources:AppText.PropertiesLabel}"
-                    VerticalOptions="Center"
-                    Style="{StaticResource H3LabelStyle}" />
-
-                <Button
-                    Grid.Column="1"
-                    Text="+"
-                    Command="{Binding AddPropertyCommand}"
-                    Style="{StaticResource RoundIconButtonStyle}" />
-            </Grid>
-
-            <CollectionView ItemsSource="{Binding Properties}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="viewModels:CategoryPropertyViewModel">
-                        <Frame
-                            Style="{StaticResource CardFrameStyle}"
-                            Margin="0,0,0,10"
-                            Padding="12">
-
-                            <Grid
-                                ColumnDefinitions="*,*,Auto"
-                                RowDefinitions="Auto,Auto"
-                                ColumnSpacing="10"
-                                RowSpacing="10">
-
-                                <Border Grid.Row="0"
-                                        Grid.Column="0"
-                                        Style="{StaticResource InputContainerStyle}"
-                                        Padding="12,6">
-                                    <Entry
-                                        Text="{Binding Name}"
-                                        Placeholder="{x:Static resources:AppText.PropertyNamePlaceholder}" />
-                                </Border>
-
-                                <Border Grid.Row="0"
-                                        Grid.Column="1"
-                                        Style="{StaticResource InputContainerStyle}"
-                                        Padding="12,6">
-                                    <Picker
-                                        Title="{x:Static resources:AppText.SelectPropertyTypeTitle}"
-                                        ItemsSource="{Binding AvailableTypes}"
-                                        SelectedItem="{Binding SelectedType}"
-                                        IsEnabled="{Binding IsNew}" />
-                                </Border>
-
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="2"
-                                    ImageSource="delete.png"
-                                    Style="{StaticResource RoundIconButtonStyle}"
-                                    VerticalOptions="Start"
-                                    HorizontalOptions="End"
-                                    Command="{Binding DeleteCommand}"
-                                    CommandParameter="{Binding .}" />
-
-                                <Border Grid.Row="1"
-                                        Grid.Column="0"
-                                        Grid.ColumnSpan="2"
-                                        Style="{StaticResource InputContainerStyle}"
-                                        Padding="12,6"
-                                        IsVisible="{Binding IsAllowedValuesType}">
-                                    <Entry
-                                        Text="{Binding AllowedValues}"
-                                        Placeholder="{x:Static resources:AppText.AllowedValuesPlaceholder}" />
-                                </Border>
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto"
-                  ColumnSpacing="10"
-                  Margin="0,20,0,0">
-                <Button
-                    Grid.Column="0"
-                    ImageSource="delete.png"
-                    Style="{StaticResource CardIconButtonStyle}"
-                    Command="{Binding RemoveCategoryCommand}"
-                    IsVisible="{Binding CanRemoveCategory}" />
-
-                <ImageButton
-                    Grid.Column="2"
-                    Source="cross.png"
-                    Style="{StaticResource FormActionButtonStyle}"
-                    Command="{Binding CancelCommand}" />
-
-                <ImageButton
-                    Grid.Column="3"
-                    Source="apply.png"
-                    Style="{StaticResource FormActionButtonStyle}"
-                    Command="{Binding SaveCommand}" />
-            </Grid>
-
         </VerticalStackLayout>
-    </ScrollView>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,Auto">
+            <Label
+                Text="{x:Static resources:AppText.PropertiesLabel}"
+                VerticalOptions="Center"
+                Style="{StaticResource H3LabelStyle}" />
+
+            <Button
+                Grid.Column="1"
+                Text="+"
+                Command="{Binding AddPropertyCommand}"
+                Style="{StaticResource RoundIconButtonStyle}" />
+        </Grid>
+
+        <CollectionView
+            x:Name="PropertiesCollectionView"
+            Grid.Row="2"
+            ItemsSource="{Binding Properties}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewModels:CategoryPropertyViewModel">
+                    <Frame
+                        Style="{StaticResource CardFrameStyle}"
+                        Margin="0,0,0,10"
+                        Padding="12">
+
+                        <Grid
+                            ColumnDefinitions="*,*,Auto"
+                            RowDefinitions="Auto,Auto"
+                            ColumnSpacing="10"
+                            RowSpacing="10">
+
+                            <Border Grid.Row="0"
+                                    Grid.Column="0"
+                                    Style="{StaticResource InputContainerStyle}"
+                                    Padding="12,6">
+                                <Entry
+                                    Text="{Binding Name}"
+                                    Placeholder="{x:Static resources:AppText.PropertyNamePlaceholder}" />
+                            </Border>
+
+                            <Border Grid.Row="0"
+                                    Grid.Column="1"
+                                    Style="{StaticResource InputContainerStyle}"
+                                    Padding="12,6">
+                                <Picker
+                                    Title="{x:Static resources:AppText.SelectPropertyTypeTitle}"
+                                    ItemsSource="{Binding AvailableTypes}"
+                                    SelectedItem="{Binding SelectedType}"
+                                    IsEnabled="{Binding IsNew}" />
+                            </Border>
+
+                            <Button
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                ImageSource="delete.png"
+                                Style="{StaticResource RoundIconButtonStyle}"
+                                VerticalOptions="Start"
+                                HorizontalOptions="End"
+                                Command="{Binding DeleteCommand}"
+                                CommandParameter="{Binding .}" />
+
+                            <Border Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    Style="{StaticResource InputContainerStyle}"
+                                    Padding="12,6"
+                                    IsVisible="{Binding IsAllowedValuesType}">
+                                <Entry
+                                    Text="{Binding AllowedValues}"
+                                    Placeholder="{x:Static resources:AppText.AllowedValuesPlaceholder}" />
+                            </Border>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Grid Grid.Row="3"
+              ColumnDefinitions="Auto,*,Auto,Auto"
+              ColumnSpacing="10">
+            <Button
+                Grid.Column="0"
+                ImageSource="delete.png"
+                Style="{StaticResource CardIconButtonStyle}"
+                Command="{Binding RemoveCategoryCommand}"
+                IsVisible="{Binding CanRemoveCategory}" />
+
+            <ImageButton
+                Grid.Column="2"
+                Source="cross.png"
+                Style="{StaticResource FormActionButtonStyle}"
+                Command="{Binding CancelCommand}" />
+
+            <ImageButton
+                Grid.Column="3"
+                Source="apply.png"
+                Style="{StaticResource FormActionButtonStyle}"
+                Command="{Binding SaveCommand}" />
+        </Grid>
+
+    </Grid>
 </ContentPage>

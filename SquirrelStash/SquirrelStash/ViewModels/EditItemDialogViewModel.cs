@@ -40,6 +40,9 @@ namespace SquirrelStash.ViewModels
         {
             _itemId = item.Id;
 
+            ImagePath = item.ImageSource;
+            DefaultQuantity = item.Quantity;
+
             foreach (var entry in item.PropertyEntries)
             {
                 var propertyVm = PropertyEntries.FirstOrDefault(x => x.DefinitionId == entry.PropertyDefinitionId);
@@ -57,6 +60,8 @@ namespace SquirrelStash.ViewModels
 
         public string DialogTitle => IsEdit ? AppText.EditItemPageTitle : AppText.CreateItemPageTitle;
 
+        public string QuantityLabel => IsEdit ? AppText.CurrentQuantity : AppText.DefaultQuantity;
+
         [ObservableProperty]
         private string? imagePath;
 
@@ -72,6 +77,8 @@ namespace SquirrelStash.ViewModels
         public ObservableCollection<CreateItemPropertyEntryViewModel> PropertyEntries { get; }
 
         public event Action<DialogResult<EditItemRequest>>? RequestCompleted;
+
+        public event Action<CreateItemPropertyEntryViewModel>? PropertyFocusRequested;
 
         public async Task UpdateImageAsync(ItemImageSource source)
         {
@@ -109,7 +116,7 @@ namespace SquirrelStash.ViewModels
                     IsEdit ? _itemId : null,
                     ParseThreshold(WarningThreshold, WarningThresholdDef),
                     ParseThreshold(CriticalThreshold, CriticalThresholdDef),
-                    DefaultQuantity >= 0 ? DefaultQuantity : 0);
+                    DefaultQuantity);
 
                 RequestCompleted?.Invoke(DialogResult<EditItemRequest>.GetSuccess(request));
             }
@@ -123,6 +130,7 @@ namespace SquirrelStash.ViewModels
 
             if (invalidEntry is not null)
             {
+                PropertyFocusRequested?.Invoke(invalidEntry);
                 await MessageHelper.ShowWarningAsync(
                     string.Format(AppText.ItemValueRequiredFormat, invalidEntry.Name));
                 return false;

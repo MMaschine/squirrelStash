@@ -69,6 +69,7 @@ public static class AppText
     public const string CannotGetImage = "Can't get image";
 
     public const string DefaultQuantity = "Default quantity";
+    public const string CurrentQuantity = "Current quantity";
     public const string CategoryDeletedMessage = "Category deleted";
     public const string ItemDeletedMessage = "Item deleted";
     public const string DeleteCategoryConfirmationFormat = "Do you really want to delete category {0}?";
