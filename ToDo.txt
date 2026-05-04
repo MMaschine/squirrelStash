@@ -31,6 +31,10 @@
 +++ Divide the properties in an Item name by "/"
 +++ Highlight item by border color if it is reach the threshold (Tree view)
 +++ On the edit screen highlight property without values, and show them first
+------ v 1.3
+  
++++ BUG: No image in EditItem form, especially critical for copy logic 
+
 -----------------------------------------------------------------------------------------------------------------------
 
 - Default quantity on edit form should turn to Actual quantity and show actual number 
@@ -42,13 +46,14 @@ Func:
 Bug: 
 - BUG: Add several properties. Edit. The screen is shaking when inputing. Especially visible with "Allowed values".
 - BUG: Clean the Edit form in case of error 
-- MINOR: Save state of the list of items (open/close) after edit. Mandatory open if cat has warning
-- MINOR: OrderBy visible only if we have any items 
 
-- BUG: No image in EditItem form, especially critical for copy logic 
+
+(+) MINOR: Save state of the list of items (open/close) after edit. Mandatory open if cat has warning
+(+) MINOR: OrderBy visible only if we have any items 
 
 Tst: 
 - Test case when sorting involve property without value (newly added property)
+- Test uniqueness of AllowedValues
 -----------------------------------------------------------------------------------------------------------------------
 Small possible improvements: 
 
