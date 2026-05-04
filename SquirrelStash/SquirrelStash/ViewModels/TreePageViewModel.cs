@@ -152,7 +152,9 @@ namespace SquirrelStash.ViewModels
             }
 
 
+            var wasItemsVisible = currCategory?.IsItemsVisible == true;
             _allCategories[index] = cardViewModelFactory.GetViewModel(result.Value, CategoryCardActions);
+            _allCategories[index].IsItemsVisible = wasItemsVisible;
             _allCategories[index].CheckItemWarnings();
             
             ApplyFilter(string.Empty);

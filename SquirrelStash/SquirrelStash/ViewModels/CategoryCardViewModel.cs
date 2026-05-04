@@ -51,9 +51,10 @@ namespace SquirrelStash.ViewModels
             foreach (var item in category.Items)
             {
                 var itemVm = _itemCardViewModelFactory.GetViewModel(item, _itemCardActions);
-                itemVm.CheckWarnings(category);
                 Items.Add(itemVm);
             }
+
+            CheckItemWarnings();
         }
 
         [ObservableProperty]
@@ -91,6 +92,11 @@ namespace SquirrelStash.ViewModels
             foreach (var item in Items)
             {
                 item.CheckWarnings(_currentCategory);
+            }
+
+            if (Items.Any(x => x.HasWarning))
+            {
+                IsItemsVisible = true;
             }
         }
 
