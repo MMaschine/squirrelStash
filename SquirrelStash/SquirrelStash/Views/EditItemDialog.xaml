@@ -14,8 +14,11 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="16">
+    <Grid Padding="20"
+          RowDefinitions="Auto,*,Auto"
+          RowSpacing="16">
+        <VerticalStackLayout Grid.Row="0"
+                             Spacing="16">
 
             <Label
                 Text="{Binding DialogTitle}"
@@ -115,77 +118,79 @@
                 Text="{x:Static resources:AppText.PropertiesLabel}"
                 Style="{StaticResource H3LabelStyle}" />
 
-            <CollectionView ItemsSource="{Binding PropertyEntries}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="viewModels:CreateItemPropertyEntryViewModel">
-                        <Frame
-                            Style="{StaticResource CardFrameStyle}"
-                            Margin="0,0,0,10"
-                            Padding="12">
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                                <Label
-                                    Grid.Column="0"
-                                    Text="{Binding Name}"
-                                    VerticalOptions="Center"
-                                    Style="{StaticResource BodyStrongLabelStyle}" />
-
-                                <Border Grid.Column="1"
-                                        Style="{StaticResource InputContainerStyle}"
-                                        Padding="12,6"
-                                        IsVisible="{Binding IsManualValueType}">
-                                    <Border.Triggers>
-                                        <DataTrigger
-                                            TargetType="Border"
-                                            Binding="{Binding HasMissingValue}"
-                                            Value="True">
-                                            <Setter Property="Stroke" Value="{StaticResource Color.WarningOrange}" />
-                                            <Setter Property="StrokeThickness" Value="2" />
-                                        </DataTrigger>
-                                    </Border.Triggers>
-                                    <Entry
-                                        Text="{Binding Value}"
-                                        Placeholder="{x:Static resources:AppText.EnterValuePlaceholder}" 
-                                        Keyboard="{Binding ValueKeyboard}"/>
-                                </Border>
-
-                                <Border Grid.Column="1"
-                                        Style="{StaticResource InputContainerStyle}"
-                                        Padding="12,6"
-                                        IsVisible="{Binding IsAllowedValuesType}">
-                                    <Border.Triggers>
-                                        <DataTrigger
-                                            TargetType="Border"
-                                            Binding="{Binding HasMissingValue}"
-                                            Value="True">
-                                            <Setter Property="Stroke" Value="{StaticResource Color.WarningOrange}" />
-                                            <Setter Property="StrokeThickness" Value="2" />
-                                        </DataTrigger>
-                                    </Border.Triggers>
-                                    <Picker
-                                        Title="{x:Static resources:AppText.SelectValueTitle}"
-                                        ItemsSource="{Binding AllowedValues}"
-                                        SelectedItem="{Binding SelectedAllowedValue}" />
-                                </Border>
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <HorizontalStackLayout HorizontalOptions="End"
-                                   Spacing="10"
-                                   Margin="0,20,0,0">
-                <ImageButton
-                    Source="cross.png"
-                    Style="{StaticResource FormActionButtonStyle}"
-                    Command="{Binding CancelCommand}" />
-
-                <ImageButton
-                    Source="apply.png"
-                    Style="{StaticResource FormActionButtonStyle}"
-                    Command="{Binding SaveCommand}" />
-            </HorizontalStackLayout>
-
         </VerticalStackLayout>
-    </ScrollView>
+
+        <CollectionView x:Name="PropertyEntriesCollectionView"
+                        Grid.Row="1"
+                        ItemsSource="{Binding PropertyEntries}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewModels:CreateItemPropertyEntryViewModel">
+                    <Frame
+                        Style="{StaticResource CardFrameStyle}"
+                        Margin="0,0,0,10"
+                        Padding="12">
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <Label
+                                Grid.Column="0"
+                                Text="{Binding Name}"
+                                VerticalOptions="Center"
+                                Style="{StaticResource BodyStrongLabelStyle}" />
+
+                            <Border Grid.Column="1"
+                                    Style="{StaticResource InputContainerStyle}"
+                                    Padding="12,6"
+                                    IsVisible="{Binding IsManualValueType}">
+                                <Border.Triggers>
+                                    <DataTrigger
+                                        TargetType="Border"
+                                        Binding="{Binding HasMissingValue}"
+                                        Value="True">
+                                        <Setter Property="Stroke" Value="{StaticResource Color.WarningOrange}" />
+                                        <Setter Property="StrokeThickness" Value="2" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Entry
+                                    Text="{Binding Value}"
+                                    Placeholder="{x:Static resources:AppText.EnterValuePlaceholder}" 
+                                    Keyboard="{Binding ValueKeyboard}"/>
+                            </Border>
+
+                            <Border Grid.Column="1"
+                                    Style="{StaticResource InputContainerStyle}"
+                                    Padding="12,6"
+                                    IsVisible="{Binding IsAllowedValuesType}">
+                                <Border.Triggers>
+                                    <DataTrigger
+                                        TargetType="Border"
+                                        Binding="{Binding HasMissingValue}"
+                                        Value="True">
+                                        <Setter Property="Stroke" Value="{StaticResource Color.WarningOrange}" />
+                                        <Setter Property="StrokeThickness" Value="2" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Picker
+                                    Title="{x:Static resources:AppText.SelectValueTitle}"
+                                    ItemsSource="{Binding AllowedValues}"
+                                    SelectedItem="{Binding SelectedAllowedValue}" />
+                            </Border>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <HorizontalStackLayout Grid.Row="2"
+                               HorizontalOptions="End"
+                               Spacing="10">
+            <ImageButton
+                Source="cross.png"
+                Style="{StaticResource FormActionButtonStyle}"
+                Command="{Binding CancelCommand}" />
+
+            <ImageButton
+                Source="apply.png"
+                Style="{StaticResource FormActionButtonStyle}"
+                Command="{Binding SaveCommand}" />
+        </HorizontalStackLayout>
+    </Grid>
 </ContentPage>

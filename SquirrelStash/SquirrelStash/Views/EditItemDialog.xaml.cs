@@ -17,9 +17,9 @@ public partial class EditItemDialog : ContentPage
     {
         InitializeComponent();
 
-        viewModel.RequestCompleted += OnSaveRequested;
-
         _viewModel = viewModel;
+        _viewModel.RequestCompleted += OnSaveRequested;
+        _viewModel.PropertyFocusRequested += OnPropertyFocusRequested;
         BindingContext = _viewModel;
     }
 
@@ -62,5 +62,41 @@ public partial class EditItemDialog : ContentPage
         {
             entry.Text = text.Replace("-", string.Empty);
         }
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        await Task.Yield();
+
+        var firstMissingProperty = _viewModel.PropertyEntries.FirstOrDefault(x => x.HasMissingValue);
+
+        if (firstMissingProperty is null)
+        {
+            return;
+        }
+
+        PropertyEntriesCollectionView.ScrollTo(
+            firstMissingProperty,
+            position: ScrollToPosition.MakeVisible,
+            animate: false);
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        _viewModel.RequestCompleted -= OnSaveRequested;
+        _viewModel.PropertyFocusRequested -= OnPropertyFocusRequested;
+    }
+
+    private void OnPropertyFocusRequested(CreateItemPropertyEntryViewModel property)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+            PropertyEntriesCollectionView.ScrollTo(
+                property,
+                position: ScrollToPosition.MakeVisible,
+                animate: true));
     }
 }

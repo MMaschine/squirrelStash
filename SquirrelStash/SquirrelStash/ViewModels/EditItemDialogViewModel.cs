@@ -75,6 +75,8 @@ namespace SquirrelStash.ViewModels
 
         public event Action<DialogResult<EditItemRequest>>? RequestCompleted;
 
+        public event Action<CreateItemPropertyEntryViewModel>? PropertyFocusRequested;
+
         public async Task UpdateImageAsync(ItemImageSource source)
         {
             var result = await _imageService.PickAndStoreImageAsync(source);
@@ -125,6 +127,7 @@ namespace SquirrelStash.ViewModels
 
             if (invalidEntry is not null)
             {
+                PropertyFocusRequested?.Invoke(invalidEntry);
                 await MessageHelper.ShowWarningAsync(
                     string.Format(AppText.ItemValueRequiredFormat, invalidEntry.Name));
                 return false;
