@@ -7,4 +7,16 @@ public partial class CategoryCardView : ContentView
 	{
 		InitializeComponent();
 	}
+
+    private async void OnClearOrderButtonClicked(object sender, EventArgs e)
+    {
+        await Task.Yield();
+
+        OrderPicker.Unfocus();
+
+        if (sender is VisualElement clearButton)
+        {
+            clearButton.Unfocus();
+        }
+    }
 }
