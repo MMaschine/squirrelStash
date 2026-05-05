@@ -11,6 +11,7 @@ public partial class EditItemDialog : ContentPage, IModalDialog<DialogResult<Edi
     private readonly TaskCompletionSource<DialogResult<EditItemRequest>> _resultSource = new();
 
     private readonly EditItemDialogViewModel _viewModel;
+    private bool _actionSelected;
     private bool _isDisposed;
 
     public Task<DialogResult<EditItemRequest>> ResultTask => _resultSource.Task;
@@ -30,6 +31,7 @@ public partial class EditItemDialog : ContentPage, IModalDialog<DialogResult<Edi
 
     private async void OnSaveRequested(DialogResult<EditItemRequest> request)
     {
+        _actionSelected = true;
         _resultSource.TrySetResult(request);
         await Navigation.PopModalAsync();
     }
@@ -73,6 +75,16 @@ public partial class EditItemDialog : ContentPage, IModalDialog<DialogResult<Edi
             firstMissingProperty,
             position: ScrollToPosition.MakeVisible,
             animate: false);
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        if (!_actionSelected)
+        {
+            _resultSource.TrySetResult(DialogResult<EditItemRequest>.GetCanceled());
+        }
     }
 
     private void OnPropertyFocusRequested(CreateItemPropertyEntryViewModel property)

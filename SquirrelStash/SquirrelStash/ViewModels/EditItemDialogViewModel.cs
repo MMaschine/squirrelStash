@@ -41,6 +41,8 @@ namespace SquirrelStash.ViewModels
             _itemId = item.Id;
 
             ImagePath = item.ImageSource;
+            WarningThreshold = item.WarningThreshold.ToString();
+            CriticalThreshold = item.CriticalThreshold.ToString();
             DefaultQuantity = item.Quantity;
 
             foreach (var entry in item.PropertyEntries)

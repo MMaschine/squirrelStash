@@ -175,6 +175,12 @@ namespace SquirrelStash.Logic
         /// <inheritdoc />
         public async Task<Result<int>> DecreaseQuantityAsync(int id, int decrement = 1)
         {
+            if (decrement <= 0)
+            {
+                logger.LogWarning("Rejected quantity decrease for item {ItemId} because decrement {Decrement} is invalid.", id, decrement);
+                return Result.Fail(AppText.WrongIncrement);
+            }
+
             try
             {
                 var item = await _itemSet.FindAsync(id);

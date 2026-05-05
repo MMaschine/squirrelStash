@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <WindowsAppSdkBootstrapInitialize>false</WindowsAppSdkBootstrapInitialize>
+    <WindowsAppSdkDeploymentManagerInitialize>false</WindowsAppSdkDeploymentManagerInitialize>
+    <WindowsAppSdkUndockedRegFreeWinRTInitialize>false</WindowsAppSdkUndockedRegFreeWinRTInitialize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="FluentResults" Version="4.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.13" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="NUnit" Version="4.2.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.4.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SquirrelStash.DataAccess\SquirrelStash.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\SquirrelStash\Abstractions\IImageService.cs" Link="AppSource\Abstractions\IImageService.cs" />
+    <Compile Include="..\SquirrelStash\Abstractions\IItemsService.cs" Link="AppSource\Abstractions\IItemsService.cs" />
+    <Compile Include="..\SquirrelStash\Enums\ChangeCategoryAction.cs" Link="AppSource\Enums\ChangeCategoryAction.cs" />
+    <Compile Include="..\SquirrelStash\Enums\ItemImageSource.cs" Link="AppSource\Enums\ItemImageSource.cs" />
+    <Compile Include="..\SquirrelStash\Enums\PropertyTypes.cs" Link="AppSource\Enums\PropertyTypes.cs" />
+    <Compile Include="..\SquirrelStash\Logic\ItemsService.cs" Link="AppSource\Logic\ItemsService.cs" />
+    <Compile Include="..\SquirrelStash\Models\DialogResult.cs" Link="AppSource\Models\DialogResult.cs" />
+    <Compile Include="..\SquirrelStash\Models\EditCategoryDialogResult.cs" Link="AppSource\Models\EditCategoryDialogResult.cs" />
+    <Compile Include="..\SquirrelStash\Requests\CreateCategoryRequest.cs" Link="AppSource\Requests\CreateCategoryRequest.cs" />
+    <Compile Include="..\SquirrelStash\Requests\CreaatePropertyRequest.cs" Link="AppSource\Requests\CreaatePropertyRequest.cs" />
+    <Compile Include="..\SquirrelStash\Requests\CreateItemRequest.cs" Link="AppSource\Requests\CreateItemRequest.cs" />
+    <Compile Include="..\SquirrelStash\Requests\CreatePropertyEntryRequest.cs" Link="AppSource\Requests\CreatePropertyEntryRequest.cs" />
+    <Compile Include="..\SquirrelStash\ViewModels\CategoryPropertyViewModel.cs" Link="AppSource\ViewModels\CategoryPropertyViewModel.cs" />
+    <Compile Include="..\SquirrelStash\ViewModels\CreateItemPropertyEntryViewModel.cs" Link="AppSource\ViewModels\CreateItemPropertyEntryViewModel.cs" />
+    <Compile Include="..\SquirrelStash\ViewModels\EditCategoryDialogViewModel.cs" Link="AppSource\ViewModels\EditCategoryDialogViewModel.cs" />
+    <Compile Include="..\SquirrelStash\ViewModels\EditItemDialogViewModel.cs" Link="AppSource\ViewModels\EditItemDialogViewModel.cs" />
+  </ItemGroup>
+
+</Project>

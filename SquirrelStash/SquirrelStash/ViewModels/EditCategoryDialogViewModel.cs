@@ -101,7 +101,6 @@ namespace SquirrelStash.ViewModels
         [RelayCommand(CanExecute = nameof(CanSave))]
         private async Task Save()
         {
-
             var validTitleResult = await GetTrimmedValidTitleAsync();
             if (!validTitleResult.IsSuccess)
             {
@@ -117,8 +116,7 @@ namespace SquirrelStash.ViewModels
             }
 
 
-            //New category - add all properties, updating category - only that not in the DB
-            var propertiesToAdd = (IsEdit ? Properties.Where(x => x.IsNew) : Properties)
+            var properties = Properties
                 .Select(x => new CreatePropertyRequest(
                     x.Name.Trim(),
                     x.SelectedType,
@@ -129,8 +127,8 @@ namespace SquirrelStash.ViewModels
 
             var dialogResult =
                 EditCategoryDialogResult.GetChangesApplied(IsEdit ? 
-                    new EditCategoryRequest(trimmedTitle, propertiesToAdd, _categoryId, _propertiesToRemoveIds.ToArray()) :
-                    new EditCategoryRequest(trimmedTitle, propertiesToAdd));
+                    new EditCategoryRequest(trimmedTitle, properties, _categoryId, _propertiesToRemoveIds.ToArray()) :
+                    new EditCategoryRequest(trimmedTitle, properties));
 
             RequestCompleted?.Invoke(dialogResult);
         }

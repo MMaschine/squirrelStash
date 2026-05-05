@@ -1,5 +1,4 @@
 using SquirrelStash.Models;
-using SquirrelStash.Requests;
 using SquirrelStash.ViewModels;
 using System.Collections.Specialized;
 using SquirrelStash.Abstractions;
@@ -9,10 +8,10 @@ namespace SquirrelStash.Views;
 public partial class EditCategoryDialog : ContentPage, IModalDialog<EditCategoryDialogResult>
 {
     private readonly TaskCompletionSource<EditCategoryDialogResult> _resultSource = new();
-    private readonly EditCategoryDialogViewModel _viewModel;
-    private bool _isDisposed;
 
-    public Task<EditCategoryDialogResult> ResultTask => _resultSource.Task;
+    private readonly EditCategoryDialogViewModel _viewModel;
+    private bool _actionSelected;
+    private bool _isDisposed;
 
     /// <inheritdoc />
     public Task<EditCategoryDialogResult> DialogResultTask => _resultSource.Task;
@@ -30,6 +29,7 @@ public partial class EditCategoryDialog : ContentPage, IModalDialog<EditCategory
 
     private async void OnSaveRequested(EditCategoryDialogResult request)
     {
+        _actionSelected = true;
         _resultSource.TrySetResult(request);
         await Navigation.PopModalAsync();
     }
@@ -49,6 +49,16 @@ public partial class EditCategoryDialog : ContentPage, IModalDialog<EditCategory
                 position: ScrollToPosition.MakeVisible,
                 animate: true);
         });
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        if (!_actionSelected)
+        {
+            _resultSource.TrySetResult(EditCategoryDialogResult.GetCanceled());
+        }
     }
 
     /// <inheritdoc />
