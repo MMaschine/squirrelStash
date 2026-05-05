@@ -1,13 +1,17 @@
+using SquirrelStash.Abstractions;
 using SquirrelStash.Resources;
 
 namespace SquirrelStash.Views;
 
-public partial class ConfirmationDialog : ContentPage
+public partial class ConfirmationDialog : ContentPage, IModalDialog<bool>
 {
     private readonly TaskCompletionSource<bool> _resultSource = new();
     private bool _actionSelected;
 
     public Task<bool> ResultTask => _resultSource.Task;
+
+    /// <inheritdoc />
+    public Task<bool> DialogResultTask => _resultSource.Task;
 
     public ConfirmationDialog(string message, string title = "")
     {
@@ -53,5 +57,10 @@ public partial class ConfirmationDialog : ContentPage
         _actionSelected = true;
         await Navigation.PopModalAsync();
         _resultSource.TrySetResult(result);
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
     }
 }

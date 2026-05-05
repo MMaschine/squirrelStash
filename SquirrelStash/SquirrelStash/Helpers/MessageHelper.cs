@@ -37,7 +37,7 @@ namespace SquirrelStash.Helpers
             await MainThread.InvokeOnMainThreadAsync(async () =>
                 await Application.Current!.MainPage!.Navigation.PushModalAsync(dialog));
 
-            return await dialog.ResultTask;
+            return await dialog.DialogResultTask;
         }
 
         public static async Task NotifyException(Exception exception, string message, ILogger logger)

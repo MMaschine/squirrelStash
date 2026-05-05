@@ -33,7 +33,7 @@ public static class AppText
     public const string EnterValuePlaceholder = "Enter value";
     public const string SelectValueTitle = "Select value";
 
-    public const string SelectOrderTitle = "Order by";
+    public const string SelectOrderTitle = "Order by:";
     public const string SearchCategoryPlaceholder = "Search category";
     public const string LoadingCategories = "Loading categories...";
     public const string LoadingOverview = "Loading overview...";
@@ -59,7 +59,8 @@ public static class AppText
     public const string CategoryTitleRequired = "Title must be set for category";
     public const string CategoryPropertyRequired = "Set at least one property for the category";
     public const string ItemValueRequiredFormat = "Set a value for property '{0}'.";
-    public const string AllowedValuesInvalidFormat = "Allowed values for '{0}' must be comma-separated.";
+    public const string AllowedValuesInvalidFormat = "Allowed values for '{0}' must be comma-separated and unique.";
+    public const string FillPropertyName = "All properties must have names";
 
     public const string CannotGetCategories = "Can't get categories";
     public const string CategoryNotFound = "Category not found";

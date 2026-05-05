@@ -1,17 +1,22 @@
 using SquirrelStash.Enums;
+using SquirrelStash.Abstractions;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.ViewModels;
 
 namespace SquirrelStash.Views;
 
-public partial class EditItemDialog : ContentPage
+public partial class EditItemDialog : ContentPage, IModalDialog<DialogResult<EditItemRequest>>
 {
     private readonly TaskCompletionSource<DialogResult<EditItemRequest>> _resultSource = new();
 
     private readonly EditItemDialogViewModel _viewModel;
+    private bool _isDisposed;
 
     public Task<DialogResult<EditItemRequest>> ResultTask => _resultSource.Task;
+
+    /// <inheritdoc />
+    public Task<DialogResult<EditItemRequest>> DialogResultTask => _resultSource.Task;
 
     public EditItemDialog(EditItemDialogViewModel viewModel)
     {
@@ -70,14 +75,6 @@ public partial class EditItemDialog : ContentPage
             animate: false);
     }
 
-    protected override void OnDisappearing()
-    {
-        base.OnDisappearing();
-
-        _viewModel.RequestCompleted -= OnSaveRequested;
-        _viewModel.PropertyFocusRequested -= OnPropertyFocusRequested;
-    }
-
     private void OnPropertyFocusRequested(CreateItemPropertyEntryViewModel property)
     {
         MainThread.BeginInvokeOnMainThread(() =>
@@ -85,5 +82,18 @@ public partial class EditItemDialog : ContentPage
                 property,
                 position: ScrollToPosition.MakeVisible,
                 animate: true));
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        _viewModel.RequestCompleted -= OnSaveRequested;
+        _viewModel.PropertyFocusRequested -= OnPropertyFocusRequested;
+        _isDisposed = true;
     }
 }

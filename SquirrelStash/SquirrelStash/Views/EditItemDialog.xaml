@@ -12,23 +12,29 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:NullOrEmptyStringToBoolConverter x:Key="NullOrEmptyStringToBoolConverter"/>
+            <Style x:Key="CompactThresholdEntryStyle"
+                   TargetType="Entry">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="HeightRequest" Value="44" />
+                <Setter Property="MinimumHeightRequest" Value="44" />
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid Padding="20"
+    <Grid Padding="18"
           RowDefinitions="Auto,*,Auto"
-          RowSpacing="16">
+          RowSpacing="10">
         <VerticalStackLayout Grid.Row="0"
-                             Spacing="16">
+                             Spacing="10">
 
             <Label
                 Text="{Binding DialogTitle}"
                 Style="{StaticResource H1LabelStyle}" />
 
-            <VerticalStackLayout
-                HorizontalOptions="Start"
-                Spacing="8">
+            <Grid ColumnDefinitions="Auto,*"
+                  ColumnSpacing="12">
                 <Border
+                    Grid.Column="0"
                     WidthRequest="150"
                     HeightRequest="150"
                     BackgroundColor="{StaticResource Color.ImageSelectorBackground}"
@@ -53,76 +59,77 @@
                             IsVisible="{Binding ImagePath, Converter={StaticResource NullOrEmptyStringToBoolConverter}}" />
                     </Grid>
                 </Border>
-            </VerticalStackLayout>
 
-            <Border Style="{StaticResource ThresholdCardStyle}">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="{x:Static resources:AppText.ThresholdsLabel}"
-                           Style="{StaticResource H3LabelStyle}" />
+                <Frame
+                    Grid.Column="1"
+                    Style="{StaticResource CardFrameStyle}"
+                    HeightRequest="150"
+                    Padding="12">
+                    <VerticalStackLayout Spacing="10"
+                                         VerticalOptions="Center">
+                        <Label
+                            Text="{Binding QuantityLabel}"
+                            Style="{StaticResource BodyStrongLabelStyle}" />
 
-                    <Grid ColumnDefinitions="*,*"
-                          ColumnSpacing="12">
-                        <VerticalStackLayout Grid.Column="0"
-                                             Spacing="6">
-                            <Label Text="{x:Static resources:AppText.WarningThresholdLabel}"
-                                   TextColor="{StaticResource Color.WarningOrange}"
-                                   Style="{StaticResource BodyStrongLabelStyle}" />
-                            <Border Style="{StaticResource ThresholdInputStyle}"
-                                    Stroke="{StaticResource Color.WarningOrange}"
-                                    BackgroundColor="{StaticResource Color.WarningSoft}">
-                                <Entry Text="{Binding WarningThreshold}"
-                                       Keyboard="Numeric">
-                                    <Entry.Behaviors>
-                                        <components:DigitsOnlyEntryBehavior />
-                                    </Entry.Behaviors>
-                                </Entry>
-                            </Border>
-                        </VerticalStackLayout>
-
-                        <VerticalStackLayout Grid.Column="1"
-                                             Spacing="6">
-                            <Label Text="{x:Static resources:AppText.CriticalThresholdLabel}"
-                                   TextColor="{StaticResource Color.CriticalRed}"
-                                   Style="{StaticResource BodyStrongLabelStyle}" />
-                            <Border Style="{StaticResource ThresholdInputStyle}"
-                                    Stroke="{StaticResource Color.CriticalRed}"
-                                    BackgroundColor="{StaticResource Color.CriticalSoft}">
-                                <Entry Text="{Binding CriticalThreshold}"
-                                       Keyboard="Numeric">
-                                    <Entry.Behaviors>
-                                        <components:DigitsOnlyEntryBehavior />
-                                    </Entry.Behaviors>
-                                </Entry>
-                            </Border>
-                        </VerticalStackLayout>
-                    </Grid>
-                </VerticalStackLayout>
-            </Border>
+                        <Border
+                            Style="{StaticResource InputContainerStyle}"
+                            Padding="12,6">
+                            <Entry
+                                Text="{Binding DefaultQuantity}"
+                                Keyboard="Numeric">
+                                <Entry.Behaviors>
+                                    <components:DigitsOnlyEntryBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Border>
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
 
             <Frame
                 Style="{StaticResource CardFrameStyle}"
-                Margin="0,0,0,10"
+                Margin="0,0,0,4"
                 Padding="12">
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <VerticalStackLayout Spacing="8">
                     <Label
-                        Grid.Column="0"
-                        Text="{Binding QuantityLabel}"
-                        VerticalOptions="Center"
-                        Style="{StaticResource BodyStrongLabelStyle}" />
+                        Text="{x:Static resources:AppText.ThresholdsLabel}"
+                        Style="{StaticResource H3LabelStyle}" />
 
-                    <Border Grid.Column="1"
-                            Style="{StaticResource InputContainerStyle}"
-                            Padding="12,6">
-                        <Entry
-                            Text="{Binding DefaultQuantity}"
-                            Keyboard="Numeric">
-                            <Entry.Behaviors>
-                                <components:DigitsOnlyEntryBehavior />
-                            </Entry.Behaviors>
-                        </Entry>
-                    </Border>
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+                        <Border
+                            Grid.Column="0"
+                            Style="{StaticResource ThresholdInputStyle}"
+                            Padding="10,4"
+                            Stroke="{StaticResource Color.WarningOrange}"
+                            BackgroundColor="{StaticResource Color.WarningSoft}">
+                            <Entry Text="{Binding WarningThreshold}"
+                                   Style="{StaticResource CompactThresholdEntryStyle}"
+                                   Placeholder="{x:Static resources:AppText.WarningThresholdLabel}"
+                                   Keyboard="Numeric">
+                                <Entry.Behaviors>
+                                    <components:DigitsOnlyEntryBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Border>
 
-                </Grid>
+                        <Border
+                            Grid.Column="1"
+                            Style="{StaticResource ThresholdInputStyle}"
+                            Padding="10,4"
+                            Stroke="{StaticResource Color.CriticalRed}"
+                            BackgroundColor="{StaticResource Color.CriticalSoft}">
+                            <Entry Text="{Binding CriticalThreshold}"
+                                   Style="{StaticResource CompactThresholdEntryStyle}"
+                                   Placeholder="{x:Static resources:AppText.CriticalThresholdLabel}"
+                                   Keyboard="Numeric">
+                                <Entry.Behaviors>
+                                    <components:DigitsOnlyEntryBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
             </Frame>
 
             <Label

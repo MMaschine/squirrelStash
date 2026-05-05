@@ -16,6 +16,7 @@ namespace SquirrelStash.ViewModels
         private readonly IItemsService _itemsService;
         private readonly Item _item;
         private readonly ILogger<ItemCardViewModel> _logger;
+        private readonly IModalDialogService _modalDialogService;
 
         private Dictionary<int, string> _itemsToOrderBy = [];
 
@@ -24,12 +25,14 @@ namespace SquirrelStash.ViewModels
         public ItemCardViewModel(
             Item item,
             IItemsService itemService,
+            IModalDialogService modalDialogService,
             IItemCardActions itemCardActions,
             ILogger<ItemCardViewModel> logger)
         {
             _itemsService = itemService;
             _item = item;
             _logger = logger;
+            _modalDialogService = modalDialogService;
             _itemCardActions = itemCardActions;
 
             Quantity = item.Quantity;
@@ -119,9 +122,7 @@ namespace SquirrelStash.ViewModels
         private async Task ShowItemDetails()
         {
             var dialog = new ItemDetailsDialog(ImagePath, Name);
-            await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
-
-            var action = await dialog.ResultTask;
+            var action = await _modalDialogService.ShowAsync(dialog);
 
             switch (action)
             {

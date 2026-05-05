@@ -1,6 +1,6 @@
 namespace SquirrelStash.Components;
 
-public class ExpandCollapseIndicator : ContentView
+public partial class ExpandCollapseIndicator : ContentView
 {
     public static readonly BindableProperty IsExpandedProperty = BindableProperty.Create(
         nameof(IsExpanded),
@@ -9,27 +9,9 @@ public class ExpandCollapseIndicator : ContentView
         false,
         propertyChanged: OnIsExpandedChanged);
 
-    private readonly Label _label;
-
     public ExpandCollapseIndicator()
     {
-        InputTransparent = true;
-        HorizontalOptions = LayoutOptions.Start;
-        VerticalOptions = LayoutOptions.Center;
-
-        _label = new Label
-        {
-            Text = "v",
-            FontFamily = "OpenSansSemibold",
-            FontSize = 14,
-            HorizontalTextAlignment = TextAlignment.Center,
-            VerticalTextAlignment = TextAlignment.Center,
-            WidthRequest = 18,
-            MinimumWidthRequest = 18
-        };
-        _label.SetDynamicResource(Label.TextColorProperty, "Color.PrimaryBlue");
-
-        Content = _label;
+        InitializeComponent();
         UpdateIndicator();
     }
 
@@ -46,6 +28,8 @@ public class ExpandCollapseIndicator : ContentView
 
     private void UpdateIndicator()
     {
-        _label.Rotation = IsExpanded ? 180 : 0;
+        RotationBox.TranslationX = 0;
+        RotationBox.TranslationY = 0;
+        RotationBox.Rotation = IsExpanded ? 180 : 0;
     }
 }

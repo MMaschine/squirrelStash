@@ -22,6 +22,7 @@ namespace SquirrelStash.ViewModels
         private readonly ILogger _logger;
         private readonly IItemCardViewModelFactory _itemCardViewModelFactory;
         private readonly IEditItemDialogFactory _editItemDialogFactory;
+        private readonly IModalDialogService _modalDialogService;
         private readonly ICategoryCardActions _categoryCardActions;
         private readonly IItemCardActions _itemCardActions;
 
@@ -30,6 +31,7 @@ namespace SquirrelStash.ViewModels
             IItemsService itemService,
             IItemCardViewModelFactory itemCardViewModelFactory,
             IEditItemDialogFactory editItemDialogFactory,
+            IModalDialogService modalDialogService,
             ICategoryCardActions categoryCardActions,
             ILogger<CategoryCardViewModel> logger)
         {
@@ -37,6 +39,7 @@ namespace SquirrelStash.ViewModels
             _currentCategory = category;
             _itemCardViewModelFactory = itemCardViewModelFactory;
             _editItemDialogFactory = editItemDialogFactory;
+            _modalDialogService = modalDialogService;
             _categoryCardActions = categoryCardActions;
             _itemCardActions = new ItemCardActionsAdapter(EditItemAsync, DeleteItemAsync, CopyItemAsync);
             _logger = logger;
@@ -184,17 +187,14 @@ namespace SquirrelStash.ViewModels
         {
             var dialog = _editItemDialogFactory.CreateDialog(_currentCategory);
 
-            await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
-
-            return await dialog.ResultTask;
+            return await _modalDialogService.ShowAsync(dialog);
         }
 
         private async Task<DialogResult<EditItemRequest>> ShowDialogToEditAsync(Item item)
         {
             var dialog = _editItemDialogFactory.CreateDialog(_currentCategory, item);
 
-            await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
-            return await dialog.ResultTask;
+            return await _modalDialogService.ShowAsync(dialog);
         }
 
         private async Task EditItemAsync(Item item)

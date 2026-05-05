@@ -1,13 +1,17 @@
+using SquirrelStash.Abstractions;
 using SquirrelStash.Enums;
 
 namespace SquirrelStash.Views;
 
-public partial class ItemDetailsDialog : ContentPage
+public partial class ItemDetailsDialog : ContentPage, IModalDialog<ItemDetailsDialogResult>
 {
     private readonly TaskCompletionSource<ItemDetailsDialogResult> _resultSource = new();
     private bool _actionSelected;
 
     public Task<ItemDetailsDialogResult> ResultTask => _resultSource.Task;
+
+    /// <inheritdoc />
+    public Task<ItemDetailsDialogResult> DialogResultTask => _resultSource.Task;
 
     public ItemDetailsDialog(string imagePath, string itemName)
     {
@@ -58,5 +62,10 @@ public partial class ItemDetailsDialog : ContentPage
         _actionSelected = true;
         await Navigation.PopModalAsync();
         _resultSource.TrySetResult(result);
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
     }
 }
