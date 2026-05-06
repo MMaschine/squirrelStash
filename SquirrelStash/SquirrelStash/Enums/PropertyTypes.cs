@@ -1,5 +1,8 @@
 ﻿namespace SquirrelStash.Enums
 {
+    /// <summary>
+    /// Represents supported category property value types.
+    /// </summary>
     public enum PropertyTypes
     {
         /// <summary>

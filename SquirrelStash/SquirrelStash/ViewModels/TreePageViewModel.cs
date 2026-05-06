@@ -3,23 +3,30 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.Helpers;
-using SquirrelStash.Logic.Factories;
 using SquirrelStash.Models;
 using SquirrelStash.Requests;
 using SquirrelStash.Resources;
-using SquirrelStash.Views;
 using System.Collections.ObjectModel;
+using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Logic;
+using SquirrelStash.Views;
 
 namespace SquirrelStash.ViewModels
 {
     public partial class TreePageViewModel(
-        ICategoryService categoryService, ICategoryCardViewModelFactory cardViewModelFactory, ILogger<TreePageViewModel> logger) : ObservableObject
+        ICategoryService categoryService,
+        ICategoryCardViewModelFactory cardViewModelFactory,
+        IEditCategoryDialogFactory editCategoryDialogFactory,
+        IModalDialogService modalDialogService,
+        ILogger<TreePageViewModel> logger) : ObservableObject
     {
         private bool _isInitialized;
         private bool _isLoading;
         private string _searchText = null!;
-
+       
         private readonly List<CategoryCardViewModel> _allCategories = [];
+
+        private ICategoryCardActions CategoryCardActions => new CategoryCardActionsAdapter(ChangeCategoryAsync);
 
         public ObservableCollection<CategoryCardViewModel> Categories { get; } = [];
 
@@ -61,12 +68,14 @@ namespace SquirrelStash.ViewModels
             await LoadCategoriesAsync();
         }
 
+        private string[] AllTitles => _allCategories.Select(x => x.Title).ToArray();
+
         [RelayCommand]
         public async Task CreateCategory()
         {
-            var dialogResult = await ShowDialogAsync();
+            var dialogResult = await ShowEditDialogAsync(editCategoryDialogFactory.GetDialogToCreate(AllTitles));
 
-            if (!dialogResult.IsSuccess || dialogResult.Data == null)
+            if (!dialogResult.IsChangesApplied || dialogResult.Data == null)
             {
                 if (!string.IsNullOrEmpty(dialogResult.ErrorMessage))
                 {
@@ -87,12 +96,97 @@ namespace SquirrelStash.ViewModels
             }
             else
             {
-                _allCategories.Add(cardViewModelFactory.GetViewModel(result.Value));
+                _allCategories.Add(cardViewModelFactory.GetViewModel(result.Value, CategoryCardActions));
                 SearchText = string.Empty;
                 ApplyFilter(SearchText);
 
                 await MessageHelper.ShowInfoAsync(AppText.FormatCategoryAdded(dialogResult.Data.Title));
             }
+        }
+
+        private async Task ChangeCategoryAsync(Category category)
+        {
+            var dialogResult = await ShowEditDialogAsync(editCategoryDialogFactory.GetDialogToEdit(AllTitles, category));
+
+            await HandleEditCategoryDialogResultAsync(category, dialogResult);
+        }
+
+        private async Task HandleEditCategoryDialogResultAsync(Category category, EditCategoryDialogResult dialogResult)
+        {
+            if (dialogResult.IsDeleted)
+            {
+                await DeleteCategoryAsync(category);
+                return;
+            }
+
+            if (!dialogResult.IsChangesApplied || dialogResult.Data == null)
+            {
+                if (!string.IsNullOrEmpty(dialogResult.ErrorMessage))
+                {
+                    logger.LogWarning("Edit category dialog failed: {ErrorMessage}", dialogResult.ErrorMessage);
+                }
+
+                return;
+            }
+
+            await UpdateCategoryAsync(category, dialogResult.Data);
+        }
+
+        private async Task UpdateCategoryAsync(Category category, EditCategoryRequest request)
+        {
+            var result = await categoryService.UpdateCategoryAsync(request);
+
+            if (result.IsFailed)
+            {
+                await MessageHelper.ShowErrorAsync("ChangeFailed to update category");
+                return;
+            }
+
+            var currCategory = _allCategories.FirstOrDefault(x => x.CategoryId == category.Id);
+            var index = currCategory is null ? -1 : _allCategories.IndexOf(currCategory);
+
+            if (index == -1)
+            {
+                await MessageHelper.ShowWarningAsync("ChangeFailed to update the category list. Contact the developer");
+                logger.LogWarning("Can't update category list. CategoryId: {CategoryId}", category.Id);
+                return;
+            }
+
+
+            var wasItemsVisible = currCategory?.IsItemsVisible == true;
+            _allCategories[index] = cardViewModelFactory.GetViewModel(result.Value, CategoryCardActions);
+            _allCategories[index].IsItemsVisible = wasItemsVisible;
+            _allCategories[index].CheckItemWarnings();
+            
+            ApplyFilter(string.Empty);
+        }
+
+        private async Task DeleteCategoryAsync(Category category)
+        {
+            var result = await categoryService.RemoveCategoryAsync(category.Id);
+
+            if (result.IsFailed)
+            {
+                logger.LogError("Delete category failed for {CategoryTitle}. Errors: {Errors}",
+                    category.Title,
+                    string.Join("; ", result.Errors.Select(x => x.Message)));
+                await MessageHelper.ShowErrorAsync(AppText.FailedToDeleteCategory);
+                return;
+            }
+
+            var categoryViewModel = _allCategories.FirstOrDefault(x => x.CategoryId == category.Id);
+
+            if (categoryViewModel == null)
+            {
+                await MessageHelper.ShowWarningAsync("ChangeFailed to update the category list. Contact the developer");
+                logger.LogWarning("Can't delete category from list. CategoryId: {CategoryId}", category.Id);
+                return;
+            }
+
+            _allCategories.Remove(categoryViewModel);
+            ApplyFilter(SearchText);
+
+            await MessageHelper.ShowInfoAsync(AppText.CategoryDeletedMessage);
         }
 
         private async Task LoadCategoriesAsync()
@@ -113,7 +207,7 @@ namespace SquirrelStash.ViewModels
                 return;
             }
 
-            _allCategories.AddRange(result.Value.Select(cardViewModelFactory.GetViewModel));
+            _allCategories.AddRange(result.Value.Select(x=> cardViewModelFactory.GetViewModel(x, CategoryCardActions)));
             logger.LogInformation("Loaded {CategoryCount} categories.", result.Value.Count);
 
             ApplyFilter(string.Empty);
@@ -135,13 +229,10 @@ namespace SquirrelStash.ViewModels
             }
         }
 
-        private async Task<DialogResult<CreateCategoryRequest>> ShowDialogAsync()
+        private async Task<EditCategoryDialogResult> ShowEditDialogAsync(EditCategoryDialog dialog)
         {
-            var dialog = new CreateCategoryDialog(_allCategories.Select(x=>x.Title).ToArray());
-
-            await Shell.Current.CurrentPage.Navigation.PushModalAsync(dialog);
-
-            return await dialog.ResultTask;
+            return await modalDialogService.ShowAsync(dialog);
         }
+
     }
 }

@@ -3,32 +3,46 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SquirrelStash.Abstractions;
 using SquirrelStash.DataAccess.Entities;
+using SquirrelStash.Enums;
 using SquirrelStash.Helpers;
 using SquirrelStash.Logic;
 using SquirrelStash.Resources;
+using SquirrelStash.Views;
 
 namespace SquirrelStash.ViewModels
 {
     public partial class ItemCardViewModel : ObservableObject
     {
         private readonly IItemsService _itemsService;
-        private readonly int _itemId;
+        private readonly Item _item;
         private readonly ILogger<ItemCardViewModel> _logger;
+        private readonly IModalDialogService _modalDialogService;
 
         private Dictionary<int, string> _itemsToOrderBy = [];
 
-        public ItemCardViewModel(Item item, IItemsService itemService, ILogger<ItemCardViewModel> logger)
+        private readonly IItemCardActions _itemCardActions;
+
+        public ItemCardViewModel(
+            Item item,
+            IItemsService itemService,
+            IModalDialogService modalDialogService,
+            IItemCardActions itemCardActions,
+            ILogger<ItemCardViewModel> logger)
         {
             _itemsService = itemService;
-            _itemId = item.Id;
+            _item = item;
             _logger = logger;
+            _modalDialogService = modalDialogService;
+            _itemCardActions = itemCardActions;
 
             Quantity = item.Quantity;
 
-            Name = string.Join(" ",
+            Name = string.Join(AppText.ItemNameSeparator,
                 item.PropertyEntries
                     .Select(p => p.Value)
                     .Where(v => !string.IsNullOrWhiteSpace(v)));
+
+            HasWarning = string.IsNullOrEmpty(Name);
 
             ImagePath = string.IsNullOrEmpty(item.ImageSource) ? ImageService.ItemImagePlaceholder : item.ImageSource;
 
@@ -47,21 +61,91 @@ namespace SquirrelStash.ViewModels
         [ObservableProperty]
         private string imagePath;
 
-        public int Id => _itemId;
+        [ObservableProperty]
+        private bool hasWarning;
+
+        public int Id => _item.Id;
+
+        public ItemCardStatus Status
+        {
+            get
+            {
+                if (Quantity <= _item.CriticalThreshold)
+                {
+                    return ItemCardStatus.CriticalThresholdReached;
+                }
+
+                if (Quantity <= _item.WarningThreshold)
+                {
+                    return ItemCardStatus.WarningThresholdReached;
+                }
+
+                return HasWarning
+                    ? ItemCardStatus.MissingData
+                    : ItemCardStatus.Normal;
+            }
+        }
+
+        public void CheckWarnings(Category category)
+        {
+            var diff = category.Properties.Count - _itemsToOrderBy.Count;
+
+            if (diff != 0)
+            {
+                //Collision appears if we edit Category adding new Property, create new VM and then call CheckWarnings 
+                var separatorsCount = Name.Count(x => x == AppText.ItemNameSeparator);
+
+                if (separatorsCount < category.Properties.Count-1)
+                {
+                    for (int i = 0; i < diff; i++)
+                    {
+                        Name += "/";
+                    }
+                }
+            }
+
+            HasWarning = diff != 0 || string.IsNullOrEmpty(Name);
+        }
 
         public string GetOrderByValue(int id)
         {
             return _itemsToOrderBy.TryGetValue(id, out var result) ? result : string.Empty;
-        } 
+        }
+
+        [RelayCommand]
+        private async Task EditItem()
+        {
+            await _itemCardActions.EditItemAsync(_item);
+        }
+
+        [RelayCommand]
+        private async Task ShowItemDetails()
+        {
+            var dialog = new ItemDetailsDialog(ImagePath, Name);
+            var action = await _modalDialogService.ShowAsync(dialog);
+
+            switch (action)
+            {
+                case ItemDetailsDialogResult.Edit:
+                    await _itemCardActions.EditItemAsync(_item);
+                    break;
+                case ItemDetailsDialogResult.Copy:
+                    await _itemCardActions.CopyItemAsync(_item);
+                    break;
+                case ItemDetailsDialogResult.Delete:
+                    await _itemCardActions.DeleteItemAsync(_item);
+                    break;
+            }
+        }
 
         [RelayCommand]
         private async Task IncreaseQuantity()
         {
-            var newQuantityResult = await _itemsService.IncreaseQuantityAsync(_itemId);
+            var newQuantityResult = await _itemsService.IncreaseQuantityAsync(_item.Id);
 
             if (newQuantityResult.IsFailed)
             {
-                _logger.LogError($"Increase quantity failed for item {_itemId}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
+                _logger.LogError($"Increase quantity failed for item {_item.Id}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
                 await MessageHelper.ShowErrorAsync(AppText.QuantityChangeError);
             }
             else
@@ -75,11 +159,11 @@ namespace SquirrelStash.ViewModels
         {
             if (Quantity > 0)
             {
-                var newQuantityResult = await _itemsService.DecreaseQuantityAsync(_itemId);
+                var newQuantityResult = await _itemsService.DecreaseQuantityAsync(_item.Id);
 
                 if (newQuantityResult.IsFailed)
                 {
-                    _logger.LogError($"Decrease quantity failed for item {_itemId}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
+                    _logger.LogError($"Decrease quantity failed for item {_item.Id}. Errors: {string.Join("; ", newQuantityResult.Errors.Select(x => x.Message))}");
                     await MessageHelper.ShowErrorAsync(AppText.QuantityChangeError);
                 }
                 else
@@ -87,6 +171,16 @@ namespace SquirrelStash.ViewModels
                     Quantity = newQuantityResult.Value;
                 }
             }
+        }
+
+        partial void OnQuantityChanged(int value)
+        {
+            OnPropertyChanged(nameof(Status));
+        }
+
+        partial void OnHasWarningChanged(bool value)
+        {
+            OnPropertyChanged(nameof(Status));
         }
     }
 }

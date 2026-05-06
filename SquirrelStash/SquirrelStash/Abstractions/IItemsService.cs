@@ -19,22 +19,22 @@ public interface IItemsService
     /// <summary>
     /// Adds a new item to a category.
     /// </summary>
-    /// <param name="categoryId">The category identifier.</param>
-    /// <param name="createItemRequest">The item creation request.</param>
+    /// <param name="editItemRequest">The item creation request.</param>
     /// <returns>A result containing the created item.</returns>
-    Task<Result<Item>> AddItemAsync(int categoryId, CreateItemRequest createItemRequest);
+    Task<Result<Item>> AddItemAsync(EditItemRequest editItemRequest);
 
     /// <summary>
-    /// Updates an existing item.
+    /// Update an existing item
     /// </summary>
-    /// <param name="item">The item to update.</param>
-    Task UpdateItemAsync(Item item);
+    /// <param name="editItemRequest">Request to update the item</param>
+    /// <returns>Result with updated item</returns>
+    Task<Result<Item>> UpdateItemAsync(EditItemRequest editItemRequest);
 
     /// <summary>
     /// Removes an item by identifier.
     /// </summary>
     /// <param name="id">The item identifier.</param>
-    Task RemoveItemAsync(int id);
+    Task<Result> RemoveItemAsync(int id);
 
     /// <summary>
     /// Increases an item's quantity.

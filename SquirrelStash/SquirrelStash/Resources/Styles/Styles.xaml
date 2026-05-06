@@ -7,6 +7,7 @@
     <x:Double x:Key="Size.Corner.Small">10</x:Double>
     <x:Double x:Key="Size.Corner.Medium">12</x:Double>
     <x:Double x:Key="Size.Icon.Round">40</x:Double>
+    <x:Double x:Key="Size.Icon.Card">44</x:Double>
     <x:Double x:Key="Size.Icon.Form">46</x:Double>
 
     <Style TargetType="Page" ApplyToDerivedTypes="True">
@@ -205,80 +206,130 @@
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
     </Style>
 
-    <Style x:Key="Headline" TargetType="Label" BasedOn="{StaticResource H1LabelStyle}">
-        <Setter Property="HorizontalOptions" Value="Center" />
-        <Setter Property="HorizontalTextAlignment" Value="Center" />
+    <Style x:Key="ExpandCollapseIndicatorStyle" TargetType="VisualElement">
+        <Setter Property="WidthRequest" Value="18" />
+        <Setter Property="HeightRequest" Value="18" />
+        <Setter Property="MinimumWidthRequest" Value="18" />
+        <Setter Property="MinimumHeightRequest" Value="18" />
+        <Setter Property="InputTransparent" Value="True" />
+        <Setter Property="AnchorX" Value="0.5" />
+        <Setter Property="AnchorY" Value="0.5" />
     </Style>
 
-    <Style x:Key="SubHeadline" TargetType="Label" BasedOn="{StaticResource H2LabelStyle}">
+    <Style x:Key="ExpandCollapseIndicatorImageStyle" TargetType="Image">
+        <Setter Property="Aspect" Value="AspectFit" />
+        <Setter Property="WidthRequest" Value="14" />
+        <Setter Property="HeightRequest" Value="14" />
         <Setter Property="HorizontalOptions" Value="Center" />
-        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="InputTransparent" Value="True" />
     </Style>
 
-    <Style x:Key="RoundIconButtonStyle" TargetType="Button">
+    <Style x:Key="IconButtonBaseStyle" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource Color.CardBackground}" />
         <Setter Property="TextColor" Value="{StaticResource Color.PrimaryBlue}" />
         <Setter Property="BorderColor" Value="{StaticResource Color.PrimaryBlue}" />
         <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+    </Style>
+
+    <Style x:Key="RoundIconButtonStyle" TargetType="Button" BasedOn="{StaticResource IconButtonBaseStyle}">
         <Setter Property="WidthRequest" Value="{StaticResource Size.Icon.Round}" />
         <Setter Property="HeightRequest" Value="{StaticResource Size.Icon.Round}" />
         <Setter Property="MinimumWidthRequest" Value="{StaticResource Size.Icon.Round}" />
         <Setter Property="MinimumHeightRequest" Value="{StaticResource Size.Icon.Round}" />
         <Setter Property="CornerRadius" Value="20" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="FontFamily" Value="OpenSansSemibold" />
         <Setter Property="FontSize" Value="18" />
     </Style>
 
-    <Style x:Key="SmallRoundToggleButtonStyle" TargetType="Button">
+    <Style x:Key="SmallRoundToggleButtonStyle" TargetType="Button" BasedOn="{StaticResource IconButtonBaseStyle}">
         <Setter Property="BackgroundColor" Value="{StaticResource Color.InputBackground}" />
-        <Setter Property="TextColor" Value="{StaticResource Color.PrimaryBlue}" />
         <Setter Property="BorderColor" Value="{StaticResource Color.PrimaryBlueBorder}" />
-        <Setter Property="BorderWidth" Value="1" />
         <Setter Property="WidthRequest" Value="28" />
         <Setter Property="HeightRequest" Value="28" />
         <Setter Property="MinimumWidthRequest" Value="28" />
         <Setter Property="MinimumHeightRequest" Value="28" />
         <Setter Property="CornerRadius" Value="14" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="FontFamily" Value="OpenSansSemibold" />
         <Setter Property="FontSize" Value="14" />
     </Style>
 
-    <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource Color.PrimaryBlue}" />
-        <Setter Property="TextColor" Value="{StaticResource Color.White}" />
-        <Setter Property="BorderColor" Value="{StaticResource Color.PrimaryBlue}" />
-        <Setter Property="BorderWidth" Value="0" />
-        <Setter Property="CornerRadius" Value="10" />
-        <Setter Property="Padding" Value="16,10" />
-        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+    <Style x:Key="OrderPickerContainerStyle" TargetType="Border" BasedOn="{StaticResource InputContainerStyle}">
+        <Setter Property="HeightRequest" Value="38" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 10" />
     </Style>
 
-    <Style x:Key="FormActionButtonStyle" TargetType="ImageButton">
+    <Style x:Key="OrderPickerStyle" TargetType="Picker">
+        <Setter Property="HeightRequest" Value="36" />
+        <Setter Property="MinimumHeightRequest" Value="36" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextColor" Value="{StaticResource Color.TextPrimary}" />
+        <Setter Property="TitleColor" Value="{StaticResource Color.TextSecondary}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+    </Style>
+
+    <Style x:Key="OrderClearButtonStyle" TargetType="Button" BasedOn="{StaticResource IconButtonBaseStyle}">
+        <Setter Property="BackgroundColor" Value="{StaticResource Color.CardBackground}" />
+        <Setter Property="BorderColor" Value="{StaticResource Color.PrimaryBlue}" />
+        <Setter Property="WidthRequest" Value="38" />
+        <Setter Property="HeightRequest" Value="38" />
+        <Setter Property="MinimumWidthRequest" Value="38" />
+        <Setter Property="MinimumHeightRequest" Value="38" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style x:Key="CardIconButtonStyle" TargetType="Button" BasedOn="{StaticResource IconButtonBaseStyle}">
+        <Setter Property="WidthRequest" Value="{StaticResource Size.Icon.Card}" />
+        <Setter Property="HeightRequest" Value="{StaticResource Size.Icon.Card}" />
+        <Setter Property="MinimumWidthRequest" Value="{StaticResource Size.Icon.Card}" />
+        <Setter Property="MinimumHeightRequest" Value="{StaticResource Size.Icon.Card}" />
+        <Setter Property="CornerRadius" Value="{StaticResource Size.Corner.Medium}" />
+        <Setter Property="Padding" Value="10" />
+    </Style>
+
+    <Style x:Key="IconImageButtonBaseStyle" TargetType="ImageButton">
         <Setter Property="BackgroundColor" Value="{StaticResource Color.CardBackground}" />
         <Setter Property="BorderColor" Value="{StaticResource Color.PrimaryBlue}" />
         <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="Aspect" Value="AspectFit" />
+    </Style>
+
+    <Style x:Key="FormActionButtonStyle" TargetType="ImageButton" BasedOn="{StaticResource IconImageButtonBaseStyle}">
         <Setter Property="WidthRequest" Value="{StaticResource Size.Icon.Form}" />
         <Setter Property="HeightRequest" Value="{StaticResource Size.Icon.Form}" />
         <Setter Property="MinimumWidthRequest" Value="{StaticResource Size.Icon.Form}" />
         <Setter Property="MinimumHeightRequest" Value="{StaticResource Size.Icon.Form}" />
-        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="CornerRadius" Value="{StaticResource Size.Corner.Small}" />
         <Setter Property="Padding" Value="9" />
-        <Setter Property="Aspect" Value="AspectFit" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.35" />
+                            <Setter Property="BackgroundColor" Value="{StaticResource Color.ImagePlaceholder}" />
+                            <Setter Property="BorderColor" Value="{StaticResource Color.BorderDefault}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
     </Style>
 
-    <Style x:Key="CategoryAddButtonStyle" TargetType="ImageButton">
-        <Setter Property="BackgroundColor" Value="{StaticResource Color.CardBackground}" />
-        <Setter Property="BorderColor" Value="{StaticResource Color.PrimaryBlue}" />
-        <Setter Property="BorderWidth" Value="1" />
-        <Setter Property="WidthRequest" Value="44" />
-        <Setter Property="HeightRequest" Value="44" />
-        <Setter Property="MinimumWidthRequest" Value="44" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-        <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="Padding" Value="10" />
-        <Setter Property="Aspect" Value="AspectFit" />
+    <Style x:Key="CategoryAddButtonStyle" TargetType="ImageButton" BasedOn="{StaticResource IconImageButtonBaseStyle}">
+        <Setter Property="WidthRequest" Value="{StaticResource Size.Icon.Card}" />
+        <Setter Property="HeightRequest" Value="{StaticResource Size.Icon.Card}" />
+        <Setter Property="MinimumWidthRequest" Value="{StaticResource Size.Icon.Card}" />
+        <Setter Property="MinimumHeightRequest" Value="{StaticResource Size.Icon.Card}" />
+        <Setter Property="CornerRadius" Value="{StaticResource Size.Corner.Medium}" />
+    </Style>
+
+    <Style x:Key="CategoryAddItemButtonStyle" TargetType="ImageButton" BasedOn="{StaticResource CategoryAddButtonStyle}">
+        <Setter Property="Padding" Value="7" />
     </Style>
 
     <Style x:Key="ThresholdCardStyle" TargetType="Border" BasedOn="{StaticResource CardBorderStyle}">

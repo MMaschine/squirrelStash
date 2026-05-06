@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquirrelStash", "SquirrelSt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquirrelStash.DataAccess", "SquirrelStash.DataAccess\SquirrelStash.DataAccess.csproj", "{2DC70FEC-B2A7-4E8B-BCF7-F1F5397E034D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquirrelStash.Tests", "SquirrelStash.Tests\SquirrelStash.Tests.csproj", "{2622A70E-BA1F-4CF5-9FCF-50F60D69EB41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{2DC70FEC-B2A7-4E8B-BCF7-F1F5397E034D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DC70FEC-B2A7-4E8B-BCF7-F1F5397E034D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DC70FEC-B2A7-4E8B-BCF7-F1F5397E034D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2622A70E-BA1F-4CF5-9FCF-50F60D69EB41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2622A70E-BA1F-4CF5-9FCF-50F60D69EB41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2622A70E-BA1F-4CF5-9FCF-50F60D69EB41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2622A70E-BA1F-4CF5-9FCF-50F60D69EB41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

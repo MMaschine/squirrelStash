@@ -2,7 +2,7 @@
 
 namespace SquirrelStash.Models
 {
-    public sealed class DialogResult<T> where T : class
+    public class DialogResult<T> where T : class
     {
         public bool IsCanceled { get; }
         public bool IsFailed { get; }
@@ -12,7 +12,7 @@ namespace SquirrelStash.Models
 
         public string? ErrorMessage { get; }
 
-        private DialogResult(bool isCanceled, bool isFailed, T? data, string? errorMessage)
+        protected DialogResult(bool isCanceled, bool isFailed, T? data, string? errorMessage)
         {
             IsCanceled = isCanceled;
             IsFailed = isFailed;

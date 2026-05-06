@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SquirrelStash.Views.EditItemDialog"
+    xmlns:viewModels="clr-namespace:SquirrelStash.ViewModels"
+    xmlns:converters="clr-namespace:SquirrelStash.Converters"
+    xmlns:components="clr-namespace:SquirrelStash.Components"
+    xmlns:resources="clr-namespace:SquirrelStash.Resources"
+    x:DataType="viewModels:EditItemDialogViewModel"
+    Title="{Binding DialogTitle}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:NullOrEmptyStringToBoolConverter x:Key="NullOrEmptyStringToBoolConverter"/>
+            <Style x:Key="CompactThresholdEntryStyle"
+                   TargetType="Entry">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="HeightRequest" Value="44" />
+                <Setter Property="MinimumHeightRequest" Value="44" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Padding="18"
+          RowDefinitions="Auto,*,Auto"
+          RowSpacing="10">
+        <VerticalStackLayout Grid.Row="0"
+                             Spacing="10">
+
+            <Label
+                Text="{Binding DialogTitle}"
+                Style="{StaticResource H1LabelStyle}" />
+
+            <Grid ColumnDefinitions="Auto,*"
+                  ColumnSpacing="12">
+                <Border
+                    Grid.Column="0"
+                    WidthRequest="150"
+                    HeightRequest="150"
+                    BackgroundColor="{StaticResource Color.ImageSelectorBackground}"
+                    Stroke="{StaticResource Color.PrimaryBlueBorder}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnImageTapped" />
+                    </Border.GestureRecognizers>
+
+                    <Grid>
+                        <Image
+                            Source="{Binding ImagePath}"
+                            Aspect="AspectFill" />
+
+                        <Label
+                            Text="{x:Static resources:AppText.TapToAddImage}"
+                            Style="{StaticResource BodySecondaryLabelStyle}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            IsVisible="{Binding ImagePath, Converter={StaticResource NullOrEmptyStringToBoolConverter}}" />
+                    </Grid>
+                </Border>
+
+                <Frame
+                    Grid.Column="1"
+                    Style="{StaticResource CardFrameStyle}"
+                    HeightRequest="150"
+                    Padding="12">
+                    <VerticalStackLayout Spacing="10"
+                                         VerticalOptions="Center">
+                        <Label
+                            Text="{Binding QuantityLabel}"
+                            Style="{StaticResource BodyStrongLabelStyle}" />
+
+                        <Border
+                            Style="{StaticResource InputContainerStyle}"
+                            Padding="12,6">
+                            <Entry
+                                Text="{Binding DefaultQuantity}"
+                                Keyboard="Numeric">
+                                <Entry.Behaviors>
+                                    <components:DigitsOnlyEntryBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Border>
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+            <Frame
+                Style="{StaticResource CardFrameStyle}"
+                Margin="0,0,0,4"
+                Padding="12">
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        Text="{x:Static resources:AppText.ThresholdsLabel}"
+                        Style="{StaticResource H3LabelStyle}" />
+
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+                        <Border
+                            Grid.Column="0"
+                            Style="{StaticResource ThresholdInputStyle}"
+                            Padding="10,4"
+                            Stroke="{StaticResource Color.WarningOrange}"
+                            BackgroundColor="{StaticResource Color.WarningSoft}">
+                            <Entry Text="{Binding WarningThreshold}"
+                                   Style="{StaticResource CompactThresholdEntryStyle}"
+                                   Placeholder="{x:Static resources:AppText.WarningThresholdLabel}"
+                                   Keyboard="Numeric">
+                                <Entry.Behaviors>
+                                    <components:DigitsOnlyEntryBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Border>
+
+                        <Border
+                            Grid.Column="1"
+                            Style="{StaticResource ThresholdInputStyle}"
+                            Padding="10,4"
+                            Stroke="{StaticResource Color.CriticalRed}"
+                            BackgroundColor="{StaticResource Color.CriticalSoft}">
+                            <Entry Text="{Binding CriticalThreshold}"
+                                   Style="{StaticResource CompactThresholdEntryStyle}"
+                                   Placeholder="{x:Static resources:AppText.CriticalThresholdLabel}"
+                                   Keyboard="Numeric">
+                                <Entry.Behaviors>
+                                    <components:DigitsOnlyEntryBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Label
+                Text="{x:Static resources:AppText.PropertiesLabel}"
+                Style="{StaticResource H3LabelStyle}" />
+
+        </VerticalStackLayout>
+
+        <CollectionView x:Name="PropertyEntriesCollectionView"
+                        Grid.Row="1"
+                        ItemsSource="{Binding PropertyEntries}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewModels:CreateItemPropertyEntryViewModel">
+                    <Frame
+                        Style="{StaticResource CardFrameStyle}"
+                        Margin="0,0,0,10"
+                        Padding="12">
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <Label
+                                Grid.Column="0"
+                                Text="{Binding Name}"
+                                VerticalOptions="Center"
+                                Style="{StaticResource BodyStrongLabelStyle}" />
+
+                            <Border Grid.Column="1"
+                                    Style="{StaticResource InputContainerStyle}"
+                                    Padding="12,6"
+                                    IsVisible="{Binding IsManualValueType}">
+                                <Border.Triggers>
+                                    <DataTrigger
+                                        TargetType="Border"
+                                        Binding="{Binding HasMissingValue}"
+                                        Value="True">
+                                        <Setter Property="Stroke" Value="{StaticResource Color.WarningOrange}" />
+                                        <Setter Property="StrokeThickness" Value="2" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Entry
+                                    Text="{Binding Value}"
+                                    Placeholder="{x:Static resources:AppText.EnterValuePlaceholder}" 
+                                    Keyboard="{Binding ValueKeyboard}"/>
+                            </Border>
+
+                            <Border Grid.Column="1"
+                                    Style="{StaticResource InputContainerStyle}"
+                                    Padding="12,6"
+                                    IsVisible="{Binding IsAllowedValuesType}">
+                                <Border.Triggers>
+                                    <DataTrigger
+                                        TargetType="Border"
+                                        Binding="{Binding HasMissingValue}"
+                                        Value="True">
+                                        <Setter Property="Stroke" Value="{StaticResource Color.WarningOrange}" />
+                                        <Setter Property="StrokeThickness" Value="2" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Picker
+                                    Title="{x:Static resources:AppText.SelectValueTitle}"
+                                    ItemsSource="{Binding AllowedValues}"
+                                    SelectedItem="{Binding SelectedAllowedValue}" />
+                            </Border>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <HorizontalStackLayout Grid.Row="2"
+                               HorizontalOptions="End"
+                               Spacing="10">
+            <ImageButton
+                Source="cross.png"
+                Style="{StaticResource FormActionButtonStyle}"
+                Command="{Binding CancelCommand}" />
+
+            <ImageButton
+                Source="apply.png"
+                Style="{StaticResource FormActionButtonStyle}"
+                Command="{Binding SaveCommand}" />
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>
